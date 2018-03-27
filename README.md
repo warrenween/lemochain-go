@@ -1,0 +1,2 @@
+# lemo-core
+Lemo Chain
