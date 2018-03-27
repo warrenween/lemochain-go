@@ -2,8 +2,8 @@
 # lemo-core
 Lemo Chain
 
-Upcoming April 
-```
+### Upcoming April 
+
     LemoChain is a decentralized, open source platform for companies of all sizes to monetize and exchange their structured business 
 data. LemoChain will accelerate blockchain’s integration into our every-day lives by means of increasing it's universal commercial 
 relevance.
@@ -19,4 +19,3 @@ and instead, implementing the distributed IPFS storage method. Additionally, we 
 purchase; through secure multi-party computation and homomorphic encryption, we will integrate a ‘data matchmaking’ ecosystem, whereby 
 only the relevant data is transferred between ideal candidates, instead of purchasing a large packet of data where only some of which is 
 useful.
-```
