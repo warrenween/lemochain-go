@@ -68,14 +68,17 @@ type Command struct {
 
 type CommandsByName []Command
 
+// measure Commands' length
 func (c CommandsByName) Len() int {
 	return len(c)
 }
 
+// judging Commands' for-behand in alphabetical order
 func (c CommandsByName) Less(i, j int) bool {
 	return c[i].Name < c[j].Name
 }
 
+// swap specified elements' order
 func (c CommandsByName) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }

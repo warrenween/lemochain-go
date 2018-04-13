@@ -30,9 +30,9 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/cmd/utils"
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/console"
+	"github.com/LemoFoundationLtd/lemochain-go/internal/debug"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo"
 	"github.com/LemoFoundationLtd/lemochain-go/lemoclient"
-	"github.com/LemoFoundationLtd/lemochain-go/internal/debug"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/metrics"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
@@ -149,7 +149,7 @@ func init() {
 	// Initialize the CLI app and start Glemo
 	app.Action = glemo
 	app.HideVersion = true // we have a command to print the version
-	app.Copyright = "Copyright 2013-2017 The lemochain-go Authors"
+	app.Copyright = "Copyright 2017-2018 The lemochain-go Authors"
 	app.Commands = []cli.Command{
 		// See chaincmd.go:
 		initCommand,
