@@ -75,10 +75,10 @@ type lemostatsConfig struct {
 }
 
 type glemoConfig struct {
-	Eth       lemo.Config
+	Lemo       lemo.Config
 	Shh       whisper.Config
 	Node      node.Config
-	Ethstats  lemostatsConfig
+	Lemostats  lemostatsConfig
 	Dashboard dashboard.Config
 }
 
@@ -110,7 +110,7 @@ func defaultNodeConfig() node.Config {
 func makeConfigNode(ctx *cli.Context) (*node.Node, glemoConfig) {
 	// Load defaults.
 	cfg := glemoConfig{
-		Eth:       lemo.DefaultConfig,
+		Lemo:       lemo.DefaultConfig,
 		Shh:       whisper.DefaultConfig,
 		Node:      defaultNodeConfig(),
 		Dashboard: dashboard.DefaultConfig,
@@ -129,9 +129,9 @@ func makeConfigNode(ctx *cli.Context) (*node.Node, glemoConfig) {
 	if err != nil {
 		utils.Fatalf("Failed to create the protocol stack: %v", err)
 	}
-	utils.SetEthConfig(ctx, stack, &cfg.Eth)
-	if ctx.GlobalIsSet(utils.EthStatsURLFlag.Name) {
-		cfg.Ethstats.URL = ctx.GlobalString(utils.EthStatsURLFlag.Name)
+	utils.SetLemoConfig(ctx, stack, &cfg.Lemo)
+	if ctx.GlobalIsSet(utils.LemoStatsURLFlag.Name) {
+		cfg.Lemostats.URL = ctx.GlobalString(utils.LemoStatsURLFlag.Name)
 	}
 
 	utils.SetShhConfig(ctx, stack, &cfg.Shh)
@@ -153,7 +153,7 @@ func enableWhisper(ctx *cli.Context) bool {
 func makeFullNode(ctx *cli.Context) *node.Node {
 	stack, cfg := makeConfigNode(ctx)
 
-	utils.RegisterEthService(stack, &cfg.Eth)
+	utils.RegisterLemoService(stack, &cfg.Lemo)
 
 	if ctx.GlobalBool(utils.DashboardEnabledFlag.Name) {
 		utils.RegisterDashboardService(stack, &cfg.Dashboard, gitCommit)
@@ -172,8 +172,8 @@ func makeFullNode(ctx *cli.Context) *node.Node {
 	}
 
 	// Add the Lemochain Stats daemon if requested.
-	if cfg.Ethstats.URL != "" {
-		utils.RegisterEthStatsService(stack, cfg.Ethstats.URL)
+	if cfg.Lemostats.URL != "" {
+		utils.RegisterLemoStatsService(stack, cfg.Lemostats.URL)
 	}
 	return stack
 }
@@ -183,8 +183,8 @@ func dumpConfig(ctx *cli.Context) error {
 	_, cfg := makeConfigNode(ctx)
 	comment := ""
 
-	if cfg.Eth.Genesis != nil {
-		cfg.Eth.Genesis = nil
+	if cfg.Lemo.Genesis != nil {
+		cfg.Lemo.Genesis = nil
 		comment += "# Note: this config doesn't contain the genesis block.\n\n"
 	}
 

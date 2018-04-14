@@ -39,7 +39,7 @@ type testglemo struct {
 
 	// template variables for expect
 	Datadir   string
-	Etherbase string
+	Lemoerbase string
 }
 
 func init() {
@@ -74,7 +74,7 @@ func runGlemo(t *testing.T, args ...string) *testglemo {
 			}
 		case arg == "-lemoerbase" || arg == "--lemoerbase":
 			if i < len(args)-1 {
-				tt.Etherbase = args[i+1]
+				tt.Lemoerbase = args[i+1]
 			}
 		}
 	}

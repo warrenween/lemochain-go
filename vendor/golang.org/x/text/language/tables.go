@@ -782,7 +782,7 @@ const (
 const script tag.Index = "" + // Size: 928 bytes
 	"----AdlmAfakAghbAhomArabAranArmiArmnAvstBaliBamuBassBatkBengBhksBlisBopo" +
 	"BrahBraiBugiBuhdCakmCansCariChamCherCirtCoptCprtCyrlCyrsDevaDsrtDuplEgyd" +
-	"EgyhEgypElbaEthiGeokGeorGlagGothGranGrekGujrGuruHanbHangHaniHanoHansHant" +
+	"EgyhEgypElbaLemoiGeokGeorGlagGothGranGrekGujrGuruHanbHangHaniHanoHansHant" +
 	"HatrHebrHiraHluwHmngHrktHungIndsItalJamoJavaJpanJurcKaliKanaKharKhmrKhoj" +
 	"KitlKitsKndaKoreKpelKthiLanaLaooLatfLatgLatnLekeLepcLimbLinaLinbLisuLoma" +
 	"LyciLydiMahjMandManiMarcMayaMendMercMeroMlymModiMongMoonMrooMteiMultMymr" +

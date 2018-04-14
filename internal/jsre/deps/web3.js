@@ -2508,7 +2508,7 @@ module.exports={
 
 var RequestManager = require('./web3/requestmanager');
 var Iban = require('./web3/iban');
-var Eth = require('./web3/mlemoods/lemo');
+var Lemo = require('./web3/mlemoods/lemo');
 var DB = require('./web3/mlemoods/db');
 var Shh = require('./web3/mlemoods/shh');
 var Net = require('./web3/mlemoods/net');
@@ -2530,7 +2530,7 @@ var BigNumber = require('bignumber.js');
 function Web3 (provider) {
     this._requestManager = new RequestManager(provider);
     this.currentProvider = provider;
-    this.lemo = new Eth(this);
+    this.lemo = new Lemo(this);
     this.db = new DB(this);
     this.shh = new Shh(this);
     this.net = new Net(this);
@@ -5226,7 +5226,7 @@ var uncleCountCall = function (args) {
     return (utils.isString(args[0]) && args[0].indexOf('0x') === 0) ? 'lemo_getUncleCountByBlockHash' : 'lemo_getUncleCountByBlockNumber';
 };
 
-function Eth(web3) {
+function Lemo(web3) {
     this._requestManager = web3._requestManager;
 
     var self = this;
@@ -5246,7 +5246,7 @@ function Eth(web3) {
     this.sendIBANTransaction = transfer.bind(null, this);
 }
 
-Object.defineProperty(Eth.prototype, 'defaultBlock', {
+Object.defineProperty(Lemo.prototype, 'defaultBlock', {
     get: function () {
         return c.defaultBlock;
     },
@@ -5256,7 +5256,7 @@ Object.defineProperty(Eth.prototype, 'defaultBlock', {
     }
 });
 
-Object.defineProperty(Eth.prototype, 'defaultAccount', {
+Object.defineProperty(Lemo.prototype, 'defaultAccount', {
     get: function () {
         return c.defaultAccount;
     },
@@ -5500,28 +5500,28 @@ var properties = function () {
     ];
 };
 
-Eth.prototype.contract = function (abi) {
+Lemo.prototype.contract = function (abi) {
     var factory = new Contract(this, abi);
     return factory;
 };
 
-Eth.prototype.filter = function (options, callback, filterCreationErrorCallback) {
+Lemo.prototype.filter = function (options, callback, filterCreationErrorCallback) {
     return new Filter(options, 'lemo', this._requestManager, watches.lemo(), formatters.outputLogFormatter, callback, filterCreationErrorCallback);
 };
 
-Eth.prototype.namereg = function () {
+Lemo.prototype.namereg = function () {
     return this.contract(namereg.global.abi).at(namereg.global.address);
 };
 
-Eth.prototype.icapNamereg = function () {
+Lemo.prototype.icapNamereg = function () {
     return this.contract(namereg.icap.abi).at(namereg.icap.address);
 };
 
-Eth.prototype.isSyncing = function (callback) {
+Lemo.prototype.isSyncing = function (callback) {
     return new IsSyncing(this._requestManager, callback);
 };
 
-module.exports = Eth;
+module.exports = Lemo;
 
 },{"../../utils/config":18,"../../utils/utils":20,"../contract":25,"../filter":29,"../formatters":30,"../iban":33,"../mlemood":36,"../namereg":44,"../property":45,"../syncing":48,"../transfer":49,"./watches":43}],39:[function(require,module,exports){
 /*

@@ -22,7 +22,7 @@ var Modules = map[string]string{
 	"chequebook": Chequebook_JS,
 	"clique":     Clique_JS,
 	"debug":      Debug_JS,
-	"lemo":        Eth_JS,
+	"lemo":        Lemo_JS,
 	"miner":      Miner_JS,
 	"net":        Net_JS,
 	"personal":   Personal_JS,
@@ -390,7 +390,7 @@ web3._extend({
 });
 `
 
-const Eth_JS = `
+const Lemo_JS = `
 web3._extend({
 	property: 'lemo',
 	mlemoods: [
@@ -464,8 +464,8 @@ web3._extend({
 			call: 'miner_stop'
 		}),
 		new web3._extend.Method({
-			name: 'setEtherbase',
-			call: 'miner_setEtherbase',
+			name: 'setLemoerbase',
+			call: 'miner_setLemoerbase',
 			params: 1,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter]
 		}),

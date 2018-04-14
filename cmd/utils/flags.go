@@ -209,35 +209,35 @@ var (
 		Usage: "Dashboard metrics collection refresh rate",
 		Value: dashboard.DefaultConfig.Refresh,
 	}
-	// Ethash settings
-	EthashCacheDirFlag = DirectoryFlag{
+	// Lemohash settings
+	LemohashCacheDirFlag = DirectoryFlag{
 		Name:  "lemohash.cachedir",
 		Usage: "Directory to store the lemohash verification caches (default = inside the datadir)",
 	}
-	EthashCachesInMemoryFlag = cli.IntFlag{
+	LemohashCachesInMemoryFlag = cli.IntFlag{
 		Name:  "lemohash.cachesinmem",
 		Usage: "Number of recent lemohash caches to keep in memory (16MB each)",
-		Value: lemo.DefaultConfig.Ethash.CachesInMem,
+		Value: lemo.DefaultConfig.Lemohash.CachesInMem,
 	}
-	EthashCachesOnDiskFlag = cli.IntFlag{
+	LemohashCachesOnDiskFlag = cli.IntFlag{
 		Name:  "lemohash.cachesondisk",
 		Usage: "Number of recent lemohash caches to keep on disk (16MB each)",
-		Value: lemo.DefaultConfig.Ethash.CachesOnDisk,
+		Value: lemo.DefaultConfig.Lemohash.CachesOnDisk,
 	}
-	EthashDatasetDirFlag = DirectoryFlag{
+	LemohashDatasetDirFlag = DirectoryFlag{
 		Name:  "lemohash.dagdir",
 		Usage: "Directory to store the lemohash mining DAGs (default = inside home folder)",
-		Value: DirectoryString{lemo.DefaultConfig.Ethash.DatasetDir},
+		Value: DirectoryString{lemo.DefaultConfig.Lemohash.DatasetDir},
 	}
-	EthashDatasetsInMemoryFlag = cli.IntFlag{
+	LemohashDatasetsInMemoryFlag = cli.IntFlag{
 		Name:  "lemohash.dagsinmem",
 		Usage: "Number of recent lemohash mining DAGs to keep in memory (1+GB each)",
-		Value: lemo.DefaultConfig.Ethash.DatasetsInMem,
+		Value: lemo.DefaultConfig.Lemohash.DatasetsInMem,
 	}
-	EthashDatasetsOnDiskFlag = cli.IntFlag{
+	LemohashDatasetsOnDiskFlag = cli.IntFlag{
 		Name:  "lemohash.dagsondisk",
 		Usage: "Number of recent lemohash mining DAGs to keep on disk (1+GB each)",
-		Value: lemo.DefaultConfig.Ethash.DatasetsOnDisk,
+		Value: lemo.DefaultConfig.Lemohash.DatasetsOnDisk,
 	}
 	// Transaction pool settings
 	TxPoolNoLocalsFlag = cli.BoolFlag{
@@ -325,7 +325,7 @@ var (
 		Usage: "Target gas limit sets the artificial target gas floor for the blocks to mine",
 		Value: params.GenesisGasLimit,
 	}
-	EtherbaseFlag = cli.StringFlag{
+	LemoerbaseFlag = cli.StringFlag{
 		Name:  "lemoerbase",
 		Usage: "Public address for block mining rewards (default = first account created)",
 		Value: "0",
@@ -356,7 +356,7 @@ var (
 		Usage: "Record information useful for VM and contract debugging",
 	}
 	// Logging and debug settings
-	EthStatsURLFlag = cli.StringFlag{
+	LemoStatsURLFlag = cli.StringFlag{
 		Name:  "lemostats",
 		Usage: "Reporting URL of a lemostats service (nodename:secret@host:port)",
 	}
@@ -771,15 +771,15 @@ func MakeAddress(ks *keystore.KeyStore, account string) (accounts.Account, error
 	return accs[index], nil
 }
 
-// setEtherbase retrieves the lemoerbase either from the directly specified
+// setLemoerbase retrieves the lemoerbase either from the directly specified
 // command line flags or from the keystore if CLI indexed.
-func setEtherbase(ctx *cli.Context, ks *keystore.KeyStore, cfg *lemo.Config) {
-	if ctx.GlobalIsSet(EtherbaseFlag.Name) {
-		account, err := MakeAddress(ks, ctx.GlobalString(EtherbaseFlag.Name))
+func setLemoerbase(ctx *cli.Context, ks *keystore.KeyStore, cfg *lemo.Config) {
+	if ctx.GlobalIsSet(LemoerbaseFlag.Name) {
+		account, err := MakeAddress(ks, ctx.GlobalString(LemoerbaseFlag.Name))
 		if err != nil {
-			Fatalf("Option %q: %v", EtherbaseFlag.Name, err)
+			Fatalf("Option %q: %v", LemoerbaseFlag.Name, err)
 		}
-		cfg.Etherbase = account.Address
+		cfg.Lemoerbase = account.Address
 	}
 }
 
@@ -940,24 +940,24 @@ func setTxPool(ctx *cli.Context, cfg *core.TxPoolConfig) {
 	}
 }
 
-func setEthash(ctx *cli.Context, cfg *lemo.Config) {
-	if ctx.GlobalIsSet(EthashCacheDirFlag.Name) {
-		cfg.Ethash.CacheDir = ctx.GlobalString(EthashCacheDirFlag.Name)
+func setLemohash(ctx *cli.Context, cfg *lemo.Config) {
+	if ctx.GlobalIsSet(LemohashCacheDirFlag.Name) {
+		cfg.Lemohash.CacheDir = ctx.GlobalString(LemohashCacheDirFlag.Name)
 	}
-	if ctx.GlobalIsSet(EthashDatasetDirFlag.Name) {
-		cfg.Ethash.DatasetDir = ctx.GlobalString(EthashDatasetDirFlag.Name)
+	if ctx.GlobalIsSet(LemohashDatasetDirFlag.Name) {
+		cfg.Lemohash.DatasetDir = ctx.GlobalString(LemohashDatasetDirFlag.Name)
 	}
-	if ctx.GlobalIsSet(EthashCachesInMemoryFlag.Name) {
-		cfg.Ethash.CachesInMem = ctx.GlobalInt(EthashCachesInMemoryFlag.Name)
+	if ctx.GlobalIsSet(LemohashCachesInMemoryFlag.Name) {
+		cfg.Lemohash.CachesInMem = ctx.GlobalInt(LemohashCachesInMemoryFlag.Name)
 	}
-	if ctx.GlobalIsSet(EthashCachesOnDiskFlag.Name) {
-		cfg.Ethash.CachesOnDisk = ctx.GlobalInt(EthashCachesOnDiskFlag.Name)
+	if ctx.GlobalIsSet(LemohashCachesOnDiskFlag.Name) {
+		cfg.Lemohash.CachesOnDisk = ctx.GlobalInt(LemohashCachesOnDiskFlag.Name)
 	}
-	if ctx.GlobalIsSet(EthashDatasetsInMemoryFlag.Name) {
-		cfg.Ethash.DatasetsInMem = ctx.GlobalInt(EthashDatasetsInMemoryFlag.Name)
+	if ctx.GlobalIsSet(LemohashDatasetsInMemoryFlag.Name) {
+		cfg.Lemohash.DatasetsInMem = ctx.GlobalInt(LemohashDatasetsInMemoryFlag.Name)
 	}
-	if ctx.GlobalIsSet(EthashDatasetsOnDiskFlag.Name) {
-		cfg.Ethash.DatasetsOnDisk = ctx.GlobalInt(EthashDatasetsOnDiskFlag.Name)
+	if ctx.GlobalIsSet(LemohashDatasetsOnDiskFlag.Name) {
+		cfg.Lemohash.DatasetsOnDisk = ctx.GlobalInt(LemohashDatasetsOnDiskFlag.Name)
 	}
 }
 
@@ -1009,8 +1009,8 @@ func SetShhConfig(ctx *cli.Context, stack *node.Node, cfg *whisper.Config) {
 	}
 }
 
-// SetEthConfig applies lemo-related command line flags to the config.
-func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *lemo.Config) {
+// SetLemoConfig applies lemo-related command line flags to the config.
+func SetLemoConfig(ctx *cli.Context, stack *node.Node, cfg *lemo.Config) {
 	// Avoid conflicting network flags
 	checkExclusive(ctx, DeveloperFlag, TestnetFlag, RinkebyFlag)
 	checkExclusive(ctx, FastSyncFlag, LightModeFlag, SyncModeFlag)
@@ -1018,10 +1018,10 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *lemo.Config) {
 	checkExclusive(ctx, LightServFlag, SyncModeFlag, "light")
 
 	ks := stack.AccountManager().Backends(keystore.KeyStoreType)[0].(*keystore.KeyStore)
-	setEtherbase(ctx, ks, cfg)
+	setLemoerbase(ctx, ks, cfg)
 	setGPO(ctx, &cfg.GPO)
 	setTxPool(ctx, &cfg.TxPool)
-	setEthash(ctx, cfg)
+	setLemohash(ctx, cfg)
 
 	switch {
 	case ctx.GlobalIsSet(SyncModeFlag.Name):
@@ -1120,8 +1120,8 @@ func SetDashboardConfig(ctx *cli.Context, cfg *dashboard.Config) {
 	cfg.Refresh = ctx.GlobalDuration(DashboardRefreshFlag.Name)
 }
 
-// RegisterEthService adds an Lemochain client to the stack.
-func RegisterEthService(stack *node.Node, cfg *lemo.Config) {
+// RegisterLemoService adds an Lemochain client to the stack.
+func RegisterLemoService(stack *node.Node, cfg *lemo.Config) {
 	var err error
 	if cfg.SyncMode == downloader.LightSync {
 		err = stack.Register(func(ctx *node.ServiceContext) (node.Service, error) {
@@ -1158,9 +1158,9 @@ func RegisterShhService(stack *node.Node, cfg *whisper.Config) {
 	}
 }
 
-// RegisterEthStatsService configures the Lemochain Stats daemon and adds it to
+// RegisterLemoStatsService configures the Lemochain Stats daemon and adds it to
 // th egiven node.
-func RegisterEthStatsService(stack *node.Node, url string) {
+func RegisterLemoStatsService(stack *node.Node, url string) {
 	if err := stack.Register(func(ctx *node.ServiceContext) (node.Service, error) {
 		// Retrieve both lemo and les services
 		var lemoServ *lemo.Lemochain
@@ -1227,12 +1227,12 @@ func MakeChain(ctx *cli.Context, stack *node.Node) (chain *core.BlockChain, chai
 		engine = lemohash.NewFaker()
 		if !ctx.GlobalBool(FakePoWFlag.Name) {
 			engine = lemohash.New(lemohash.Config{
-				CacheDir:       stack.ResolvePath(lemo.DefaultConfig.Ethash.CacheDir),
-				CachesInMem:    lemo.DefaultConfig.Ethash.CachesInMem,
-				CachesOnDisk:   lemo.DefaultConfig.Ethash.CachesOnDisk,
-				DatasetDir:     stack.ResolvePath(lemo.DefaultConfig.Ethash.DatasetDir),
-				DatasetsInMem:  lemo.DefaultConfig.Ethash.DatasetsInMem,
-				DatasetsOnDisk: lemo.DefaultConfig.Ethash.DatasetsOnDisk,
+				CacheDir:       stack.ResolvePath(lemo.DefaultConfig.Lemohash.CacheDir),
+				CachesInMem:    lemo.DefaultConfig.Lemohash.CachesInMem,
+				CachesOnDisk:   lemo.DefaultConfig.Lemohash.CachesOnDisk,
+				DatasetDir:     stack.ResolvePath(lemo.DefaultConfig.Lemohash.DatasetDir),
+				DatasetsInMem:  lemo.DefaultConfig.Lemohash.DatasetsInMem,
+				DatasetsOnDisk: lemo.DefaultConfig.Lemohash.DatasetsOnDisk,
 			})
 		}
 	}

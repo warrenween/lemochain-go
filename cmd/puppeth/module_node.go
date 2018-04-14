@@ -42,7 +42,7 @@ ADD genesis.json /genesis.json
 RUN \
   echo 'glemo --cache 512 init /genesis.json' > glemo.sh && \{{if .Unlock}}
 	echo 'mkdir -p /root/.lemochain/keystore/ && cp /signer.json /root/.lemochain/keystore/' >> glemo.sh && \{{end}}
-	echo $'glemo --networkid {{.NetworkID}} --cache 512 --port {{.Port}} --maxpeers {{.Peers}} {{.LightFlag}} --lemostats \'{{.Ethstats}}\' {{if .Bootnodes}}--bootnodes {{.Bootnodes}}{{end}} {{if .Etherbase}}--lemoerbase {{.Etherbase}} --mine --minerthreads 1{{end}} {{if .Unlock}}--unlock 0 --password /signer.pass --mine{{end}} --targetgaslimit {{.GasTarget}} --gasprice {{.GasPrice}}' >> glemo.sh
+	echo $'glemo --networkid {{.NetworkID}} --cache 512 --port {{.Port}} --maxpeers {{.Peers}} {{.LightFlag}} --lemostats \'{{.Lemostats}}\' {{if .Bootnodes}}--bootnodes {{.Bootnodes}}{{end}} {{if .Lemoerbase}}--lemoerbase {{.Lemoerbase}} --mine --minerthreads 1{{end}} {{if .Unlock}}--unlock 0 --password /signer.pass --mine{{end}} --targetgaslimit {{.GasTarget}} --gasprice {{.GasPrice}}' >> glemo.sh
 
 ENTRYPOINT ["/bin/sh", "glemo.sh"]
 `
@@ -59,14 +59,14 @@ services:
       - "{{.Port}}:{{.Port}}"
       - "{{.Port}}:{{.Port}}/udp"
     volumes:
-      - {{.Datadir}}:/root/.lemochain{{if .Ethashdir}}
-      - {{.Ethashdir}}:/root/.lemohash{{end}}
+      - {{.Datadir}}:/root/.lemochain{{if .Lemohashdir}}
+      - {{.Lemohashdir}}:/root/.lemohash{{end}}
     environment:
       - PORT={{.Port}}/tcp
       - TOTAL_PEERS={{.TotalPeers}}
       - LIGHT_PEERS={{.LightPeers}}
-      - STATS_NAME={{.Ethstats}}
-      - MINER_NAME={{.Etherbase}}
+      - STATS_NAME={{.Lemostats}}
+      - MINER_NAME={{.Lemoerbase}}
       - GAS_TARGET={{.GasTarget}}
       - GAS_PRICE={{.GasPrice}}
     logging:
@@ -101,8 +101,8 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 		"Peers":     config.peersTotal,
 		"LightFlag": lightFlag,
 		"Bootnodes": strings.Join(bootnodes, ","),
-		"Ethstats":  config.lemostats,
-		"Etherbase": config.lemoerbase,
+		"Lemostats":  config.lemostats,
+		"Lemoerbase": config.lemoerbase,
 		"GasTarget": uint64(1000000 * config.gasTarget),
 		"GasPrice":  uint64(1000000000 * config.gasPrice),
 		"Unlock":    config.keyJSON != "",
@@ -113,14 +113,14 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 	template.Must(template.New("").Parse(nodeComposefile)).Execute(composefile, map[string]interface{}{
 		"Type":       kind,
 		"Datadir":    config.datadir,
-		"Ethashdir":  config.lemohashdir,
+		"Lemohashdir":  config.lemohashdir,
 		"Network":    network,
 		"Port":       config.port,
 		"TotalPeers": config.peersTotal,
 		"Light":      config.peersLight > 0,
 		"LightPeers": config.peersLight,
-		"Ethstats":   config.lemostats[:strings.Index(config.lemostats, ":")],
-		"Etherbase":  config.lemoerbase,
+		"Lemostats":   config.lemostats[:strings.Index(config.lemostats, ":")],
+		"Lemoerbase":  config.lemoerbase,
 		"GasTarget":  config.gasTarget,
 		"GasPrice":   config.gasPrice,
 	})
@@ -171,7 +171,7 @@ func (info *nodeInfos) Report() map[string]string {
 		"Listener port":            strconv.Itoa(info.port),
 		"Peer count (all total)":   strconv.Itoa(info.peersTotal),
 		"Peer count (light nodes)": strconv.Itoa(info.peersLight),
-		"Ethstats username":        info.lemostats,
+		"Lemostats username":        info.lemostats,
 	}
 	if info.gasTarget > 0 {
 		// Miner or signer node
@@ -179,8 +179,8 @@ func (info *nodeInfos) Report() map[string]string {
 		report["Gas price (minimum accepted)"] = fmt.Sprintf("%0.3f GWei", info.gasPrice)
 
 		if info.lemoerbase != "" {
-			// Ethash proof-of-work miner
-			report["Ethash directory"] = info.lemohashdir
+			// Lemohash proof-of-work miner
+			report["Lemohash directory"] = info.lemohashdir
 			report["Miner account"] = info.lemoerbase
 		}
 		if info.keyJSON != "" {

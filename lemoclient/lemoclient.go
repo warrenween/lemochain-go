@@ -296,7 +296,7 @@ func (ec *Client) SyncProgress(ctx context.Context) (*lemochain.SyncProgress, er
 // SubscribeNewHead subscribes to notifications about the current blockchain head
 // on the given channel.
 func (ec *Client) SubscribeNewHead(ctx context.Context, ch chan<- *types.Header) (lemochain.Subscription, error) {
-	return ec.c.EthSubscribe(ctx, ch, "newHeads", map[string]struct{}{})
+	return ec.c.LemoSubscribe(ctx, ch, "newHeads", map[string]struct{}{})
 }
 
 // State Access
@@ -357,7 +357,7 @@ func (ec *Client) FilterLogs(ctx context.Context, q lemochain.FilterQuery) ([]ty
 
 // SubscribeFilterLogs subscribes to the results of a streaming filter query.
 func (ec *Client) SubscribeFilterLogs(ctx context.Context, q lemochain.FilterQuery, ch chan<- types.Log) (lemochain.Subscription, error) {
-	return ec.c.EthSubscribe(ctx, ch, "logs", toFilterArg(q))
+	return ec.c.LemoSubscribe(ctx, ch, "logs", toFilterArg(q))
 }
 
 func toFilterArg(q lemochain.FilterQuery) interface{} {

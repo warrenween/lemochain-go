@@ -58,10 +58,10 @@ services:
     restart: always
 `
 
-// deployEthstats deploys a new lemostats container to a remote machine via SSH,
+// deployLemostats deploys a new lemostats container to a remote machine via SSH,
 // docker and docker-compose. If an instance with the specified network name
 // already exists there, it will be overwritten!
-func deployEthstats(client *sshClient, network string, port int, secret string, vhost string, trusted []string, banned []string, nocache bool) ([]byte, error) {
+func deployLemostats(client *sshClient, network string, port int, secret string, vhost string, trusted []string, banned []string, nocache bool) ([]byte, error) {
 	// Generate the content to upload to the server
 	workdir := fmt.Sprintf("%d", rand.Int63())
 	files := make(map[string][]byte)
@@ -126,9 +126,9 @@ func (info *lemostatsInfos) Report() map[string]string {
 	}
 }
 
-// checkEthstats does a health-check against an lemostats server to verify whlemoer
+// checkLemostats does a health-check against an lemostats server to verify whlemoer
 // it's running, and if yes, gathering a collection of useful infos about it.
-func checkEthstats(client *sshClient, network string) (*lemostatsInfos, error) {
+func checkLemostats(client *sshClient, network string) (*lemostatsInfos, error) {
 	// Inspect a possible lemostats container on the host
 	infos, err := inspectContainer(client, fmt.Sprintf("%s_lemostats_1", network))
 	if err != nil {
@@ -162,7 +162,7 @@ func checkEthstats(client *sshClient, network string) (*lemostatsInfos, error) {
 
 	// Run a sanity check to see if the port is reachable
 	if err = checkPort(host, port); err != nil {
-		log.Warn("Ethstats service seems unreachable", "server", host, "port", port, "err", err)
+		log.Warn("Lemostats service seems unreachable", "server", host, "port", port, "err", err)
 	}
 	// Container available, assemble and return the useful infos
 	return &lemostatsInfos{

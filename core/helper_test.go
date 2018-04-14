@@ -25,7 +25,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/event"
 )
 
-// Implement our EthTest Manager
+// Implement our LemoTest Manager
 type TestManager struct {
 	// stateManager *StateManager
 	eventMux *event.TypeMux

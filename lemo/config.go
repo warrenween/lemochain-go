@@ -36,7 +36,7 @@ import (
 // DefaultConfig contains default settings for use on the Lemochain main net.
 var DefaultConfig = Config{
 	SyncMode: downloader.FastSync,
-	Ethash: lemohash.Config{
+	Lemohash: lemohash.Config{
 		CacheDir:       "lemohash",
 		CachesInMem:    2,
 		CachesOnDisk:   3,
@@ -65,9 +65,9 @@ func init() {
 		}
 	}
 	if runtime.GOOS == "windows" {
-		DefaultConfig.Ethash.DatasetDir = filepath.Join(home, "AppData", "Ethash")
+		DefaultConfig.Lemohash.DatasetDir = filepath.Join(home, "AppData", "Lemohash")
 	} else {
-		DefaultConfig.Ethash.DatasetDir = filepath.Join(home, ".lemohash")
+		DefaultConfig.Lemohash.DatasetDir = filepath.Join(home, ".lemohash")
 	}
 }
 
@@ -95,13 +95,13 @@ type Config struct {
 	TrieTimeout        time.Duration
 
 	// Mining-related options
-	Etherbase    common.Address `toml:",omitempty"`
+	Lemoerbase    common.Address `toml:",omitempty"`
 	MinerThreads int            `toml:",omitempty"`
 	ExtraData    []byte         `toml:",omitempty"`
 	GasPrice     *big.Int
 
-	// Ethash options
-	Ethash lemohash.Config
+	// Lemohash options
+	Lemohash lemohash.Config
 
 	// Transaction pool options
 	TxPool core.TxPoolConfig

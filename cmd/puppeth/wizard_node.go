@@ -67,7 +67,7 @@ func (w *wizard) deployNode(boot bool) {
 		fmt.Printf("Where should data be stored on the remote machine? (default = %s)\n", infos.datadir)
 		infos.datadir = w.readDefaultString(infos.datadir)
 	}
-	if w.conf.Genesis.Config.Ethash != nil && !boot {
+	if w.conf.Genesis.Config.Lemohash != nil && !boot {
 		fmt.Println()
 		if infos.lemohashdir == "" {
 			fmt.Printf("Where should the lemohash mining DAGs be stored on the remote machine?\n")
@@ -103,8 +103,8 @@ func (w *wizard) deployNode(boot bool) {
 	}
 	// If the node is a miner/signer, load up needed credentials
 	if !boot {
-		if w.conf.Genesis.Config.Ethash != nil {
-			// Ethash based miners only need an lemoerbase to mine against
+		if w.conf.Genesis.Config.Lemohash != nil {
+			// Lemohash based miners only need an lemoerbase to mine against
 			fmt.Println()
 			if infos.lemoerbase == "" {
 				fmt.Printf("What address should the miner user?\n")

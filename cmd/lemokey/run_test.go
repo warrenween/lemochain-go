@@ -25,20 +25,20 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/internal/cmdtest"
 )
 
-type testEthkey struct {
+type testLemokey struct {
 	*cmdtest.TestCmd
 }
 
 // spawns lemokey with the given command line args.
-func runEthkey(t *testing.T, args ...string) *testEthkey {
-	tt := new(testEthkey)
+func runLemokey(t *testing.T, args ...string) *testLemokey {
+	tt := new(testLemokey)
 	tt.TestCmd = cmdtest.NewTestCmd(t, tt)
 	tt.Run("lemokey-test", args...)
 	return tt
 }
 
 func TestMain(m *testing.M) {
-	// Run the app if we've been exec'd as "lemokey-test" in runEthkey.
+	// Run the app if we've been exec'd as "lemokey-test" in runLemokey.
 	reexec.Register("lemokey-test", func() {
 		if err := app.Run(os.Args); err != nil {
 			fmt.Fprintln(os.Stderr, err)

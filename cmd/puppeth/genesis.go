@@ -89,12 +89,12 @@ type cppLemochainGenesisSpecLinearPricing struct {
 // chain specification format.
 func newCppLemochainGenesisSpec(network string, genesis *core.Genesis) (*cppLemochainGenesisSpec, error) {
 	// Only lemohash is currently supported between lemochain-go and cpp-lemochain
-	if genesis.Config.Ethash == nil {
+	if genesis.Config.Lemohash == nil {
 		return nil, errors.New("unsupported consensus engine")
 	}
 	// Reconstruct the chain spec in Parity's format
 	spec := &cppLemochainGenesisSpec{
-		SealEngine: "Ethash",
+		SealEngine: "Lemohash",
 	}
 	spec.Params.AccountStartNonce = 0
 	spec.Params.HomesteadForkBlock = (hexutil.Uint64)(genesis.Config.HomesteadBlock.Uint64())
@@ -166,7 +166,7 @@ func newCppLemochainGenesisSpec(network string, genesis *core.Genesis) (*cppLemo
 type parityChainSpec struct {
 	Name   string `json:"name"`
 	Engine struct {
-		Ethash struct {
+		Lemohash struct {
 			Params struct {
 				MinimumDifficulty      *hexutil.Big `json:"minimumDifficulty"`
 				DifficultyBoundDivisor *hexutil.Big `json:"difficultyBoundDivisor"`
@@ -181,7 +181,7 @@ type parityChainSpec struct {
 				EIP100bTransition      uint64       `json:"eip100bTransition"`
 				EIP649Transition       uint64       `json:"eip649Transition"`
 			} `json:"params"`
-		} `json:"Ethash"`
+		} `json:"Lemohash"`
 	} `json:"engine"`
 
 	Params struct {
@@ -260,7 +260,7 @@ type parityChainSpecAltBnPairingPricing struct {
 // chain specification format.
 func newParityChainSpec(network string, genesis *core.Genesis, bootnodes []string) (*parityChainSpec, error) {
 	// Only lemohash is currently supported between lemochain-go and Parity
-	if genesis.Config.Ethash == nil {
+	if genesis.Config.Lemohash == nil {
 		return nil, errors.New("unsupported consensus engine")
 	}
 	// Reconstruct the chain spec in Parity's format
@@ -268,18 +268,18 @@ func newParityChainSpec(network string, genesis *core.Genesis, bootnodes []strin
 		Name:  network,
 		Nodes: bootnodes,
 	}
-	spec.Engine.Ethash.Params.MinimumDifficulty = (*hexutil.Big)(params.MinimumDifficulty)
-	spec.Engine.Ethash.Params.DifficultyBoundDivisor = (*hexutil.Big)(params.DifficultyBoundDivisor)
-	spec.Engine.Ethash.Params.DurationLimit = (*hexutil.Big)(params.DurationLimit)
-	spec.Engine.Ethash.Params.BlockReward = (*hexutil.Big)(lemohash.FrontierBlockReward)
-	spec.Engine.Ethash.Params.HomesteadTransition = genesis.Config.HomesteadBlock.Uint64()
-	spec.Engine.Ethash.Params.EIP150Transition = genesis.Config.EIP150Block.Uint64()
-	spec.Engine.Ethash.Params.EIP160Transition = genesis.Config.EIP155Block.Uint64()
-	spec.Engine.Ethash.Params.EIP161abcTransition = genesis.Config.EIP158Block.Uint64()
-	spec.Engine.Ethash.Params.EIP161dTransition = genesis.Config.EIP158Block.Uint64()
-	spec.Engine.Ethash.Params.EIP649Reward = (*hexutil.Big)(lemohash.ByzantiumBlockReward)
-	spec.Engine.Ethash.Params.EIP100bTransition = genesis.Config.ByzantiumBlock.Uint64()
-	spec.Engine.Ethash.Params.EIP649Transition = genesis.Config.ByzantiumBlock.Uint64()
+	spec.Engine.Lemohash.Params.MinimumDifficulty = (*hexutil.Big)(params.MinimumDifficulty)
+	spec.Engine.Lemohash.Params.DifficultyBoundDivisor = (*hexutil.Big)(params.DifficultyBoundDivisor)
+	spec.Engine.Lemohash.Params.DurationLimit = (*hexutil.Big)(params.DurationLimit)
+	spec.Engine.Lemohash.Params.BlockReward = (*hexutil.Big)(lemohash.FrontierBlockReward)
+	spec.Engine.Lemohash.Params.HomesteadTransition = genesis.Config.HomesteadBlock.Uint64()
+	spec.Engine.Lemohash.Params.EIP150Transition = genesis.Config.EIP150Block.Uint64()
+	spec.Engine.Lemohash.Params.EIP160Transition = genesis.Config.EIP155Block.Uint64()
+	spec.Engine.Lemohash.Params.EIP161abcTransition = genesis.Config.EIP158Block.Uint64()
+	spec.Engine.Lemohash.Params.EIP161dTransition = genesis.Config.EIP158Block.Uint64()
+	spec.Engine.Lemohash.Params.EIP649Reward = (*hexutil.Big)(lemohash.ByzantiumBlockReward)
+	spec.Engine.Lemohash.Params.EIP100bTransition = genesis.Config.ByzantiumBlock.Uint64()
+	spec.Engine.Lemohash.Params.EIP649Transition = genesis.Config.ByzantiumBlock.Uint64()
 
 	spec.Params.MaximumExtraDataSize = (hexutil.Uint64)(params.MaximumExtraDataSize)
 	spec.Params.MinGasLimit = (hexutil.Uint64)(params.MinGasLimit)
@@ -359,7 +359,7 @@ type pyLemochainGenesisSpec struct {
 // chain specification format.
 func newPyLemochainGenesisSpec(network string, genesis *core.Genesis) (*pyLemochainGenesisSpec, error) {
 	// Only lemohash is currently supported between lemochain-go and pylemochain
-	if genesis.Config.Ethash == nil {
+	if genesis.Config.Lemohash == nil {
 		return nil, errors.New("unsupported consensus engine")
 	}
 	spec := &pyLemochainGenesisSpec{

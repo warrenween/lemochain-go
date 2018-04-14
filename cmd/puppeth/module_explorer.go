@@ -43,8 +43,8 @@ RUN \
 ENTRYPOINT ["/bin/sh", "explorer.sh"]
 `
 
-// explorerEthstats is the configuration file for the lemostats javascript client.
-var explorerEthstats = `[
+// explorerLemostats is the configuration file for the lemostats javascript client.
+var explorerLemostats = `[
   {
     "name"              : "node-app",
     "script"            : "app.js",
@@ -85,7 +85,7 @@ services:
       - {{.Datadir}}:/root/.local/share/io.parity.lemochain
     environment:
       - NODE_PORT={{.NodePort}}/tcp
-      - STATS={{.Ethstats}}{{if .VHost}}
+      - STATS={{.Lemostats}}{{if .VHost}}
       - VIRTUAL_HOST={{.VHost}}
       - VIRTUAL_PORT=3000{{end}}
     logging:
@@ -111,7 +111,7 @@ func deployExplorer(client *sshClient, network string, chainspec []byte, config 
 	files[filepath.Join(workdir, "Dockerfile")] = dockerfile.Bytes()
 
 	lemostats := new(bytes.Buffer)
-	template.Must(template.New("").Parse(explorerEthstats)).Execute(lemostats, map[string]interface{}{
+	template.Must(template.New("").Parse(explorerLemostats)).Execute(lemostats, map[string]interface{}{
 		"Port":   config.nodePort,
 		"Name":   config.lemostats[:strings.Index(config.lemostats, ":")],
 		"Secret": config.lemostats[strings.Index(config.lemostats, ":")+1 : strings.Index(config.lemostats, "@")],
@@ -126,7 +126,7 @@ func deployExplorer(client *sshClient, network string, chainspec []byte, config 
 		"NodePort": config.nodePort,
 		"VHost":    config.webHost,
 		"WebPort":  config.webPort,
-		"Ethstats": config.lemostats[:strings.Index(config.lemostats, ":")],
+		"Lemostats": config.lemostats[:strings.Index(config.lemostats, ":")],
 	})
 	files[filepath.Join(workdir, "docker-compose.yaml")] = composefile.Bytes()
 
@@ -161,7 +161,7 @@ func (info *explorerInfos) Report() map[string]string {
 	report := map[string]string{
 		"Data directory":         info.datadir,
 		"Node listener port ":    strconv.Itoa(info.nodePort),
-		"Ethstats username":      info.lemostats,
+		"Lemostats username":      info.lemostats,
 		"Website address ":       info.webHost,
 		"Website listener port ": strconv.Itoa(info.webPort),
 	}

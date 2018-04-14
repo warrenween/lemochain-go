@@ -76,7 +76,7 @@ var AppHelpFlagGroups = []flagGroup{
 			utils.RinkebyFlag,
 			utils.SyncModeFlag,
 			utils.GCModeFlag,
-			utils.EthStatsURLFlag,
+			utils.LemoStatsURLFlag,
 			utils.IdentityFlag,
 			utils.LightServFlag,
 			utils.LightPeersFlag,
@@ -92,12 +92,12 @@ var AppHelpFlagGroups = []flagGroup{
 	{
 		Name: "ETHASH",
 		Flags: []cli.Flag{
-			utils.EthashCacheDirFlag,
-			utils.EthashCachesInMemoryFlag,
-			utils.EthashCachesOnDiskFlag,
-			utils.EthashDatasetDirFlag,
-			utils.EthashDatasetsInMemoryFlag,
-			utils.EthashDatasetsOnDiskFlag,
+			utils.LemohashCacheDirFlag,
+			utils.LemohashCachesInMemoryFlag,
+			utils.LemohashCachesOnDiskFlag,
+			utils.LemohashDatasetDirFlag,
+			utils.LemohashDatasetsInMemoryFlag,
+			utils.LemohashDatasetsOnDiskFlag,
 		},
 	},
 	//{
@@ -184,7 +184,7 @@ var AppHelpFlagGroups = []flagGroup{
 		Flags: []cli.Flag{
 			utils.MiningEnabledFlag,
 			utils.MinerThreadsFlag,
-			utils.EtherbaseFlag,
+			utils.LemoerbaseFlag,
 			utils.TargetGasLimitFlag,
 			utils.GasPriceFlag,
 			utils.ExtraDataFlag,

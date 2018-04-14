@@ -35,7 +35,7 @@ func (w *wizard) deployExplorer() {
 		log.Error("No lemostats server configured")
 		return
 	}
-	if w.conf.Genesis.Config.Ethash == nil {
+	if w.conf.Genesis.Config.Lemohash == nil {
 		log.Error("Only lemohash network supported")
 		return
 	}

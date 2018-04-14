@@ -104,7 +104,7 @@ func (w *wizard) gatherStats(server string, pubkey []byte, client *sshClient) *s
 		stat.services["nginx"] = infos.Report()
 	}
 	logger.Debug("Checking for lemostats availability")
-	if infos, err := checkEthstats(client, w.network); err != nil {
+	if infos, err := checkLemostats(client, w.network); err != nil {
 		if err != ErrServiceUnknown {
 			stat.services["lemostats"] = map[string]string{"offline": err.Error()}
 		}

@@ -59,7 +59,7 @@ func TestConsoleWelcome(t *testing.T) {
 Welcome to the Glemo JavaScript console!
 
 instance: Glemo/v{{glemover}}/{{goos}}-{{goarch}}/{{gover}}
-coinbase: {{.Etherbase}}
+coinbase: {{.Lemoerbase}}
 at block: 0 ({{niltime}})
  datadir: {{.Datadir}}
  modules: {{apis}}
@@ -134,7 +134,7 @@ func testAttachWelcome(t *testing.T, glemo *testglemo, endpoint, apis string) {
 	attach.SetTemplateFunc("goarch", func() string { return runtime.GOARCH })
 	attach.SetTemplateFunc("gover", runtime.Version)
 	attach.SetTemplateFunc("glemover", func() string { return params.Version })
-	attach.SetTemplateFunc("lemoerbase", func() string { return glemo.Etherbase })
+	attach.SetTemplateFunc("lemoerbase", func() string { return glemo.Lemoerbase })
 	attach.SetTemplateFunc("niltime", func() string { return time.Unix(0, 0).Format(time.RFC1123) })
 	attach.SetTemplateFunc("ipc", func() bool { return strings.HasPrefix(endpoint, "ipc") })
 	attach.SetTemplateFunc("datadir", func() string { return glemo.Datadir })

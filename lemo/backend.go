@@ -82,7 +82,7 @@ type Lemochain struct {
 	bloomRequests chan chan *bloombits.Retrieval // Channel receiving bloom data retrieval requests
 	bloomIndexer  *core.ChainIndexer             // Bloom indexer operating during block imports
 
-	ApiBackend *EthApiBackend
+	ApiBackend *LemoApiBackend
 
 	miner     *miner.Miner
 	gasPrice  *big.Int
@@ -125,12 +125,12 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 		chainConfig:    chainConfig,
 		eventMux:       ctx.EventMux,
 		accountManager: ctx.AccountManager,
-		engine:         CreateConsensusEngine(ctx, &config.Ethash, chainConfig, chainDb),
+		engine:         CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb),
 		shutdownChan:   make(chan bool),
 		stopDbUpgrade:  stopDbUpgrade,
 		networkId:      config.NetworkId,
 		gasPrice:       config.GasPrice,
-		lemoerbase:      config.Etherbase,
+		lemoerbase:      config.Lemoerbase,
 		bloomRequests:  make(chan chan *bloombits.Retrieval),
 		bloomIndexer:   NewBloomIndexer(chainDb, params.BloomBitsBlocks),
 	}
@@ -171,7 +171,7 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 	lemo.miner = miner.New(lemo, lemo.chainConfig, lemo.EventMux(), lemo.engine)
 	lemo.miner.SetExtra(makeExtraData(config.ExtraData))
 
-	lemo.ApiBackend = &EthApiBackend{lemo, nil}
+	lemo.ApiBackend = &LemoApiBackend{lemo, nil}
 	gpoParams := config.GPO
 	if gpoParams.Default == nil {
 		gpoParams.Default = config.GasPrice
@@ -219,13 +219,13 @@ func CreateConsensusEngine(ctx *node.ServiceContext, config *lemohash.Config, ch
 	// Otherwise assume proof-of-work
 	switch {
 	case config.PowMode == lemohash.ModeFake:
-		log.Warn("Ethash used in fake mode")
+		log.Warn("Lemohash used in fake mode")
 		return lemohash.NewFaker()
 	case config.PowMode == lemohash.ModeTest:
-		log.Warn("Ethash used in test mode")
+		log.Warn("Lemohash used in test mode")
 		return lemohash.NewTester()
 	case config.PowMode == lemohash.ModeShared:
-		log.Warn("Ethash used in shared mode")
+		log.Warn("Lemohash used in shared mode")
 		return lemohash.NewShared()
 	default:
 		engine := lemohash.New(lemohash.Config{
@@ -302,7 +302,7 @@ func (s *Lemochain) ResetWithGenesisBlock(gb *types.Block) {
 	s.blockchain.ResetWithGenesisBlock(gb)
 }
 
-func (s *Lemochain) Etherbase() (eb common.Address, err error) {
+func (s *Lemochain) Lemoerbase() (eb common.Address, err error) {
 	s.lock.RLock()
 	lemoerbase := s.lemoerbase
 	s.lock.RUnlock()
@@ -318,7 +318,7 @@ func (s *Lemochain) Etherbase() (eb common.Address, err error) {
 			s.lemoerbase = lemoerbase
 			s.lock.Unlock()
 
-			log.Info("Etherbase automatically configured", "address", lemoerbase)
+			log.Info("Lemoerbase automatically configured", "address", lemoerbase)
 			return lemoerbase, nil
 		}
 	}
@@ -326,16 +326,16 @@ func (s *Lemochain) Etherbase() (eb common.Address, err error) {
 }
 
 // set in js console via admin interface or wrapper from cli flags
-func (self *Lemochain) SetEtherbase(lemoerbase common.Address) {
+func (self *Lemochain) SetLemoerbase(lemoerbase common.Address) {
 	self.lock.Lock()
 	self.lemoerbase = lemoerbase
 	self.lock.Unlock()
 
-	self.miner.SetEtherbase(lemoerbase)
+	self.miner.SetLemoerbase(lemoerbase)
 }
 
 func (s *Lemochain) StartMining(local bool) error {
-	eb, err := s.Etherbase()
+	eb, err := s.Lemoerbase()
 	if err != nil {
 		log.Error("Cannot start mining without lemoerbase", "err", err)
 		return fmt.Errorf("lemoerbase missing: %v", err)
@@ -343,7 +343,7 @@ func (s *Lemochain) StartMining(local bool) error {
 	if clique, ok := s.engine.(*clique.Clique); ok {
 		wallet, err := s.accountManager.Find(accounts.Account{Address: eb})
 		if wallet == nil || err != nil {
-			log.Error("Etherbase account unavailable locally", "err", err)
+			log.Error("Lemoerbase account unavailable locally", "err", err)
 			return fmt.Errorf("signer missing: %v", err)
 		}
 		clique.Authorize(eb, wallet.SignHash)
@@ -370,7 +370,7 @@ func (s *Lemochain) EventMux() *event.TypeMux           { return s.eventMux }
 func (s *Lemochain) Engine() consensus.Engine           { return s.engine }
 func (s *Lemochain) ChainDb() lemodb.Database            { return s.chainDb }
 func (s *Lemochain) IsListening() bool                  { return true } // Always listening
-func (s *Lemochain) EthVersion() int                    { return int(s.protocolManager.SubProtocols[0].Version) }
+func (s *Lemochain) LemoVersion() int                    { return int(s.protocolManager.SubProtocols[0].Version) }
 func (s *Lemochain) NetVersion() uint64                 { return s.networkId }
 func (s *Lemochain) Downloader() *downloader.Downloader { return s.protocolManager.downloader }
 

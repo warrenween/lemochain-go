@@ -36,26 +36,26 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 )
 
-// EthApiBackend implements lemoapi.Backend for full nodes
-type EthApiBackend struct {
+// LemoApiBackend implements lemoapi.Backend for full nodes
+type LemoApiBackend struct {
 	lemo *Lemochain
 	gpo *gasprice.Oracle
 }
 
-func (b *EthApiBackend) ChainConfig() *params.ChainConfig {
+func (b *LemoApiBackend) ChainConfig() *params.ChainConfig {
 	return b.lemo.chainConfig
 }
 
-func (b *EthApiBackend) CurrentBlock() *types.Block {
+func (b *LemoApiBackend) CurrentBlock() *types.Block {
 	return b.lemo.blockchain.CurrentBlock()
 }
 
-func (b *EthApiBackend) SetHead(number uint64) {
+func (b *LemoApiBackend) SetHead(number uint64) {
 	b.lemo.protocolManager.downloader.Cancel()
 	b.lemo.blockchain.SetHead(number)
 }
 
-func (b *EthApiBackend) HeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Header, error) {
+func (b *LemoApiBackend) HeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Header, error) {
 	// Pending block is only known by the miner
 	if blockNr == rpc.PendingBlockNumber {
 		block := b.lemo.miner.PendingBlock()
@@ -68,7 +68,7 @@ func (b *EthApiBackend) HeaderByNumber(ctx context.Context, blockNr rpc.BlockNum
 	return b.lemo.blockchain.GetHeaderByNumber(uint64(blockNr)), nil
 }
 
-func (b *EthApiBackend) BlockByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Block, error) {
+func (b *LemoApiBackend) BlockByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*types.Block, error) {
 	// Pending block is only known by the miner
 	if blockNr == rpc.PendingBlockNumber {
 		block := b.lemo.miner.PendingBlock()
@@ -81,7 +81,7 @@ func (b *EthApiBackend) BlockByNumber(ctx context.Context, blockNr rpc.BlockNumb
 	return b.lemo.blockchain.GetBlockByNumber(uint64(blockNr)), nil
 }
 
-func (b *EthApiBackend) StateAndHeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*state.StateDB, *types.Header, error) {
+func (b *LemoApiBackend) StateAndHeaderByNumber(ctx context.Context, blockNr rpc.BlockNumber) (*state.StateDB, *types.Header, error) {
 	// Pending state is only known by the miner
 	if blockNr == rpc.PendingBlockNumber {
 		block, state := b.lemo.miner.Pending()
@@ -96,15 +96,15 @@ func (b *EthApiBackend) StateAndHeaderByNumber(ctx context.Context, blockNr rpc.
 	return stateDb, header, err
 }
 
-func (b *EthApiBackend) GetBlock(ctx context.Context, blockHash common.Hash) (*types.Block, error) {
+func (b *LemoApiBackend) GetBlock(ctx context.Context, blockHash common.Hash) (*types.Block, error) {
 	return b.lemo.blockchain.GetBlockByHash(blockHash), nil
 }
 
-func (b *EthApiBackend) GetReceipts(ctx context.Context, blockHash common.Hash) (types.Receipts, error) {
+func (b *LemoApiBackend) GetReceipts(ctx context.Context, blockHash common.Hash) (types.Receipts, error) {
 	return core.GetBlockReceipts(b.lemo.chainDb, blockHash, core.GetBlockNumber(b.lemo.chainDb, blockHash)), nil
 }
 
-func (b *EthApiBackend) GetLogs(ctx context.Context, blockHash common.Hash) ([][]*types.Log, error) {
+func (b *LemoApiBackend) GetLogs(ctx context.Context, blockHash common.Hash) ([][]*types.Log, error) {
 	receipts := core.GetBlockReceipts(b.lemo.chainDb, blockHash, core.GetBlockNumber(b.lemo.chainDb, blockHash))
 	if receipts == nil {
 		return nil, nil
@@ -116,11 +116,11 @@ func (b *EthApiBackend) GetLogs(ctx context.Context, blockHash common.Hash) ([][
 	return logs, nil
 }
 
-func (b *EthApiBackend) GetTd(blockHash common.Hash) *big.Int {
+func (b *LemoApiBackend) GetTd(blockHash common.Hash) *big.Int {
 	return b.lemo.blockchain.GetTdByHash(blockHash)
 }
 
-func (b *EthApiBackend) GetEVM(ctx context.Context, msg core.Message, state *state.StateDB, header *types.Header, vmCfg vm.Config) (*vm.EVM, func() error, error) {
+func (b *LemoApiBackend) GetEVM(ctx context.Context, msg core.Message, state *state.StateDB, header *types.Header, vmCfg vm.Config) (*vm.EVM, func() error, error) {
 	state.SetBalance(msg.From(), math.MaxBig256)
 	vmError := func() error { return nil }
 
@@ -128,31 +128,31 @@ func (b *EthApiBackend) GetEVM(ctx context.Context, msg core.Message, state *sta
 	return vm.NewEVM(context, state, b.lemo.chainConfig, vmCfg), vmError, nil
 }
 
-func (b *EthApiBackend) SubscribeRemovedLogsEvent(ch chan<- core.RemovedLogsEvent) event.Subscription {
+func (b *LemoApiBackend) SubscribeRemovedLogsEvent(ch chan<- core.RemovedLogsEvent) event.Subscription {
 	return b.lemo.BlockChain().SubscribeRemovedLogsEvent(ch)
 }
 
-func (b *EthApiBackend) SubscribeChainEvent(ch chan<- core.ChainEvent) event.Subscription {
+func (b *LemoApiBackend) SubscribeChainEvent(ch chan<- core.ChainEvent) event.Subscription {
 	return b.lemo.BlockChain().SubscribeChainEvent(ch)
 }
 
-func (b *EthApiBackend) SubscribeChainHeadEvent(ch chan<- core.ChainHeadEvent) event.Subscription {
+func (b *LemoApiBackend) SubscribeChainHeadEvent(ch chan<- core.ChainHeadEvent) event.Subscription {
 	return b.lemo.BlockChain().SubscribeChainHeadEvent(ch)
 }
 
-func (b *EthApiBackend) SubscribeChainSideEvent(ch chan<- core.ChainSideEvent) event.Subscription {
+func (b *LemoApiBackend) SubscribeChainSideEvent(ch chan<- core.ChainSideEvent) event.Subscription {
 	return b.lemo.BlockChain().SubscribeChainSideEvent(ch)
 }
 
-func (b *EthApiBackend) SubscribeLogsEvent(ch chan<- []*types.Log) event.Subscription {
+func (b *LemoApiBackend) SubscribeLogsEvent(ch chan<- []*types.Log) event.Subscription {
 	return b.lemo.BlockChain().SubscribeLogsEvent(ch)
 }
 
-func (b *EthApiBackend) SendTx(ctx context.Context, signedTx *types.Transaction) error {
+func (b *LemoApiBackend) SendTx(ctx context.Context, signedTx *types.Transaction) error {
 	return b.lemo.txPool.AddLocal(signedTx)
 }
 
-func (b *EthApiBackend) GetPoolTransactions() (types.Transactions, error) {
+func (b *LemoApiBackend) GetPoolTransactions() (types.Transactions, error) {
 	pending, err := b.lemo.txPool.Pending()
 	if err != nil {
 		return nil, err
@@ -164,56 +164,56 @@ func (b *EthApiBackend) GetPoolTransactions() (types.Transactions, error) {
 	return txs, nil
 }
 
-func (b *EthApiBackend) GetPoolTransaction(hash common.Hash) *types.Transaction {
+func (b *LemoApiBackend) GetPoolTransaction(hash common.Hash) *types.Transaction {
 	return b.lemo.txPool.Get(hash)
 }
 
-func (b *EthApiBackend) GetPoolNonce(ctx context.Context, addr common.Address) (uint64, error) {
+func (b *LemoApiBackend) GetPoolNonce(ctx context.Context, addr common.Address) (uint64, error) {
 	return b.lemo.txPool.State().GetNonce(addr), nil
 }
 
-func (b *EthApiBackend) Stats() (pending int, queued int) {
+func (b *LemoApiBackend) Stats() (pending int, queued int) {
 	return b.lemo.txPool.Stats()
 }
 
-func (b *EthApiBackend) TxPoolContent() (map[common.Address]types.Transactions, map[common.Address]types.Transactions) {
+func (b *LemoApiBackend) TxPoolContent() (map[common.Address]types.Transactions, map[common.Address]types.Transactions) {
 	return b.lemo.TxPool().Content()
 }
 
-func (b *EthApiBackend) SubscribeTxPreEvent(ch chan<- core.TxPreEvent) event.Subscription {
+func (b *LemoApiBackend) SubscribeTxPreEvent(ch chan<- core.TxPreEvent) event.Subscription {
 	return b.lemo.TxPool().SubscribeTxPreEvent(ch)
 }
 
-func (b *EthApiBackend) Downloader() *downloader.Downloader {
+func (b *LemoApiBackend) Downloader() *downloader.Downloader {
 	return b.lemo.Downloader()
 }
 
-func (b *EthApiBackend) ProtocolVersion() int {
-	return b.lemo.EthVersion()
+func (b *LemoApiBackend) ProtocolVersion() int {
+	return b.lemo.LemoVersion()
 }
 
-func (b *EthApiBackend) SuggestPrice(ctx context.Context) (*big.Int, error) {
+func (b *LemoApiBackend) SuggestPrice(ctx context.Context) (*big.Int, error) {
 	return b.gpo.SuggestPrice(ctx)
 }
 
-func (b *EthApiBackend) ChainDb() lemodb.Database {
+func (b *LemoApiBackend) ChainDb() lemodb.Database {
 	return b.lemo.ChainDb()
 }
 
-func (b *EthApiBackend) EventMux() *event.TypeMux {
+func (b *LemoApiBackend) EventMux() *event.TypeMux {
 	return b.lemo.EventMux()
 }
 
-func (b *EthApiBackend) AccountManager() *accounts.Manager {
+func (b *LemoApiBackend) AccountManager() *accounts.Manager {
 	return b.lemo.AccountManager()
 }
 
-func (b *EthApiBackend) BloomStatus() (uint64, uint64) {
+func (b *LemoApiBackend) BloomStatus() (uint64, uint64) {
 	sections, _, _ := b.lemo.bloomIndexer.Sections()
 	return params.BloomBitsBlocks, sections
 }
 
-func (b *EthApiBackend) ServiceFilter(ctx context.Context, session *bloombits.MatcherSession) {
+func (b *LemoApiBackend) ServiceFilter(ctx context.Context, session *bloombits.MatcherSession) {
 	for i := 0; i < bloomFilterThreads; i++ {
 		go session.Multiplex(bloomRetrievalBatch, bloomRetrievalWait, b.lemo.bloomRequests)
 	}

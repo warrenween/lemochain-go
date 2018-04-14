@@ -15,7 +15,7 @@
             "program": "${fileDirname}",
             "env": {},
             //"args": [ "init","genesis.json", "--datadir", "data" ],
-            "args": [ "--datadir", "data", "--mine", "--minerthreads=1","--etherbase=0x0000000000000000000000000000000000000000" ],
+            "args": [ "--datadir", "data", "--mine", "--minerthreads", "1", "lemoerbase", "0x0000000000000000000000000000000000000000" ],
             "showLog": true
         }
     ]

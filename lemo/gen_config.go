@@ -25,11 +25,11 @@ func (c Config) MarshalTOML() (interface{}, error) {
 		SkipBcVersionCheck      bool `toml:"-"`
 		DatabaseHandles         int  `toml:"-"`
 		DatabaseCache           int
-		Etherbase               common.Address `toml:",omitempty"`
+		Lemoerbase               common.Address `toml:",omitempty"`
 		MinerThreads            int            `toml:",omitempty"`
 		ExtraData               hexutil.Bytes  `toml:",omitempty"`
 		GasPrice                *big.Int
-		Ethash                  lemohash.Config
+		Lemohash                  lemohash.Config
 		TxPool                  core.TxPoolConfig
 		GPO                     gasprice.Config
 		EnablePreimageRecording bool
@@ -44,11 +44,11 @@ func (c Config) MarshalTOML() (interface{}, error) {
 	enc.SkipBcVersionCheck = c.SkipBcVersionCheck
 	enc.DatabaseHandles = c.DatabaseHandles
 	enc.DatabaseCache = c.DatabaseCache
-	enc.Etherbase = c.Etherbase
+	enc.Lemoerbase = c.Lemoerbase
 	enc.MinerThreads = c.MinerThreads
 	enc.ExtraData = c.ExtraData
 	enc.GasPrice = c.GasPrice
-	enc.Ethash = c.Ethash
+	enc.Lemohash = c.Lemohash
 	enc.TxPool = c.TxPool
 	enc.GPO = c.GPO
 	enc.EnablePreimageRecording = c.EnablePreimageRecording
@@ -66,11 +66,11 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 		SkipBcVersionCheck      *bool `toml:"-"`
 		DatabaseHandles         *int  `toml:"-"`
 		DatabaseCache           *int
-		Etherbase               *common.Address `toml:",omitempty"`
+		Lemoerbase               *common.Address `toml:",omitempty"`
 		MinerThreads            *int            `toml:",omitempty"`
 		ExtraData               *hexutil.Bytes  `toml:",omitempty"`
 		GasPrice                *big.Int
-		Ethash                  *lemohash.Config
+		Lemohash                  *lemohash.Config
 		TxPool                  *core.TxPoolConfig
 		GPO                     *gasprice.Config
 		EnablePreimageRecording *bool
@@ -104,8 +104,8 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 	if dec.DatabaseCache != nil {
 		c.DatabaseCache = *dec.DatabaseCache
 	}
-	if dec.Etherbase != nil {
-		c.Etherbase = *dec.Etherbase
+	if dec.Lemoerbase != nil {
+		c.Lemoerbase = *dec.Lemoerbase
 	}
 	if dec.MinerThreads != nil {
 		c.MinerThreads = *dec.MinerThreads
@@ -116,8 +116,8 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 	if dec.GasPrice != nil {
 		c.GasPrice = dec.GasPrice
 	}
-	if dec.Ethash != nil {
-		c.Ethash = *dec.Ethash
+	if dec.Lemohash != nil {
+		c.Lemohash = *dec.Lemohash
 	}
 	if dec.TxPool != nil {
 		c.TxPool = *dec.TxPool
