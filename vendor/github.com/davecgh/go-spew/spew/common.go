@@ -77,10 +77,10 @@ func catchPanic(w io.Writer, v reflect.Value) {
 	}
 }
 
-// handleMethods attempts to call the Error and String mlemoods on the underlying
+// handleMethods attempts to call the Error and String methods on the underlying
 // type the passed reflect.Value represents and outputes the result to Writer w.
 //
-// It handles panics in any called mlemoods by catching and displaying the error
+// It handles panics in any called methods by catching and displaying the error
 // as the formatted value.
 func handleMethods(cs *ConfigState, w io.Writer, v reflect.Value) (handled bool) {
 	// We need an interface to check if the type implements the error or
@@ -97,12 +97,12 @@ func handleMethods(cs *ConfigState, w io.Writer, v reflect.Value) (handled bool)
 		v = unsafeReflectValue(v)
 	}
 
-	// Choose whlemoer or not to do error and Stringer interface lookups against
+	// Choose whether or not to do error and Stringer interface lookups against
 	// the base type or a pointer to the base type depending on settings.
-	// Technically calling one of these mlemoods with a pointer receiver can
+	// Technically calling one of these methods with a pointer receiver can
 	// mutate the value, however, types which choose to satisify an error or
 	// Stringer interface with a pointer receiver should not be mutating their
-	// state inside these interface mlemoods.
+	// state inside these interface methods.
 	if !cs.DisablePointerMethods && !UnsafeDisabled && !v.CanAddr() {
 		v = unsafeReflectValue(v)
 	}
@@ -250,8 +250,8 @@ func newValuesSorter(values []reflect.Value, cs *ConfigState) sort.Interface {
 	return vs
 }
 
-// canSortSimply tests whlemoer a reflect.Kind is a primitive that can be sorted
-// directly, or whlemoer it should be considered for sorting by surrogate keys
+// canSortSimply tests whether a reflect.Kind is a primitive that can be sorted
+// directly, or whether it should be considered for sorting by surrogate keys
 // (if the ConfigState allows it).
 func canSortSimply(kind reflect.Kind) bool {
 	// This switch parallels valueSortLess, except for the default case.
@@ -289,7 +289,7 @@ func (s *valuesSorter) Swap(i, j int) {
 	}
 }
 
-// valueSortLess returns whlemoer the first value should sort before the second
+// valueSortLess returns whether the first value should sort before the second
 // value.  It is used by valueSorter.Less as part of the sort.Interface
 // implementation.
 func valueSortLess(a, b reflect.Value) bool {
@@ -321,7 +321,7 @@ func valueSortLess(a, b reflect.Value) bool {
 	return a.String() < b.String()
 }
 
-// Less returns whlemoer the value at index i should sort before the
+// Less returns whether the value at index i should sort before the
 // value at index j.  It is part of the sort.Interface implementation.
 func (s *valuesSorter) Less(i, j int) bool {
 	if s.strings == nil {

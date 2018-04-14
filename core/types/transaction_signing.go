@@ -67,7 +67,7 @@ func SignTx(tx *Transaction, s Signer, prv *ecdsa.PrivateKey) (*Transaction, err
 // signature.
 //
 // Sender may cache the address, allowing it to be used regardless of
-// signing mlemood. The cache is invalidated if the cached signer does
+// signing method. The cache is invalidated if the cached signer does
 // not match the signer used in the current call.
 func Sender(signer Signer, tx *Transaction) (common.Address, error) {
 	if sc := tx.from.Load(); sc != nil {

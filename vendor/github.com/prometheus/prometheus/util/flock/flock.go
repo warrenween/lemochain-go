@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 )
 
-// Releaser provides the Release mlemood to release a file lock.
+// Releaser provides the Release method to release a file lock.
 type Releaser interface {
 	Release() error
 }

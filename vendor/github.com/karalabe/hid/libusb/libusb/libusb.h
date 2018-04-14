@@ -1674,7 +1674,7 @@ static inline void libusb_set_iso_packet_lengths(
  * This is a thorough function which loops through all preceding packets,
  * accumulating their lengths to find the position of the specified packet.
  * Typically you will assign equal lengths to each packet in the transfer,
- * and hence the above mlemood is sub-optimal. You may wish to use
+ * and hence the above method is sub-optimal. You may wish to use
  * libusb_get_iso_packet_buffer_simple() instead.
  *
  * \param transfer a transfer
@@ -1936,7 +1936,7 @@ typedef enum {
  * \param device         libusb_device this event occurred on
  * \param event          event that occurred
  * \param user_data      user data provided when this callback was registered
- * \returns bool whlemoer this callback is finished processing events.
+ * \returns bool whether this callback is finished processing events.
  *                       returning 1 will cause this callback to be deregistered
  */
 typedef int (LIBUSB_CALL *libusb_hotplug_callback_fn)(libusb_context *ctx,

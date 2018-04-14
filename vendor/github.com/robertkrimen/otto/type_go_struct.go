@@ -42,8 +42,8 @@ func (self _goStructObject) getValue(name string) reflect.Value {
 			return field
 		}
 
-		if mlemood := self.value.MethodByName(name); (mlemood != reflect.Value{}) {
-			return mlemood
+		if method := self.value.MethodByName(name); (method != reflect.Value{}) {
+			return method
 		}
 	}
 
@@ -54,7 +54,7 @@ func (self _goStructObject) field(name string) (reflect.StructField, bool) {
 	return reflect.Indirect(self.value).Type().FieldByName(name)
 }
 
-func (self _goStructObject) mlemood(name string) (reflect.Method, bool) {
+func (self _goStructObject) method(name string) (reflect.Method, bool) {
 	return reflect.Indirect(self.value).Type().MethodByName(name)
 }
 
@@ -103,7 +103,7 @@ func goStructEnumerate(self *_object, all bool, each func(string) bool) {
 		}
 	}
 
-	// Enumerate mlemoods
+	// Enumerate methods
 	for index := 0; index < object.value.NumMethod(); index++ {
 		name := object.value.Type().Method(index).Name
 		if validGoStructName(name) {

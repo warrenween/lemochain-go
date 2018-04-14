@@ -56,7 +56,7 @@ var (
 	dumpMagic = []uint32{0xbaddcafe, 0xfee1dead}
 )
 
-// isLittleEndian returns whlemoer the local system is running in little or big
+// isLittleEndian returns whether the local system is running in little or big
 // endian byte order.
 func isLittleEndian() bool {
 	n := uint32(0x01020304)
@@ -538,7 +538,7 @@ func (lemohash *Lemohash) Threads() int {
 }
 
 // SetThreads updates the number of mining threads currently enabled. Calling
-// this mlemood does not start mining, only sets the thread count. If zero is
+// this method does not start mining, only sets the thread count. If zero is
 // specified, the miner will use all cores of the machine. Setting a thread
 // count below zero is allowed and will cause the miner to idle, without any
 // work being done.

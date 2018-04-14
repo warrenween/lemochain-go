@@ -218,7 +218,7 @@ func (ks *KeyStore) updater() {
 	}
 }
 
-// HasAddress reports whlemoer a key with the given address is present.
+// HasAddress reports whether a key with the given address is present.
 func (ks *KeyStore) HasAddress(addr common.Address) bool {
 	return ks.cache.hasAddress(addr)
 }

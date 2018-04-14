@@ -12,7 +12,7 @@ import (
 	"io"
 )
 
-// A Buffer is a variable-sized buffer of bytes with Read and Write mlemoods.
+// A Buffer is a variable-sized buffer of bytes with Read and Write methods.
 // The zero value for Buffer is an empty buffer ready to use.
 type Buffer struct {
 	buf       []byte   // contents are the bytes buf[off : len(buf)]
@@ -23,7 +23,7 @@ type Buffer struct {
 // Bytes returns a slice of the contents of the unread portion of the buffer;
 // len(b.Bytes()) == b.Len().  If the caller changes the contents of the
 // returned slice, the contents of the buffer will change provided there
-// are no intervening mlemood calls on the Buffer.
+// are no intervening method calls on the Buffer.
 func (b *Buffer) Bytes() []byte { return b.buf[b.off:] }
 
 // String returns the contents of the unread portion of the buffer
@@ -191,7 +191,7 @@ func (b *Buffer) WriteTo(w io.Writer) (n int64, err error) {
 			return n, e
 		}
 		// all bytes should have been written, by definition of
-		// Write mlemood in io.Writer
+		// Write method in io.Writer
 		if m != nBytes {
 			return n, io.ErrShortWrite
 		}
@@ -232,7 +232,7 @@ func (b *Buffer) Read(p []byte) (n int, err error) {
 // Next returns a slice containing the next n bytes from the buffer,
 // advancing the buffer as if the bytes had been returned by Read.
 // If there are fewer than n bytes in the buffer, Next returns the entire buffer.
-// The slice is only valid until the next call to a read or write mlemood.
+// The slice is only valid until the next call to a read or write method.
 func (b *Buffer) Next(n int) []byte {
 	m := b.Len()
 	if n > m {

@@ -140,7 +140,7 @@ void duk_console_init(duk_context *ctx, duk_uint_t flags) {
 
 	duk_put_global_string(ctx, "console");
 
-	/* Proxy wrapping: ensures any undefined console mlemood calls are
+	/* Proxy wrapping: ensures any undefined console method calls are
 	 * ignored silently.  This is required specifically by the
 	 * DeveloperToolsWG proposal (and is implemented also by Firefox:
 	 * https://bugzilla.mozilla.org/show_bug.cgi?id=629607).

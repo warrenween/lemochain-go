@@ -82,7 +82,7 @@ func (ow *outputWriter) WriteCallSuccess(label string, c *C) {
 }
 
 func renderCallHeader(label string, c *C, prefix, suffix string) string {
-	pc := c.mlemood.PC()
+	pc := c.method.PC()
 	return fmt.Sprintf("%s%s: %s: %s%s", prefix, label, niceFuncPath(pc),
 		niceFuncName(pc), suffix)
 }

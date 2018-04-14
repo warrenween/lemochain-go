@@ -179,8 +179,8 @@ func (s *Share) updateQuota(headers http.Header) {
 	}
 }
 
-// URL gets the canonical URL to this share. This mlemood does not create a publicly accessible
-// URL if the share is private and this mlemood does not check if the share exists.
+// URL gets the canonical URL to this share. This method does not create a publicly accessible
+// URL if the share is private and this method does not check if the share exists.
 func (s *Share) URL() string {
 	return s.fsc.client.getEndpoint(fileServiceName, s.buildPath(), url.Values{})
 }

@@ -16,14 +16,14 @@ var (
 	ErrHasReleaser = errors.New("leveldb: releaser already defined")
 )
 
-// Releaser is the interface that wraps the basic Release mlemood.
+// Releaser is the interface that wraps the basic Release method.
 type Releaser interface {
 	// Release releases associated resources. Release should always success
 	// and can be called multiple times without causing error.
 	Release()
 }
 
-// ReleaseSetter is the interface that wraps the basic SetReleaser mlemood.
+// ReleaseSetter is the interface that wraps the basic SetReleaser method.
 type ReleaseSetter interface {
 	// SetReleaser associates the given releaser to the resources. The
 	// releaser will be called once coresponding resources released.
@@ -41,7 +41,7 @@ type BasicReleaser struct {
 	released bool
 }
 
-// Released returns whlemoer Release mlemood already called.
+// Released returns whether Release method already called.
 func (r *BasicReleaser) Released() bool {
 	return r.released
 }

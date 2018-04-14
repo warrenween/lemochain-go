@@ -20,7 +20,7 @@
 	// callstack is the current recursive call stack of the EVM execution.
 	callstack: [{}],
 
-	// descended tracks whlemoer we've just descended from an outer transaction into
+	// descended tracks whether we've just descended from an outer transaction into
 	// an inner call.
 	descended: false,
 
@@ -64,7 +64,7 @@
 			this.callstack[left-1].calls.push({type: op});
 			return
 		}
-		// If a new mlemood invocation is being done, add to the call stack
+		// If a new method invocation is being done, add to the call stack
 		if (syscall && (op == 'CALL' || op == 'CALLCODE' || op == 'DELEGATECALL' || op == 'STATICCALL')) {
 			// Skip any pre-compile invocations, those are just fancy opcodes
 			var to = toAddress(log.stack.peek(1).toString(16));

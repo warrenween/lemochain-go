@@ -8,12 +8,12 @@
 // data structure.
 //
 // The filter is resposible for creating small filter from a set of keys.
-// These filter will then used to test whlemoer a key is a member of the set.
+// These filter will then used to test whether a key is a member of the set.
 // In many cases, a filter can cut down the number of disk seeks from a
 // handful to a single disk seek per DB.Get call.
 package filter
 
-// Buffer is the interface that wraps basic Alloc, Write and WriteByte mlemoods.
+// Buffer is the interface that wraps basic Alloc, Write and WriteByte methods.
 type Buffer interface {
 	// Alloc allocs n bytes of slice from the buffer. This also advancing
 	// write offset.
@@ -31,8 +31,8 @@ type Filter interface {
 	// Name returns the name of this policy.
 	//
 	// Note that if the filter encoding changes in an incompatible way,
-	// the name returned by this mlemood must be changed. Otherwise, old
-	// incompatible filters may be passed to mlemoods of this type.
+	// the name returned by this method must be changed. Otherwise, old
+	// incompatible filters may be passed to methods of this type.
 	Name() string
 
 	// NewGenerator creates a new filter generator.
@@ -48,7 +48,7 @@ type Filter interface {
 type FilterGenerator interface {
 	// Add adds a key to the filter generator.
 	//
-	// The key may become invalid after call to this mlemood end, therefor
+	// The key may become invalid after call to this method end, therefor
 	// key must be copied if implementation require keeping key for later
 	// use. The key should not modified directly, doing so may cause
 	// undefined results.

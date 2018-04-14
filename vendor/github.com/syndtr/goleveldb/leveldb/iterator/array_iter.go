@@ -10,7 +10,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
-// BasicArray is the interface that wraps basic Len and Search mlemood.
+// BasicArray is the interface that wraps basic Len and Search method.
 type BasicArray interface {
 	// Len returns length of the array.
 	Len() int
@@ -20,7 +20,7 @@ type BasicArray interface {
 	Search(key []byte) int
 }
 
-// Array is the interface that wraps BasicArray and basic Index mlemood.
+// Array is the interface that wraps BasicArray and basic Index method.
 type Array interface {
 	BasicArray
 
@@ -28,7 +28,7 @@ type Array interface {
 	Index(i int) (key, value []byte)
 }
 
-// Array is the interface that wraps BasicArray and basic Get mlemood.
+// Array is the interface that wraps BasicArray and basic Get method.
 type ArrayIndexer interface {
 	BasicArray
 

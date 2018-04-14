@@ -387,7 +387,7 @@ func (t waitExpireTask) String() string {
 	return fmt.Sprintf("wait for dial hist expire (%v)", t.Duration)
 }
 
-// Use only these mlemoods to access or modify dialHistory.
+// Use only these methods to access or modify dialHistory.
 func (h dialHistory) min() pastDial {
 	return h[0]
 }

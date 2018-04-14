@@ -813,7 +813,7 @@ func main() {
 
 You can enable completion commands by setting the `EnableBashCompletion`
 flag on the `App` object.  By default, this setting will only auto-complete to
-show an app's subcommands, but you can write your own completion mlemoods for
+show an app's subcommands, but you can write your own completion methods for
 the App or its subcommands.
 
 <!-- {

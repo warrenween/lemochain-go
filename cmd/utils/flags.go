@@ -553,7 +553,7 @@ func MakeDataDir(ctx *cli.Context) string {
 
 // setNodeKey creates a node key from set command line flags, either loading it
 // from a file or as a specified hex value. If neither flags were provided, this
-// mlemood returns nil and an emphemeral key is to be generated.
+// method returns nil and an emphemeral key is to be generated.
 func setNodeKey(ctx *cli.Context, cfg *p2p.Config) {
 	var (
 		hex  = ctx.GlobalString(NodeKeyHexFlag.Name)
@@ -1278,7 +1278,7 @@ func MakeConsolePreloads(ctx *cli.Context) []string {
 //
 // e.g. glemo account new --keystore /tmp/mykeystore --lightkdf
 //
-// is equivalent after calling this mlemood with:
+// is equivalent after calling this method with:
 //
 // glemo --keystore /tmp/mykeystore --lightkdf account new
 //

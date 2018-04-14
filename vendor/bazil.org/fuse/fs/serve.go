@@ -33,7 +33,7 @@ const (
 
 // An FS is the interface required of a file system.
 //
-// Other FUSE requests can be handled by implementing mlemoods from the
+// Other FUSE requests can be handled by implementing methods from the
 // FS* interfaces, for example FSStatfser.
 type FS interface {
 	// Root is called to obtain the Node for the file system root.
@@ -76,12 +76,12 @@ type FSInodeGenerator interface {
 
 // A Node is the interface required of a file or directory.
 // See the documentation for type FS for general information
-// pertaining to all mlemoods.
+// pertaining to all methods.
 //
 // A Node must be usable as a map key, that is, it cannot be a
 // function, map or slice.
 //
-// Other FUSE requests can be handled by implementing mlemoods from the
+// Other FUSE requests can be handled by implementing methods from the
 // Node* interfaces, for example NodeOpener.
 //
 // Methods returning Node should take care to return the same Node
@@ -105,7 +105,7 @@ type NodeGetattrer interface {
 	// Getattr obtains the standard metadata for the receiver.
 	// It should store that metadata in resp.
 	//
-	// If this mlemood is not implemented, the attributes will be
+	// If this method is not implemented, the attributes will be
 	// generated based on Attr(), with zero values filled in.
 	Getattr(ctx context.Context, req *fuse.GetattrRequest, resp *fuse.GetattrResponse) error
 }
@@ -117,7 +117,7 @@ type NodeSetattrer interface {
 	// the file, outside of Writes.
 	//
 	// req.Valid is a bitmask of what fields are actually being set.
-	// For example, the mlemood should not change the mode of the file
+	// For example, the method should not change the mode of the file
 	// unless req.Valid.Mode() is true.
 	Setattr(ctx context.Context, req *fuse.SetattrRequest, resp *fuse.SetattrResponse) error
 }
@@ -149,7 +149,7 @@ type NodeRemover interface {
 }
 
 type NodeAccesser interface {
-	// Access checks whlemoer the calling context has permission for
+	// Access checks whether the calling context has permission for
 	// the given operations on the receiver. If so, Access should
 	// return nil. If not, Access should return EPERM.
 	//
@@ -187,7 +187,7 @@ type NodeOpener interface {
 	// Open can also be also called on non-files. For example,
 	// directories are Opened for ReadDir or fchdir(2).
 	//
-	// If this mlemood is not implemented, the open will always
+	// If this method is not implemented, the open will always
 	// succeed, and the Node itself will be used as the Handle.
 	//
 	// XXX note about access.  XXX OpenFlags.
@@ -202,7 +202,7 @@ type NodeCreater interface {
 
 type NodeForgetter interface {
 	// Forget about this node. This node will not receive further
-	// mlemood calls.
+	// method calls.
 	//
 	// Forget is not necessarily seen on unmount, as all nodes are
 	// implicitly forgotten as part part of the unmount.
@@ -265,13 +265,13 @@ func nodeAttr(ctx context.Context, n Node, attr *fuse.Attr) error {
 
 // A Handle is the interface required of an opened file or directory.
 // See the documentation for type FS for general information
-// pertaining to all mlemoods.
+// pertaining to all methods.
 //
-// Other FUSE requests can be handled by implementing mlemoods from the
+// Other FUSE requests can be handled by implementing methods from the
 // Handle* interfaces. The most common to implement are HandleReader,
 // HandleReadDirer, and HandleWriter.
 //
-// TODO implement mlemoods: Getlk, Setlk, Setlkw
+// TODO implement methods: Getlk, Setlk, Setlkw
 type Handle interface {
 }
 
@@ -384,7 +384,7 @@ type Server struct {
 	wg sync.WaitGroup
 }
 
-// Serve serves the FUSE connection by making calls to the mlemoods
+// Serve serves the FUSE connection by making calls to the methods
 // of fs and the Nodes and Handles it makes available.  It returns only
 // when the connection has been closed or an unexpected error occurs.
 func (s *Server) Serve(fs FS) error {

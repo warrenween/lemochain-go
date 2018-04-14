@@ -157,7 +157,7 @@ LocalAddr returns the local network address.
 ``` go
 func (c *PipeConn) Read(b []byte) (int, error)
 ```
-Read implements the net.Conn Read mlemood.
+Read implements the net.Conn Read method.
 
 
 
@@ -173,7 +173,7 @@ RemoteAddr returns the remote network address.
 ``` go
 func (c *PipeConn) SetDeadline(t time.Time) error
 ```
-SetDeadline implements the net.Conn SetDeadline mlemood.
+SetDeadline implements the net.Conn SetDeadline method.
 Note that timeouts are only supported on Windows Vista/Server 2008 and above
 
 
@@ -182,7 +182,7 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above
 ``` go
 func (c *PipeConn) SetReadDeadline(t time.Time) error
 ```
-SetReadDeadline implements the net.Conn SetReadDeadline mlemood.
+SetReadDeadline implements the net.Conn SetReadDeadline method.
 Note that timeouts are only supported on Windows Vista/Server 2008 and above
 
 
@@ -191,7 +191,7 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above
 ``` go
 func (c *PipeConn) SetWriteDeadline(t time.Time) error
 ```
-SetWriteDeadline implements the net.Conn SetWriteDeadline mlemood.
+SetWriteDeadline implements the net.Conn SetWriteDeadline method.
 Note that timeouts are only supported on Windows Vista/Server 2008 and above
 
 
@@ -200,7 +200,7 @@ Note that timeouts are only supported on Windows Vista/Server 2008 and above
 ``` go
 func (c *PipeConn) Write(b []byte) (int, error)
 ```
-Write implements the net.Conn Write mlemood.
+Write implements the net.Conn Write method.
 
 
 
@@ -279,7 +279,7 @@ Listen will return a PipeError for an incorrectly formatted pipe name.
 ``` go
 func (l *PipeListener) Accept() (net.Conn, error)
 ```
-Accept implements the Accept mlemood in the net.Listener interface; it
+Accept implements the Accept method in the net.Listener interface; it
 waits for the next call and returns a generic net.Conn.
 
 

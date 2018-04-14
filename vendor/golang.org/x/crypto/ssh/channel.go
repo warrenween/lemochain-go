@@ -32,7 +32,7 @@ type NewChannel interface {
 	Accept() (Channel, <-chan *Request, error)
 
 	// Reject rejects the channel creation request. After calling
-	// this, no other mlemoods on the Channel may be called.
+	// this, no other methods on the Channel may be called.
 	Reject(reason RejectionReason, message string) error
 
 	// ChannelType returns the type of the channel, as supplied by the
@@ -204,7 +204,7 @@ type channel struct {
 }
 
 // writePacket sends a packet. If the packet is a channel close, it updates
-// sentClose. This mlemood takes the lock c.writeMu.
+// sentClose. This method takes the lock c.writeMu.
 func (c *channel) writePacket(packet []byte) error {
 	c.writeMu.Lock()
 	if c.sentClose {

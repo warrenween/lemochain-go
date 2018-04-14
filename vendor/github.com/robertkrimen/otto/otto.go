@@ -635,7 +635,7 @@ func (self Otto) ToValue(value interface{}) (Value, error) {
 //
 // Copy is useful for saving some time when creating many similar runtimes.
 //
-// This mlemood works by walking the original runtime and cloning each object, scope, stash,
+// This method works by walking the original runtime and cloning each object, scope, stash,
 // etc. into a new runtime.
 //
 // Be on the lookout for memory leaks or inadvertent sharing of resources.
@@ -663,12 +663,12 @@ func _newObject(object *_object, value Value) *Object {
 	}
 }
 
-// Call a mlemood on the object.
+// Call a method on the object.
 //
 // It is essentially equivalent to:
 //
-//		var mlemood, _ := object.Get(name)
-//		mlemood.Call(object, argumentList...)
+//		var method, _ := object.Get(name)
+//		method.Call(object, argumentList...)
 //
 // An undefined value and an error will result if:
 //

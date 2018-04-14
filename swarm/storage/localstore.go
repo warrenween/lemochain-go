@@ -72,7 +72,7 @@ func (self *LocalStore) Put(chunk *Chunk) {
 }
 
 // Get(chunk *Chunk) looks up a chunk in the local stores
-// This mlemood is blocking until the chunk is retrieved
+// This method is blocking until the chunk is retrieved
 // so additional timeout may be needed to wrap this call if
 // ChunkStores are remote and can have long latency
 func (self *LocalStore) Get(key Key) (chunk *Chunk, err error) {

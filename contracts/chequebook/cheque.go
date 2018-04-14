@@ -60,7 +60,7 @@ var (
 	// gasToDeploy = uint64(3000000)
 )
 
-// Backend wraps all mlemoods required for chequebook operation.
+// Backend wraps all methods required for chequebook operation.
 type Backend interface {
 	bind.ContractBackend
 	TransactionReceipt(ctx context.Context, txHash common.Hash) (*types.Receipt, error)
@@ -290,7 +290,7 @@ func (self *Chequebook) Issue(beneficiary common.Address, amount *big.Int) (ch *
 	return
 }
 
-// Cash is a convenience mlemood to cash any cheque.
+// Cash is a convenience method to cash any cheque.
 func (self *Chequebook) Cash(ch *Cheque) (txhash string, err error) {
 	return ch.Cash(self.session)
 }

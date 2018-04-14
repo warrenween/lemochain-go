@@ -87,7 +87,7 @@ const (
 // Function is a function call.
 //
 // Go stack traces print a mangled function call, this wrapper unmangle the
-// string before printing and adds other filtering mlemoods.
+// string before printing and adds other filtering methods.
 type Function struct {
 	Raw string
 }

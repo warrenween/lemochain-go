@@ -333,7 +333,7 @@ type Config struct {
 ### Using the `encoding.TextUnmarshaler` interface
 
 Package toml supports `encoding.TextUnmarshaler` (and `encoding.TextMarshaler`). You can
-use it to apply custom marshaling rules for certain types. The `UnmarshalText` mlemood is
+use it to apply custom marshaling rules for certain types. The `UnmarshalText` method is
 called with the value text found in the TOML input. TOML strings are passed unquoted.
 
 ```toml

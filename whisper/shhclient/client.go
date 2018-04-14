@@ -165,7 +165,7 @@ func (sc *Client) Post(ctx context.Context, message whisper.NewMessage) error {
 	return sc.c.CallContext(ctx, &ignored, "shh_post", message)
 }
 
-// SubscribeMessages subscribes to messages that match the given criteria. This mlemood
+// SubscribeMessages subscribes to messages that match the given criteria. This method
 // is only supported on bi-directional connections such as websockets and IPC.
 // NewMessageFilter uses polling and is supported over HTTP.
 func (sc *Client) SubscribeMessages(ctx context.Context, criteria whisper.Criteria, ch chan<- *whisper.Message) (lemochain.Subscription, error) {

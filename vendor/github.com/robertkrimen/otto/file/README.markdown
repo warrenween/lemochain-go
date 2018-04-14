@@ -54,7 +54,7 @@ func (self *FileSet) AddFile(filename, src string) int
 ```
 AddFile adds a new file with the given filename and src.
 
-This an internal mlemood, but exported for cross-package use.
+This an internal method, but exported for cross-package use.
 
 #### func (*FileSet) File
 

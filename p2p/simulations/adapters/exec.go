@@ -106,7 +106,7 @@ func (e *ExecAdapter) NewNode(config *NodeConfig) (Node, error) {
 	conf.Stack.NoUSB = true
 
 	// listen on a random localhost port (we'll get the actual port after
-	// starting the node through the RPC admin.nodeInfo mlemood)
+	// starting the node through the RPC admin.nodeInfo method)
 	conf.Stack.P2P.ListenAddr = "127.0.0.1:0"
 
 	node := &ExecNode{
@@ -314,7 +314,7 @@ func (n *ExecNode) ServeRPC(clientConn net.Conn) error {
 }
 
 // Snapshots creates snapshots of the services by calling the
-// simulation_snapshot RPC mlemood
+// simulation_snapshot RPC method
 func (n *ExecNode) Snapshots() (map[string][]byte, error) {
 	if n.client == nil {
 		return nil, errors.New("RPC not started")
@@ -469,7 +469,7 @@ func (s *snapshotService) Stop() error {
 	return nil
 }
 
-// SnapshotAPI provides an RPC mlemood to create snapshots of services
+// SnapshotAPI provides an RPC method to create snapshots of services
 type SnapshotAPI struct {
 	services map[string]node.Service
 }

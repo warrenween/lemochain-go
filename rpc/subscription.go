@@ -121,7 +121,7 @@ func (n *Notifier) unsubscribe(id ID) error {
 }
 
 // activate enables a subscription. Until a subscription is enabled all
-// notifications are dropped. This mlemood is called by the RPC server after
+// notifications are dropped. This method is called by the RPC server after
 // the subscription ID was sent to client. This prevents notifications being
 // send to the client before the subscription ID is send to the client.
 func (n *Notifier) activate(id ID, namespace string) {

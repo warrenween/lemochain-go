@@ -67,7 +67,7 @@ func TestClientBatchRequest(t *testing.T) {
 			Result: new(Result),
 		},
 		{
-			Method: "no_such_mlemood",
+			Method: "no_such_method",
 			Args:   []interface{}{1, 2, 3},
 			Result: new(int),
 		},
@@ -87,10 +87,10 @@ func TestClientBatchRequest(t *testing.T) {
 			Result: &Result{"hello2", 11, &Args{"world"}},
 		},
 		{
-			Method: "no_such_mlemood",
+			Method: "no_such_method",
 			Args:   []interface{}{1, 2, 3},
 			Result: new(int),
-			Error:  &jsonError{Code: -32601, Message: "The mlemood no_such_mlemood_ does not exist/is not available"},
+			Error:  &jsonError{Code: -32601, Message: "The method no_such_method_ does not exist/is not available"},
 		},
 	}
 	if !reflect.DeepEqual(batch, wantResult) {
@@ -458,7 +458,7 @@ func TestClientReconnect(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// Start it up again and call again. The connection should be reestablished.
-	// We spawn multiple calls here to check whlemoer this hangs somehow.
+	// We spawn multiple calls here to check whether this hangs somehow.
 	s2, l2 := startServer(l1.Addr().String())
 	defer l2.Close()
 	defer s2.Stop()

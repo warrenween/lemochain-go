@@ -66,11 +66,11 @@ func (httpu *HTTPUClient) Do(req *http.Request, timeout time.Duration, numSends 
 	// deliberately to avoid creating extra fields which may confuse some
 	// devices.
 	var requestBuf bytes.Buffer
-	mlemood := req.Method
-	if mlemood == "" {
-		mlemood = "GET"
+	method := req.Method
+	if method == "" {
+		method = "GET"
 	}
-	if _, err := fmt.Fprintf(&requestBuf, "%s %s HTTP/1.1\r\n", mlemood, req.URL.RequestURI()); err != nil {
+	if _, err := fmt.Fprintf(&requestBuf, "%s %s HTTP/1.1\r\n", method, req.URL.RequestURI()); err != nil {
 		return nil, err
 	}
 	if err := req.Header.Write(&requestBuf); err != nil {

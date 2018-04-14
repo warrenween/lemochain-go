@@ -20,7 +20,7 @@ free software--to make sure the software is free for all its users.
   This license, the Lesser General Public License, applies to some
 specially designated software packages--typically libraries--of the
 Free Software Foundation and other authors who decide to use it.  You
-can use it too, but we suggest you first think carefully about whlemoer
+can use it too, but we suggest you first think carefully about whether
 this license or the ordinary General Public License is the better
 strategy to use in any particular case, based on the explanations below.
 
@@ -37,7 +37,7 @@ distributors to deny you these rights or to ask you to surrender these
 rights.  These restrictions translate to certain responsibilities for
 you if you distribute copies of the library or if you modify it.
 
-  For example, if you distribute copies of the library, whlemoer gratis
+  For example, if you distribute copies of the library, whether gratis
 or for a fee, you must give the recipients all the rights that we gave
 you.  You must make sure that they, too, receive or can get the source
 code.  If you link other code with the library, you must provide
@@ -45,7 +45,7 @@ complete object files to the recipients, so that they can relink them
 with the library after making changes to the library and recompiling
 it.  And you must show them these terms so they know their rights.
 
-  We protect your rights with a two-step mlemood: (1) we copyright the
+  We protect your rights with a two-step method: (1) we copyright the
 library, and (2) we offer you this license, which gives you legal
 permission to copy, distribute and/or modify the library.
 
@@ -70,7 +70,7 @@ is quite different from the ordinary General Public License.  We use
 this license for certain libraries in order to permit linking those
 libraries into non-free programs.
 
-  When a program is linked with a library, whlemoer statically or using
+  When a program is linked with a library, whether statically or using
 a shared library, the combination of the two is legally speaking a
 combined work, a derivative of the original library.  The ordinary
 General Public License therefore permits such linking only if the
@@ -259,14 +259,14 @@ threshold for this to be true is not precisely defined by law.
   If such an object file uses only numerical parameters, data
 structure layouts and accessors, and small macros and small inline
 functions (ten lines or less in length), then the use of the object
-file is unrestricted, regardless of whlemoer it is legally a derivative
+file is unrestricted, regardless of whether it is legally a derivative
 work.  (Executables containing this object code plus portions of the
 Library will still fall under Section 6.)
 
   Otherwise, if the work is a derivative of the Library, you may
 distribute the object code for the work under the terms of Section 6.
 Any executables containing that work also fall under Section 6,
-whlemoer or not they are linked directly with the Library itself.
+whether or not they are linked directly with the Library itself.
 
   6. As an exception to the Sections above, you may also combine or
 link a "work that uses the Library" with the Library to produce a
@@ -373,7 +373,7 @@ this License.
 
   11. If, as a consequence of a court judgment or allegation of patent
 infringement or for any other reason (not limited to patent issues),
-conditions are imposed on you (whlemoer by court order, agreement or
+conditions are imposed on you (whether by court order, agreement or
 otherwise) that contradict the conditions of this License, they do not
 excuse you from the conditions of this License.  If you cannot
 distribute so as to satisfy simultaneously your obligations under this

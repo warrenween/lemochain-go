@@ -1252,7 +1252,7 @@ type RecoveryDevice struct {
 	Language             *string `protobuf:"bytes,4,opt,name=language,def=english" json:"language,omitempty"`
 	Label                *string `protobuf:"bytes,5,opt,name=label" json:"label,omitempty"`
 	EnforceWordlist      *bool   `protobuf:"varint,6,opt,name=enforce_wordlist,json=enforceWordlist" json:"enforce_wordlist,omitempty"`
-	// 7 reserved for unused recovery mlemood
+	// 7 reserved for unused recovery method
 	Type             *uint32 `protobuf:"varint,8,opt,name=type" json:"type,omitempty"`
 	U2FCounter       *uint32 `protobuf:"varint,9,opt,name=u2f_counter,json=u2fCounter" json:"u2f_counter,omitempty"`
 	DryRun           *bool   `protobuf:"varint,10,opt,name=dry_run,json=dryRun" json:"dry_run,omitempty"`
@@ -1872,7 +1872,7 @@ func (m *SignTx) GetLockTime() uint32 {
 
 // *
 // Request: Simplified transaction signing
-// This mlemood doesn't support streaming, so there are hardware limits in number of inputs and outputs.
+// This method doesn't support streaming, so there are hardware limits in number of inputs and outputs.
 // In case of success, the result is returned using TxRequest message.
 // @next PassphraseRequest
 // @next PinMatrixRequest

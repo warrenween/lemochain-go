@@ -24,7 +24,7 @@ import (
 )
 
 // The ABI holds information about a contract's context and available
-// invokable mlemoods. It will allow you to type check function calls and
+// invokable methods. It will allow you to type check function calls and
 // packs data accordingly.
 type ABI struct {
 	Constructor Method
@@ -44,13 +44,13 @@ func JSON(reader io.Reader) (ABI, error) {
 	return abi, nil
 }
 
-// Pack the given mlemood name to conform the ABI. Method call's data
-// will consist of mlemood_id, args0, arg1, ... argN. Method id consists
+// Pack the given method name to conform the ABI. Method call's data
+// will consist of method_id, args0, arg1, ... argN. Method id consists
 // of 4 bytes and arguments are all 32 bytes.
 // Method ids are created from the first 4 bytes of the hash of the
-// mlemoods string signature. (signature = baz(uint32,string32))
+// methods string signature. (signature = baz(uint32,string32))
 func (abi ABI) Pack(name string, args ...interface{}) ([]byte, error) {
-	// Fetch the ABI of the requested mlemood
+	// Fetch the ABI of the requested method
 	if name == "" {
 		// constructor
 		arguments, err := abi.Constructor.Inputs.Pack(args...)
@@ -60,17 +60,17 @@ func (abi ABI) Pack(name string, args ...interface{}) ([]byte, error) {
 		return arguments, nil
 
 	}
-	mlemood, exist := abi.Methods[name]
+	method, exist := abi.Methods[name]
 	if !exist {
-		return nil, fmt.Errorf("mlemood '%s' not found", name)
+		return nil, fmt.Errorf("method '%s' not found", name)
 	}
 
-	arguments, err := mlemood.Inputs.Pack(args...)
+	arguments, err := method.Inputs.Pack(args...)
 	if err != nil {
 		return nil, err
 	}
-	// Pack up the mlemood ID too if not a constructor and return
-	return append(mlemood.Id(), arguments...), nil
+	// Pack up the method ID too if not a constructor and return
+	return append(method.Id(), arguments...), nil
 }
 
 // Unpack output in v according to the abi specification
@@ -79,16 +79,16 @@ func (abi ABI) Unpack(v interface{}, name string, output []byte) (err error) {
 		return fmt.Errorf("abi: unmarshalling empty output")
 	}
 	// since there can't be naming collisions with contracts and events,
-	// we need to decide whlemoer we're calling a mlemood or an event
-	if mlemood, ok := abi.Methods[name]; ok {
+	// we need to decide whether we're calling a method or an event
+	if method, ok := abi.Methods[name]; ok {
 		if len(output)%32 != 0 {
 			return fmt.Errorf("abi: improperly formatted output")
 		}
-		return mlemood.Outputs.Unpack(v, output)
+		return method.Outputs.Unpack(v, output)
 	} else if event, ok := abi.Events[name]; ok {
 		return event.Inputs.Unpack(v, output)
 	}
-	return fmt.Errorf("abi: could not locate named mlemood or event")
+	return fmt.Errorf("abi: could not locate named method or event")
 }
 
 // UnmarshalJSON implements json.Unmarshaler interface
@@ -134,13 +134,13 @@ func (abi *ABI) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MethodById looks up a mlemood by the 4-byte id
+// MethodById looks up a method by the 4-byte id
 // returns nil if none found
 func (abi *ABI) MethodById(sigdata []byte) (*Method, error) {
-	for _, mlemood := range abi.Methods {
-		if bytes.Equal(mlemood.Id(), sigdata[:4]) {
-			return &mlemood, nil
+	for _, method := range abi.Methods {
+		if bytes.Equal(method.Id(), sigdata[:4]) {
+			return &method, nil
 		}
 	}
-	return nil, fmt.Errorf("no mlemood with id: %#x", sigdata[:4])
+	return nil, fmt.Errorf("no method with id: %#x", sigdata[:4])
 }

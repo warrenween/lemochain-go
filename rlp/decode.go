@@ -823,7 +823,7 @@ func (s *Stream) Decode(val interface{}) error {
 }
 
 // Reset discards any information about the current decoding context
-// and starts reading from r. This mlemood is meant to facilitate reuse
+// and starts reading from r. This method is meant to facilitate reuse
 // of a preallocated Stream across many decoding operations.
 //
 // If r does not also implement ByteReader, Stream will do its own

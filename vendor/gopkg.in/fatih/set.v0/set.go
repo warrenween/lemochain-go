@@ -33,7 +33,7 @@ var keyExists = struct{}{}
 // elements present in all the sets that are passed.
 //
 // The dynamic type of the returned set is determined by the first passed set's
-// implementation of the New() mlemood.
+// implementation of the New() method.
 func Union(set1, set2 Interface, sets ...Interface) Interface {
 	u := set1.Copy()
 	set2.Each(func(item interface{}) bool {
@@ -51,7 +51,7 @@ func Union(set1, set2 Interface, sets ...Interface) Interface {
 }
 
 // Difference returns a new set which contains items which are in in the first
-// set but not in the others. Unlike the Difference() mlemood you can use this
+// set but not in the others. Unlike the Difference() method you can use this
 // function separately with multiple sets.
 func Difference(set1, set2 Interface, sets ...Interface) Interface {
 	s := set1.Copy()

@@ -6,7 +6,7 @@ import (
 	"errors"
 )
 
-// Implements the HMAC-SHA family of signing mlemoods signing mlemoods
+// Implements the HMAC-SHA family of signing methods signing methods
 type SigningMethodHMAC struct {
 	Name string
 	Hash crypto.Hash
@@ -58,12 +58,12 @@ func (m *SigningMethodHMAC) Verify(signingString, signature string, key interfac
 		return err
 	}
 
-	// Can we use the specified hashing mlemood?
+	// Can we use the specified hashing method?
 	if !m.Hash.Available() {
 		return ErrHashUnavailable
 	}
 
-	// This signing mlemood is symmetric, so we validate the signature
+	// This signing method is symmetric, so we validate the signature
 	// by reproducing the signature from the signing string and key, then
 	// comparing that against the provided signature.
 	hasher := hmac.New(m.Hash.New, keyBytes)
@@ -76,7 +76,7 @@ func (m *SigningMethodHMAC) Verify(signingString, signature string, key interfac
 	return nil
 }
 
-// Implements the Sign mlemood from SigningMethod for this signing mlemood.
+// Implements the Sign method from SigningMethod for this signing method.
 // Key must be []byte
 func (m *SigningMethodHMAC) Sign(signingString string, key interface{}) (string, error) {
 	if keyBytes, ok := key.([]byte); ok {

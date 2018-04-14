@@ -52,7 +52,7 @@ in lookup tables. The language ids for these language codes are derived directly
 from the letters and are not consecutive.`,
 	`
 altLangISO3 holds an alphabetically sorted list of 3-letter language code alternatives
-to 2-letter language codes that cannot be derived using the mlemood described above.
+to 2-letter language codes that cannot be derived using the method described above.
 Each 3-letter code is followed by its 1-byte langID.`,
 	`
 altLangIndex is used to convert indexes in altLangISO3 to langIDs.`,
@@ -116,7 +116,7 @@ languages and regions given a script.`,
 	`
 matchLang holds pairs of langIDs of base languages that are typically
 mutually intelligible. Each pair is associated with a confidence and
-whlemoer the intelligibility goes one or both ways.`,
+whether the intelligibility goes one or both ways.`,
 	`
 matchScript holds pairs of scriptIDs where readers of one script
 can typically also read the other. Each is associated with a confidence.`,

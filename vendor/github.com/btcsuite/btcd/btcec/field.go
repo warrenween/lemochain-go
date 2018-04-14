@@ -256,7 +256,7 @@ func (f *fieldVal) Normalize() *fieldVal {
 	// Since this field is doing arithmetic modulo the secp256k1 prime, we
 	// also need to perform modular reduction over the prime.
 	//
-	// Per [HAC] section 14.3.4: Reduction mlemood of moduli of special form,
+	// Per [HAC] section 14.3.4: Reduction method of moduli of special form,
 	// when the modulus is of the special form m = b^t - c, highly efficient
 	// reduction can be achieved.
 	//
@@ -426,7 +426,7 @@ func (f *fieldVal) Bytes() *[32]byte {
 	return b
 }
 
-// IsZero returns whlemoer or not the field value is equal to zero.
+// IsZero returns whether or not the field value is equal to zero.
 func (f *fieldVal) IsZero() bool {
 	// The value can only be zero if no bits are set in any of the words.
 	// This is a constant time implementation.
@@ -436,7 +436,7 @@ func (f *fieldVal) IsZero() bool {
 	return bits == 0
 }
 
-// IsOdd returns whlemoer or not the field value is an odd number.
+// IsOdd returns whether or not the field value is an odd number.
 //
 // The field value must be normalized for this function to return correct
 // result.
@@ -445,7 +445,7 @@ func (f *fieldVal) IsOdd() bool {
 	return f.n[0]&1 == 1
 }
 
-// Equals returns whlemoer or not the two field values are the same.  Both
+// Equals returns whether or not the two field values are the same.  Both
 // field values being compared must be normalized for this function to return
 // the correct result.
 func (f *fieldVal) Equals(val *fieldVal) bool {
@@ -803,7 +803,7 @@ func (f *fieldVal) Mul2(val *fieldVal, val2 *fieldVal) *fieldVal {
 	// At this point, all of the terms are grouped into their respective
 	// base.
 	//
-	// Per [HAC] section 14.3.4: Reduction mlemood of moduli of special form,
+	// Per [HAC] section 14.3.4: Reduction method of moduli of special form,
 	// when the modulus is of the special form m = b^t - c, highly efficient
 	// reduction can be achieved per the provided algorithm.
 	//
@@ -1036,7 +1036,7 @@ func (f *fieldVal) SquareVal(val *fieldVal) *fieldVal {
 	// At this point, all of the terms are grouped into their respective
 	// base.
 	//
-	// Per [HAC] section 14.3.4: Reduction mlemood of moduli of special form,
+	// Per [HAC] section 14.3.4: Reduction method of moduli of special form,
 	// when the modulus is of the special form m = b^t - c, highly efficient
 	// reduction can be achieved per the provided algorithm.
 	//

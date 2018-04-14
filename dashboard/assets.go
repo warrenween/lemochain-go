@@ -6236,7 +6236,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
     };
 }, function(module, exports) {
     module.exports = function(it) {
-        if (void 0 == it) throw TypeError("Can't call mlemood on  " + it);
+        if (void 0 == it) throw TypeError("Can't call method on  " + it);
         return it;
     };
 }, function(module, exports) {
@@ -6285,7 +6285,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
     };
     module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
         $iterCreate(Constructor, NAME, next);
-        var mlemoods, key, IteratorPrototype, getMethod = function(kind) {
+        var methods, key, IteratorPrototype, getMethod = function(kind) {
             if (!BUGGY && kind in proto) return proto[kind];
             switch (kind) {
               case "keys":
@@ -6303,12 +6303,12 @@ var _bundleJs = []byte((((((((((`!function(modules) {
         DEF_VALUES && $native && "values" !== $native.name && (VALUES_BUG = !0, $default = function() {
             return $native.call(this);
         }), LIBRARY && !FORCED || !BUGGY && !VALUES_BUG && proto[ITERATOR] || hide(proto, ITERATOR, $default), 
-        Iterators[NAME] = $default, Iterators[TAG] = returnThis, DEFAULT) if (mlemoods = {
+        Iterators[NAME] = $default, Iterators[TAG] = returnThis, DEFAULT) if (methods = {
             values: DEF_VALUES ? $default : getMethod("values"),
             keys: IS_SET ? $default : getMethod("keys"),
             entries: $entries
-        }, FORCED) for (key in mlemoods) key in proto || redefine(proto, key, mlemoods[key]); else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, mlemoods);
-        return mlemoods;
+        }, FORCED) for (key in methods) key in proto || redefine(proto, key, methods[key]); else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+        return methods;
     };
 }, function(module, exports) {
     module.exports = !0;
@@ -14709,7 +14709,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
             function getDeclarationErrorAddendum() {
                 if (ReactCurrentOwner.current) {
                     var name = getComponentName(ReactCurrentOwner.current);
-                    if (name) return "\n\nCheck the render mlemood of ` + ("`" + `" + name + "`)) + ("`" + (`.";
+                    if (name) return "\n\nCheck the render method of ` + ("`" + `" + name + "`)) + ("`" + (`.";
                 }
                 return "";
             }
@@ -14855,8 +14855,8 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                 isMounted: [ "isMounted", "Instead, make sure to clean up subscriptions and pending requests in componentWillUnmount to prevent memory leaks." ],
                 replaceState: [ "replaceState", "Refactor your code to use setState instead (see https://github.com/facebook/react/issues/3236)." ]
             };
-            for (var fnName in deprecatedAPIs) deprecatedAPIs.hasOwnProperty(fnName) && function(mlemoodName, info) {
-                Object.defineProperty(Component.prototype, mlemoodName, {
+            for (var fnName in deprecatedAPIs) deprecatedAPIs.hasOwnProperty(fnName) && function(methodName, info) {
+                Object.defineProperty(Component.prototype, methodName, {
                     get: function() {
                         lowPriorityWarning$1(!1, "%s(...) is deprecated in plain JavaScript React classes. %s", info[0], info[1]);
                     }
@@ -18907,7 +18907,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                     var pluginModule = namesToPlugins[pluginName], pluginIndex = eventPluginOrder.indexOf(pluginName);
                     if (pluginIndex > -1 || invariant(!1, "EventPluginRegistry: Cannot inject event plugins that do not exist in the plugin ordering, ` + ("`" + `%s`)))) + ((("`" + (`.", pluginName), 
                     !plugins[pluginIndex]) {
-                        pluginModule.extractEvents || invariant(!1, "EventPluginRegistry: Event plugins must implement an ` + "`")) + (`extractEvents` + ("`" + ` mlemood, but `))) + (("`" + (`%s` + "`")) + (` does not.", pluginName), 
+                        pluginModule.extractEvents || invariant(!1, "EventPluginRegistry: Event plugins must implement an ` + "`")) + (`extractEvents` + ("`" + ` method, but `))) + (("`" + (`%s` + "`")) + (` does not.", pluginName), 
                         plugins[pluginIndex] = pluginModule;
                         var publishedEvents = pluginModule.eventTypes;
                         for (var eventName in publishedEvents) publishEventForPlugin(publishedEvents[eventName], pluginModule, eventName) || invariant(!1, "EventPluginRegistry: Failed to publish event ` + ("`" + `%s`))))) + (((("`" + (` for plugin ` + "`")) + (`%s` + ("`" + `.", eventName, pluginName);
@@ -19162,11 +19162,11 @@ var _bundleJs = []byte((((((((((`!function(modules) {
             }
             function getPooledWarningPropertyDefinition(propName, getVal) {
                 function set(val) {
-                    return warn(isFunction ? "setting the mlemood" : "setting the property", "This is effectively a no-op"), 
+                    return warn(isFunction ? "setting the method" : "setting the property", "This is effectively a no-op"), 
                     val;
                 }
                 function get() {
-                    return warn(isFunction ? "accessing the mlemood" : "accessing the property", isFunction ? "This is a no-op function" : "This is set to null"), 
+                    return warn(isFunction ? "accessing the method" : "accessing the property", isFunction ? "This is a no-op function" : "This is set to null"), 
                     getVal;
                 }
                 function warn(action, result) {
@@ -20090,7 +20090,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                 if ("function" != typeof instance.getChildContext) {
                     var componentName = getComponentName(fiber) || "Unknown";
                     return warnedAboutMissingGetChildContext[componentName] || (warnedAboutMissingGetChildContext[componentName] = !0, 
-                    warning(!1, "%s.childContextTypes is specified but there is no getChildContext() mlemood on the instance. You can either define getChildContext() on %s or remove childContextTypes from it.", componentName, componentName)), 
+                    warning(!1, "%s.childContextTypes is specified but there is no getChildContext() method on the instance. You can either define getChildContext() on %s or remove childContextTypes from it.", componentName, componentName)), 
                     parentContext;
                 }
                 var childContext = void 0;
@@ -20182,7 +20182,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                     var info = "";
                     (void 0 === type || "object" == typeof type && null !== type && 0 === Object.keys(type).length) && (info += " You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.");
                     var ownerName = owner ? getComponentName(owner) : null;
-                    ownerName && (info += "\n\nCheck the render mlemood of ` + ("`" + `" + ownerName + "`)) + ("`" + (`."), invariant(!1, "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", null == type ? type : typeof type, info);
+                    ownerName && (info += "\n\nCheck the render method of ` + ("`" + `" + ownerName + "`)) + ("`" + (`."), invariant(!1, "Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", null == type ? type : typeof type, info);
                 }
                 return fiber._debugSource = element._source, fiber._debugOwner = element._owner, 
                 fiber.expirationTime = expirationTime, fiber;
@@ -20984,7 +20984,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
             }
             function getDeclarationErrorAddendum() {
                 var ownerName = getCurrentFiberOwnerName$3();
-                return ownerName ? "\n\nCheck the render mlemood of ` + "`")))) + (((`" + ownerName + "` + ("`" + `." : "";
+                return ownerName ? "\n\nCheck the render method of ` + "`")))) + (((`" + ownerName + "` + ("`" + `." : "";
             }
             function checkSelectPropTypes(props) {
                 ReactControlledValuePropTypes.checkPropTypes("select", props, getCurrentFiberStackAddendum$4);
@@ -22514,7 +22514,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                 }
                 function checkClassInstance(workInProgress) {
                     var instance = workInProgress.stateNode, type = workInProgress.type, name = getComponentName(workInProgress);
-                    instance.render || (type.prototype && "function" == typeof type.prototype.render ? warning(!1, "%s(...): No ` + ("`" + `render`)))) + ((("`" + (` mlemood found on the returned component instance: did you accidentally return an object from the constructor?", name) : warning(!1, "%s(...): No ` + "`")) + (`render` + ("`" + ` mlemood found on the returned component instance: you may have forgotten to define `))) + (("`" + (`render` + "`")) + (`.", name));
+                    instance.render || (type.prototype && "function" == typeof type.prototype.render ? warning(!1, "%s(...): No ` + ("`" + `render`)))) + ((("`" + (` method found on the returned component instance: did you accidentally return an object from the constructor?", name) : warning(!1, "%s(...): No ` + "`")) + (`render` + ("`" + ` method found on the returned component instance: you may have forgotten to define `))) + (("`" + (`render` + "`")) + (`.", name));
                     var noGetInitialStateOnES6 = !instance.getInitialState || instance.getInitialState.isReactClassApproved || instance.state;
                     warning(noGetInitialStateOnES6, "getInitialState was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?", name);
                     var noGetDefaultPropsOnES6 = !instance.getDefaultProps || instance.getDefaultProps.isReactClassApproved;
@@ -22524,14 +22524,14 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                     var noInstanceContextTypes = !instance.contextTypes;
                     warning(noInstanceContextTypes, "contextTypes was defined as an instance property on %s. Use a static property to define contextTypes instead.", name);
                     var noComponentShouldUpdate = "function" != typeof instance.componentShouldUpdate;
-                    warning(noComponentShouldUpdate, "%s has a mlemood called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.", name), 
-                    type.prototype && type.prototype.isPureReactComponent && void 0 !== instance.shouldComponentUpdate && warning(!1, "%s has a mlemood called shouldComponentUpdate(). shouldComponentUpdate should not be used when extending React.PureComponent. Please extend React.Component if shouldComponentUpdate is used.", getComponentName(workInProgress) || "A pure component");
+                    warning(noComponentShouldUpdate, "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.", name), 
+                    type.prototype && type.prototype.isPureReactComponent && void 0 !== instance.shouldComponentUpdate && warning(!1, "%s has a method called shouldComponentUpdate(). shouldComponentUpdate should not be used when extending React.PureComponent. Please extend React.Component if shouldComponentUpdate is used.", getComponentName(workInProgress) || "A pure component");
                     var noComponentDidUnmount = "function" != typeof instance.componentDidUnmount;
-                    warning(noComponentDidUnmount, "%s has a mlemood called componentDidUnmount(). But there is no such lifecycle mlemood. Did you mean componentWillUnmount()?", name);
+                    warning(noComponentDidUnmount, "%s has a method called componentDidUnmount(). But there is no such lifecycle method. Did you mean componentWillUnmount()?", name);
                     var noComponentDidReceiveProps = "function" != typeof instance.componentDidReceiveProps;
-                    warning(noComponentDidReceiveProps, "%s has a mlemood called componentDidReceiveProps(). But there is no such lifecycle mlemood. If you meant to update the state in response to changing props, use componentWillReceiveProps(). If you meant to fetch data or run side-effects or mutations after React has updated the UI, use componentDidUpdate().", name);
+                    warning(noComponentDidReceiveProps, "%s has a method called componentDidReceiveProps(). But there is no such lifecycle method. If you meant to update the state in response to changing props, use componentWillReceiveProps(). If you meant to fetch data or run side-effects or mutations after React has updated the UI, use componentDidUpdate().", name);
                     var noComponentWillRecieveProps = "function" != typeof instance.componentWillRecieveProps;
-                    warning(noComponentWillRecieveProps, "%s has a mlemood called componentWillRecieveProps(). Did you mean componentWillReceiveProps()?", name);
+                    warning(noComponentWillRecieveProps, "%s has a method called componentWillRecieveProps(). Did you mean componentWillReceiveProps()?", name);
                     var hasMutatedProps = instance.props !== workInProgress.pendingProps;
                     warning(void 0 === instance.props || !hasMutatedProps, "%s(...): When calling super() in ` + ("`" + `%s`)))))) + ((((("`" + (`, make sure to pass up the same props that your component's constructor was passed.", name, name);
                     var noInstanceDefaultProps = !instance.defaultProps;
@@ -22751,7 +22751,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                     var value, fn = workInProgress.type, props = workInProgress.pendingProps, unmaskedContext = getUnmaskedContext(workInProgress), context = getMaskedContext(workInProgress, unmaskedContext);
                     if (fn.prototype && "function" == typeof fn.prototype.render) {
                         var componentName = getComponentName(workInProgress);
-                        warning(!1, "The <%s /> component appears to have a render mlemood, but doesn't extend React.Component. This is likely to cause errors. Change %s to extend React.Component instead.", componentName, componentName);
+                        warning(!1, "The <%s /> component appears to have a render method, but doesn't extend React.Component. This is likely to cause errors. Change %s to extend React.Component instead.", componentName, componentName);
                     }
                     if (ReactCurrentOwner.current = workInProgress, value = fn(props, context), workInProgress.effectTag |= PerformedWork, 
                     "object" == typeof value && null !== value && "function" == typeof value.render) {
@@ -22765,7 +22765,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                     if (Component && warning(!Component.childContextTypes, "%s(...): childContextTypes cannot be defined on a functional component.", Component.displayName || Component.name || "Component"), 
                     null !== workInProgress.ref) {
                         var info = "", ownerName = ReactDebugCurrentFiber.getCurrentFiberOwnerName();
-                        ownerName && (info += "\n\nCheck the render mlemood of ` + "`")) + (`" + ownerName + "` + ("`" + `.");
+                        ownerName && (info += "\n\nCheck the render method of ` + "`")) + (`" + ownerName + "` + ("`" + `.");
                         var warningKey = ownerName || workInProgress._debugID || "", debugSource = workInProgress._debugSource;
                         debugSource && (warningKey = debugSource.fileName + ":" + debugSource.lineNumber), 
                         warnedAboutStatelessRefs[warningKey] || (warnedAboutStatelessRefs[warningKey] = !0, 
@@ -23523,7 +23523,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
 
                   case "render":
                     if (didWarnAboutStateTransition) return;
-                    warning(!1, "Cannot update during an existing state transition (such as within `))) + (("`" + (`render` + "`")) + (` or another component's constructor). Render mlemoods should be a pure function of props and state; constructor side-effects are an anti-pattern, but can be moved to ` + ("`" + `componentWillMount`)))) + ((("`" + (`."), 
+                    warning(!1, "Cannot update during an existing state transition (such as within `))) + (("`" + (`render` + "`")) + (` or another component's constructor). Render methods should be a pure function of props and state; constructor side-effects are an anti-pattern, but can be moved to ` + ("`" + `componentWillMount`)))) + ((("`" + (`."), 
                     didWarnAboutStateTransition = !0;
                 }
             }, ReactFiberScheduler = function(config) {
@@ -23955,7 +23955,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                     try {
                         return syncUpdates(fn);
                     } finally {
-                        isBatchingUpdates = previousIsBatchingUpdates, isRendering && invariant(!1, "flushSync was called from inside a lifecycle mlemood. It cannot be called when React is already rendering."), 
+                        isBatchingUpdates = previousIsBatchingUpdates, isRendering && invariant(!1, "flushSync was called from inside a lifecycle method. It cannot be called when React is already rendering."), 
                         performWork(Sync, null);
                     }
                 }
@@ -23972,7 +23972,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
             }, didWarnAboutNestedUpdates = !1, ReactFiberReconciler$1 = function(config) {
                 function scheduleTopLevelUpdate(current, element, callback) {
                     "render" !== ReactDebugCurrentFiber.phase || null === ReactDebugCurrentFiber.current || didWarnAboutNestedUpdates || (didWarnAboutNestedUpdates = !0, 
-                    warning(!1, "Render mlemoods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate.\n\nCheck the render mlemood of %s.", getComponentName(ReactDebugCurrentFiber.current) || "Unknown")), 
+                    warning(!1, "Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate.\n\nCheck the render method of %s.", getComponentName(ReactDebugCurrentFiber.current) || "Unknown")), 
                     callback = void 0 === callback ? null : callback, warning(null === callback || "function" == typeof callback, "render(...): Expected the last optional ` + "`")) + (`callback` + ("`" + ` argument to be a function. Instead received: %s.", callback);
                     var expirationTime = void 0;
                     expirationTime = enableAsyncSubtreeAPI && null != element && null != element.type && null != element.type.prototype && !0 === element.type.prototype.unstable_isAsyncReactComponent ? computeAsyncExpiration() : computeExpirationForFiber(current), 
@@ -24346,7 +24346,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                 enctype: "encType",
                 for: "htmlFor",
                 form: "form",
-                formmlemood: "formMethod",
+                formmethod: "formMethod",
                 formaction: "formAction",
                 formenctype: "formEncType",
                 formnovalidate: "formNoValidate",
@@ -24387,7 +24387,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                 maxlength: "maxLength",
                 media: "media",
                 mediagroup: "mediaGroup",
-                mlemood: "mlemood",
+                method: "method",
                 min: "min",
                 minlength: "minLength",
                 multiple: "multiple",
@@ -24653,7 +24653,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
                 specularconstant: "specularConstant",
                 specularexponent: "specularExponent",
                 speed: "speed",
-                spreadmlemood: "spreadMethod",
+                spreadmethod: "spreadMethod",
                 startoffset: "startOffset",
                 stddeviation: "stdDeviation",
                 stemh: "stemh",
@@ -26823,7 +26823,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
 }, function(module, exports, __webpack_require__) {
     "use strict";
     var global = __webpack_require__(24), $export = __webpack_require__(19), meta = __webpack_require__(147), fails = __webpack_require__(48), hide = __webpack_require__(40), redefineAll = __webpack_require__(219), forOf = __webpack_require__(105), anInstance = __webpack_require__(220), isObject = __webpack_require__(35), setToStringTag = __webpack_require__(103), dP = __webpack_require__(22).f, each = __webpack_require__(407)(0), DESCRIPTORS = __webpack_require__(25);
-    module.exports = function(NAME, wrapper, mlemoods, common, IS_MAP, IS_WEAK) {
+    module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
         var Base = global[NAME], C = Base, ADDER = IS_MAP ? "set" : "add", proto = C && C.prototype, O = {};
         return DESCRIPTORS && "function" == typeof C && (IS_WEAK || proto.forEach && !fails(function() {
             new C().entries().next();
@@ -26840,7 +26840,7 @@ var _bundleJs = []byte((((((((((`!function(modules) {
             get: function() {
                 return this._c.size;
             }
-        })) : (C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER), redefineAll(C.prototype, mlemoods), 
+        })) : (C = common.getConstructor(wrapper, NAME, IS_MAP, ADDER), redefineAll(C.prototype, methods), 
         meta.NEED = !0), setToStringTag(C, NAME), O[NAME] = C, $export($export.G + $export.W + $export.F, O), 
         IS_WEAK || common.setStrong(C, NAME, IS_MAP), C;
     };

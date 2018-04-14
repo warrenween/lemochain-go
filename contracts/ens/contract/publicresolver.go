@@ -80,17 +80,17 @@ type PublicResolverTransactorSession struct {
 
 // PublicResolverRaw is an auto generated low-level Go binding around an Lemochain contract.
 type PublicResolverRaw struct {
-	Contract *PublicResolver // Generic contract binding to access the raw mlemoods on
+	Contract *PublicResolver // Generic contract binding to access the raw methods on
 }
 
 // PublicResolverCallerRaw is an auto generated low-level read-only Go binding around an Lemochain contract.
 type PublicResolverCallerRaw struct {
-	Contract *PublicResolverCaller // Generic read-only contract binding to access the raw mlemoods on
+	Contract *PublicResolverCaller // Generic read-only contract binding to access the raw methods on
 }
 
 // PublicResolverTransactorRaw is an auto generated low-level write-only Go binding around an Lemochain contract.
 type PublicResolverTransactorRaw struct {
-	Contract *PublicResolverTransactor // Generic write-only contract binding to access the raw mlemoods on
+	Contract *PublicResolverTransactor // Generic write-only contract binding to access the raw methods on
 }
 
 // NewPublicResolver creates a new instance of PublicResolver, bound to a specific deployed contract.
@@ -138,45 +138,45 @@ func bindPublicResolver(address common.Address, caller bind.ContractCaller, tran
 	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_PublicResolver *PublicResolverRaw) Call(opts *bind.CallOpts, result interface{}, mlemood string, params ...interface{}) error {
-	return _PublicResolver.Contract.PublicResolverCaller.contract.Call(opts, result, mlemood, params...)
+func (_PublicResolver *PublicResolverRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+	return _PublicResolver.Contract.PublicResolverCaller.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (_PublicResolver *PublicResolverRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _PublicResolver.Contract.PublicResolverTransactor.contract.Transfer(opts)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (_PublicResolver *PublicResolverRaw) Transact(opts *bind.TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
-	return _PublicResolver.Contract.PublicResolverTransactor.contract.Transact(opts, mlemood, params...)
+// Transact invokes the (paid) contract method with params as input values.
+func (_PublicResolver *PublicResolverRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _PublicResolver.Contract.PublicResolverTransactor.contract.Transact(opts, method, params...)
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_PublicResolver *PublicResolverCallerRaw) Call(opts *bind.CallOpts, result interface{}, mlemood string, params ...interface{}) error {
-	return _PublicResolver.Contract.contract.Call(opts, result, mlemood, params...)
+func (_PublicResolver *PublicResolverCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+	return _PublicResolver.Contract.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (_PublicResolver *PublicResolverTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _PublicResolver.Contract.contract.Transfer(opts)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (_PublicResolver *PublicResolverTransactorRaw) Transact(opts *bind.TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
-	return _PublicResolver.Contract.contract.Transact(opts, mlemood, params...)
+// Transact invokes the (paid) contract method with params as input values.
+func (_PublicResolver *PublicResolverTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _PublicResolver.Contract.contract.Transact(opts, method, params...)
 }
 
-// ABI is a free data retrieval call binding the contract mlemood 0x2203ab56.
+// ABI is a free data retrieval call binding the contract method 0x2203ab56.
 //
 // Solidity: function ABI(node bytes32, contentTypes uint256) constant returns(contentType uint256, data bytes)
 func (_PublicResolver *PublicResolverCaller) ABI(opts *bind.CallOpts, node [32]byte, contentTypes *big.Int) (struct {
@@ -192,7 +192,7 @@ func (_PublicResolver *PublicResolverCaller) ABI(opts *bind.CallOpts, node [32]b
 	return *ret, err
 }
 
-// ABI is a free data retrieval call binding the contract mlemood 0x2203ab56.
+// ABI is a free data retrieval call binding the contract method 0x2203ab56.
 //
 // Solidity: function ABI(node bytes32, contentTypes uint256) constant returns(contentType uint256, data bytes)
 func (_PublicResolver *PublicResolverSession) ABI(node [32]byte, contentTypes *big.Int) (struct {
@@ -202,7 +202,7 @@ func (_PublicResolver *PublicResolverSession) ABI(node [32]byte, contentTypes *b
 	return _PublicResolver.Contract.ABI(&_PublicResolver.CallOpts, node, contentTypes)
 }
 
-// ABI is a free data retrieval call binding the contract mlemood 0x2203ab56.
+// ABI is a free data retrieval call binding the contract method 0x2203ab56.
 //
 // Solidity: function ABI(node bytes32, contentTypes uint256) constant returns(contentType uint256, data bytes)
 func (_PublicResolver *PublicResolverCallerSession) ABI(node [32]byte, contentTypes *big.Int) (struct {
@@ -212,7 +212,7 @@ func (_PublicResolver *PublicResolverCallerSession) ABI(node [32]byte, contentTy
 	return _PublicResolver.Contract.ABI(&_PublicResolver.CallOpts, node, contentTypes)
 }
 
-// Addr is a free data retrieval call binding the contract mlemood 0x3b3b57de.
+// Addr is a free data retrieval call binding the contract method 0x3b3b57de.
 //
 // Solidity: function addr(node bytes32) constant returns(ret address)
 func (_PublicResolver *PublicResolverCaller) Addr(opts *bind.CallOpts, node [32]byte) (common.Address, error) {
@@ -224,21 +224,21 @@ func (_PublicResolver *PublicResolverCaller) Addr(opts *bind.CallOpts, node [32]
 	return *ret0, err
 }
 
-// Addr is a free data retrieval call binding the contract mlemood 0x3b3b57de.
+// Addr is a free data retrieval call binding the contract method 0x3b3b57de.
 //
 // Solidity: function addr(node bytes32) constant returns(ret address)
 func (_PublicResolver *PublicResolverSession) Addr(node [32]byte) (common.Address, error) {
 	return _PublicResolver.Contract.Addr(&_PublicResolver.CallOpts, node)
 }
 
-// Addr is a free data retrieval call binding the contract mlemood 0x3b3b57de.
+// Addr is a free data retrieval call binding the contract method 0x3b3b57de.
 //
 // Solidity: function addr(node bytes32) constant returns(ret address)
 func (_PublicResolver *PublicResolverCallerSession) Addr(node [32]byte) (common.Address, error) {
 	return _PublicResolver.Contract.Addr(&_PublicResolver.CallOpts, node)
 }
 
-// Content is a free data retrieval call binding the contract mlemood 0x2dff6941.
+// Content is a free data retrieval call binding the contract method 0x2dff6941.
 //
 // Solidity: function content(node bytes32) constant returns(ret bytes32)
 func (_PublicResolver *PublicResolverCaller) Content(opts *bind.CallOpts, node [32]byte) ([32]byte, error) {
@@ -250,21 +250,21 @@ func (_PublicResolver *PublicResolverCaller) Content(opts *bind.CallOpts, node [
 	return *ret0, err
 }
 
-// Content is a free data retrieval call binding the contract mlemood 0x2dff6941.
+// Content is a free data retrieval call binding the contract method 0x2dff6941.
 //
 // Solidity: function content(node bytes32) constant returns(ret bytes32)
 func (_PublicResolver *PublicResolverSession) Content(node [32]byte) ([32]byte, error) {
 	return _PublicResolver.Contract.Content(&_PublicResolver.CallOpts, node)
 }
 
-// Content is a free data retrieval call binding the contract mlemood 0x2dff6941.
+// Content is a free data retrieval call binding the contract method 0x2dff6941.
 //
 // Solidity: function content(node bytes32) constant returns(ret bytes32)
 func (_PublicResolver *PublicResolverCallerSession) Content(node [32]byte) ([32]byte, error) {
 	return _PublicResolver.Contract.Content(&_PublicResolver.CallOpts, node)
 }
 
-// Name is a free data retrieval call binding the contract mlemood 0x691f3431.
+// Name is a free data retrieval call binding the contract method 0x691f3431.
 //
 // Solidity: function name(node bytes32) constant returns(ret string)
 func (_PublicResolver *PublicResolverCaller) Name(opts *bind.CallOpts, node [32]byte) (string, error) {
@@ -276,21 +276,21 @@ func (_PublicResolver *PublicResolverCaller) Name(opts *bind.CallOpts, node [32]
 	return *ret0, err
 }
 
-// Name is a free data retrieval call binding the contract mlemood 0x691f3431.
+// Name is a free data retrieval call binding the contract method 0x691f3431.
 //
 // Solidity: function name(node bytes32) constant returns(ret string)
 func (_PublicResolver *PublicResolverSession) Name(node [32]byte) (string, error) {
 	return _PublicResolver.Contract.Name(&_PublicResolver.CallOpts, node)
 }
 
-// Name is a free data retrieval call binding the contract mlemood 0x691f3431.
+// Name is a free data retrieval call binding the contract method 0x691f3431.
 //
 // Solidity: function name(node bytes32) constant returns(ret string)
 func (_PublicResolver *PublicResolverCallerSession) Name(node [32]byte) (string, error) {
 	return _PublicResolver.Contract.Name(&_PublicResolver.CallOpts, node)
 }
 
-// Pubkey is a free data retrieval call binding the contract mlemood 0xc8690233.
+// Pubkey is a free data retrieval call binding the contract method 0xc8690233.
 //
 // Solidity: function pubkey(node bytes32) constant returns(x bytes32, y bytes32)
 func (_PublicResolver *PublicResolverCaller) Pubkey(opts *bind.CallOpts, node [32]byte) (struct {
@@ -306,7 +306,7 @@ func (_PublicResolver *PublicResolverCaller) Pubkey(opts *bind.CallOpts, node [3
 	return *ret, err
 }
 
-// Pubkey is a free data retrieval call binding the contract mlemood 0xc8690233.
+// Pubkey is a free data retrieval call binding the contract method 0xc8690233.
 //
 // Solidity: function pubkey(node bytes32) constant returns(x bytes32, y bytes32)
 func (_PublicResolver *PublicResolverSession) Pubkey(node [32]byte) (struct {
@@ -316,7 +316,7 @@ func (_PublicResolver *PublicResolverSession) Pubkey(node [32]byte) (struct {
 	return _PublicResolver.Contract.Pubkey(&_PublicResolver.CallOpts, node)
 }
 
-// Pubkey is a free data retrieval call binding the contract mlemood 0xc8690233.
+// Pubkey is a free data retrieval call binding the contract method 0xc8690233.
 //
 // Solidity: function pubkey(node bytes32) constant returns(x bytes32, y bytes32)
 func (_PublicResolver *PublicResolverCallerSession) Pubkey(node [32]byte) (struct {
@@ -326,7 +326,7 @@ func (_PublicResolver *PublicResolverCallerSession) Pubkey(node [32]byte) (struc
 	return _PublicResolver.Contract.Pubkey(&_PublicResolver.CallOpts, node)
 }
 
-// SupportsInterface is a free data retrieval call binding the contract mlemood 0x01ffc9a7.
+// SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
 //
 // Solidity: function supportsInterface(interfaceID bytes4) constant returns(bool)
 func (_PublicResolver *PublicResolverCaller) SupportsInterface(opts *bind.CallOpts, interfaceID [4]byte) (bool, error) {
@@ -338,21 +338,21 @@ func (_PublicResolver *PublicResolverCaller) SupportsInterface(opts *bind.CallOp
 	return *ret0, err
 }
 
-// SupportsInterface is a free data retrieval call binding the contract mlemood 0x01ffc9a7.
+// SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
 //
 // Solidity: function supportsInterface(interfaceID bytes4) constant returns(bool)
 func (_PublicResolver *PublicResolverSession) SupportsInterface(interfaceID [4]byte) (bool, error) {
 	return _PublicResolver.Contract.SupportsInterface(&_PublicResolver.CallOpts, interfaceID)
 }
 
-// SupportsInterface is a free data retrieval call binding the contract mlemood 0x01ffc9a7.
+// SupportsInterface is a free data retrieval call binding the contract method 0x01ffc9a7.
 //
 // Solidity: function supportsInterface(interfaceID bytes4) constant returns(bool)
 func (_PublicResolver *PublicResolverCallerSession) SupportsInterface(interfaceID [4]byte) (bool, error) {
 	return _PublicResolver.Contract.SupportsInterface(&_PublicResolver.CallOpts, interfaceID)
 }
 
-// Text is a free data retrieval call binding the contract mlemood 0x59d1d43c.
+// Text is a free data retrieval call binding the contract method 0x59d1d43c.
 //
 // Solidity: function text(node bytes32, key string) constant returns(ret string)
 func (_PublicResolver *PublicResolverCaller) Text(opts *bind.CallOpts, node [32]byte, key string) (string, error) {
@@ -364,140 +364,140 @@ func (_PublicResolver *PublicResolverCaller) Text(opts *bind.CallOpts, node [32]
 	return *ret0, err
 }
 
-// Text is a free data retrieval call binding the contract mlemood 0x59d1d43c.
+// Text is a free data retrieval call binding the contract method 0x59d1d43c.
 //
 // Solidity: function text(node bytes32, key string) constant returns(ret string)
 func (_PublicResolver *PublicResolverSession) Text(node [32]byte, key string) (string, error) {
 	return _PublicResolver.Contract.Text(&_PublicResolver.CallOpts, node, key)
 }
 
-// Text is a free data retrieval call binding the contract mlemood 0x59d1d43c.
+// Text is a free data retrieval call binding the contract method 0x59d1d43c.
 //
 // Solidity: function text(node bytes32, key string) constant returns(ret string)
 func (_PublicResolver *PublicResolverCallerSession) Text(node [32]byte, key string) (string, error) {
 	return _PublicResolver.Contract.Text(&_PublicResolver.CallOpts, node, key)
 }
 
-// SetABI is a paid mutator transaction binding the contract mlemood 0x623195b0.
+// SetABI is a paid mutator transaction binding the contract method 0x623195b0.
 //
 // Solidity: function setABI(node bytes32, contentType uint256, data bytes) returns()
 func (_PublicResolver *PublicResolverTransactor) SetABI(opts *bind.TransactOpts, node [32]byte, contentType *big.Int, data []byte) (*types.Transaction, error) {
 	return _PublicResolver.contract.Transact(opts, "setABI", node, contentType, data)
 }
 
-// SetABI is a paid mutator transaction binding the contract mlemood 0x623195b0.
+// SetABI is a paid mutator transaction binding the contract method 0x623195b0.
 //
 // Solidity: function setABI(node bytes32, contentType uint256, data bytes) returns()
 func (_PublicResolver *PublicResolverSession) SetABI(node [32]byte, contentType *big.Int, data []byte) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetABI(&_PublicResolver.TransactOpts, node, contentType, data)
 }
 
-// SetABI is a paid mutator transaction binding the contract mlemood 0x623195b0.
+// SetABI is a paid mutator transaction binding the contract method 0x623195b0.
 //
 // Solidity: function setABI(node bytes32, contentType uint256, data bytes) returns()
 func (_PublicResolver *PublicResolverTransactorSession) SetABI(node [32]byte, contentType *big.Int, data []byte) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetABI(&_PublicResolver.TransactOpts, node, contentType, data)
 }
 
-// SetAddr is a paid mutator transaction binding the contract mlemood 0xd5fa2b00.
+// SetAddr is a paid mutator transaction binding the contract method 0xd5fa2b00.
 //
 // Solidity: function setAddr(node bytes32, addr address) returns()
 func (_PublicResolver *PublicResolverTransactor) SetAddr(opts *bind.TransactOpts, node [32]byte, addr common.Address) (*types.Transaction, error) {
 	return _PublicResolver.contract.Transact(opts, "setAddr", node, addr)
 }
 
-// SetAddr is a paid mutator transaction binding the contract mlemood 0xd5fa2b00.
+// SetAddr is a paid mutator transaction binding the contract method 0xd5fa2b00.
 //
 // Solidity: function setAddr(node bytes32, addr address) returns()
 func (_PublicResolver *PublicResolverSession) SetAddr(node [32]byte, addr common.Address) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetAddr(&_PublicResolver.TransactOpts, node, addr)
 }
 
-// SetAddr is a paid mutator transaction binding the contract mlemood 0xd5fa2b00.
+// SetAddr is a paid mutator transaction binding the contract method 0xd5fa2b00.
 //
 // Solidity: function setAddr(node bytes32, addr address) returns()
 func (_PublicResolver *PublicResolverTransactorSession) SetAddr(node [32]byte, addr common.Address) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetAddr(&_PublicResolver.TransactOpts, node, addr)
 }
 
-// SetContent is a paid mutator transaction binding the contract mlemood 0xc3d014d6.
+// SetContent is a paid mutator transaction binding the contract method 0xc3d014d6.
 //
 // Solidity: function setContent(node bytes32, hash bytes32) returns()
 func (_PublicResolver *PublicResolverTransactor) SetContent(opts *bind.TransactOpts, node [32]byte, hash [32]byte) (*types.Transaction, error) {
 	return _PublicResolver.contract.Transact(opts, "setContent", node, hash)
 }
 
-// SetContent is a paid mutator transaction binding the contract mlemood 0xc3d014d6.
+// SetContent is a paid mutator transaction binding the contract method 0xc3d014d6.
 //
 // Solidity: function setContent(node bytes32, hash bytes32) returns()
 func (_PublicResolver *PublicResolverSession) SetContent(node [32]byte, hash [32]byte) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetContent(&_PublicResolver.TransactOpts, node, hash)
 }
 
-// SetContent is a paid mutator transaction binding the contract mlemood 0xc3d014d6.
+// SetContent is a paid mutator transaction binding the contract method 0xc3d014d6.
 //
 // Solidity: function setContent(node bytes32, hash bytes32) returns()
 func (_PublicResolver *PublicResolverTransactorSession) SetContent(node [32]byte, hash [32]byte) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetContent(&_PublicResolver.TransactOpts, node, hash)
 }
 
-// SetName is a paid mutator transaction binding the contract mlemood 0x77372213.
+// SetName is a paid mutator transaction binding the contract method 0x77372213.
 //
 // Solidity: function setName(node bytes32, name string) returns()
 func (_PublicResolver *PublicResolverTransactor) SetName(opts *bind.TransactOpts, node [32]byte, name string) (*types.Transaction, error) {
 	return _PublicResolver.contract.Transact(opts, "setName", node, name)
 }
 
-// SetName is a paid mutator transaction binding the contract mlemood 0x77372213.
+// SetName is a paid mutator transaction binding the contract method 0x77372213.
 //
 // Solidity: function setName(node bytes32, name string) returns()
 func (_PublicResolver *PublicResolverSession) SetName(node [32]byte, name string) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetName(&_PublicResolver.TransactOpts, node, name)
 }
 
-// SetName is a paid mutator transaction binding the contract mlemood 0x77372213.
+// SetName is a paid mutator transaction binding the contract method 0x77372213.
 //
 // Solidity: function setName(node bytes32, name string) returns()
 func (_PublicResolver *PublicResolverTransactorSession) SetName(node [32]byte, name string) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetName(&_PublicResolver.TransactOpts, node, name)
 }
 
-// SetPubkey is a paid mutator transaction binding the contract mlemood 0x29cd62ea.
+// SetPubkey is a paid mutator transaction binding the contract method 0x29cd62ea.
 //
 // Solidity: function setPubkey(node bytes32, x bytes32, y bytes32) returns()
 func (_PublicResolver *PublicResolverTransactor) SetPubkey(opts *bind.TransactOpts, node [32]byte, x [32]byte, y [32]byte) (*types.Transaction, error) {
 	return _PublicResolver.contract.Transact(opts, "setPubkey", node, x, y)
 }
 
-// SetPubkey is a paid mutator transaction binding the contract mlemood 0x29cd62ea.
+// SetPubkey is a paid mutator transaction binding the contract method 0x29cd62ea.
 //
 // Solidity: function setPubkey(node bytes32, x bytes32, y bytes32) returns()
 func (_PublicResolver *PublicResolverSession) SetPubkey(node [32]byte, x [32]byte, y [32]byte) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetPubkey(&_PublicResolver.TransactOpts, node, x, y)
 }
 
-// SetPubkey is a paid mutator transaction binding the contract mlemood 0x29cd62ea.
+// SetPubkey is a paid mutator transaction binding the contract method 0x29cd62ea.
 //
 // Solidity: function setPubkey(node bytes32, x bytes32, y bytes32) returns()
 func (_PublicResolver *PublicResolverTransactorSession) SetPubkey(node [32]byte, x [32]byte, y [32]byte) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetPubkey(&_PublicResolver.TransactOpts, node, x, y)
 }
 
-// SetText is a paid mutator transaction binding the contract mlemood 0x10f13a8c.
+// SetText is a paid mutator transaction binding the contract method 0x10f13a8c.
 //
 // Solidity: function setText(node bytes32, key string, value string) returns()
 func (_PublicResolver *PublicResolverTransactor) SetText(opts *bind.TransactOpts, node [32]byte, key string, value string) (*types.Transaction, error) {
 	return _PublicResolver.contract.Transact(opts, "setText", node, key, value)
 }
 
-// SetText is a paid mutator transaction binding the contract mlemood 0x10f13a8c.
+// SetText is a paid mutator transaction binding the contract method 0x10f13a8c.
 //
 // Solidity: function setText(node bytes32, key string, value string) returns()
 func (_PublicResolver *PublicResolverSession) SetText(node [32]byte, key string, value string) (*types.Transaction, error) {
 	return _PublicResolver.Contract.SetText(&_PublicResolver.TransactOpts, node, key, value)
 }
 
-// SetText is a paid mutator transaction binding the contract mlemood 0x10f13a8c.
+// SetText is a paid mutator transaction binding the contract method 0x10f13a8c.
 //
 // Solidity: function setText(node bytes32, key string, value string) returns()
 func (_PublicResolver *PublicResolverTransactorSession) SetText(node [32]byte, key string, value string) (*types.Transaction, error) {
@@ -517,7 +517,7 @@ type PublicResolverABIChangedIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *PublicResolverABIChangedIterator) Next() bool {
@@ -658,7 +658,7 @@ type PublicResolverAddrChangedIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *PublicResolverAddrChangedIterator) Next() bool {
@@ -791,7 +791,7 @@ type PublicResolverContentChangedIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *PublicResolverContentChangedIterator) Next() bool {
@@ -924,7 +924,7 @@ type PublicResolverNameChangedIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *PublicResolverNameChangedIterator) Next() bool {
@@ -1057,7 +1057,7 @@ type PublicResolverPubkeyChangedIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *PublicResolverPubkeyChangedIterator) Next() bool {
@@ -1191,7 +1191,7 @@ type PublicResolverTextChangedIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *PublicResolverTextChangedIterator) Next() bool {

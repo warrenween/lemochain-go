@@ -134,9 +134,9 @@ func (sub *Subscription) Unsubscribe() {
 	uninstallLoop:
 		for {
 			// write uninstall request and consume logs/hashes. This prevents
-			// the eventLoop broadcast mlemood to deadlock when writing to the
+			// the eventLoop broadcast method to deadlock when writing to the
 			// filter event channel while the subscription loop is waiting for
-			// this mlemood to return (and thus not reading these events).
+			// this method to return (and thus not reading these events).
 			select {
 			case sub.es.uninstall <- sub.f:
 				break uninstallLoop
@@ -148,7 +148,7 @@ func (sub *Subscription) Unsubscribe() {
 
 		// wait for filter to be uninstalled in work loop before returning
 		// this ensures that the manager won't use the event channel which
-		// will probably be closed by the client asap after this mlemood returns.
+		// will probably be closed by the client asap after this method returns.
 		<-sub.Err()
 	})
 }

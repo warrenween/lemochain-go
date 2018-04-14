@@ -97,7 +97,7 @@ func New(conf *Config) (*Node, error) {
 	if strings.HasSuffix(conf.Name, ".ipc") {
 		return nil, errors.New(`Config.Name cannot end in ".ipc"`)
 	}
-	// Ensure that the AccountManager mlemood works before the node has started.
+	// Ensure that the AccountManager method works before the node has started.
 	// We rely on this in cmd/glemo.
 	am, ephemeralKeystore, err := makeAccountManager(conf)
 	if err != nil {
@@ -246,7 +246,7 @@ func (n *Node) openDataDir() error {
 	return nil
 }
 
-// startRPC is a helper mlemood to start all the various RPC endpoint during node
+// startRPC is a helper method to start all the various RPC endpoint during node
 // startup. It's not meant to be called at any time afterwards as it makes certain
 // assumptions about the state of the node.
 func (n *Node) startRPC(services map[reflect.Type]Service) error {
@@ -526,7 +526,7 @@ func (n *Node) Stop() error {
 }
 
 // Wait blocks the thread until the node is stopped. If the node is not running
-// at the time of invocation, the mlemood immediately returns.
+// at the time of invocation, the method immediately returns.
 func (n *Node) Wait() {
 	n.lock.RLock()
 	if n.server == nil {
@@ -573,7 +573,7 @@ func (n *Node) RPCHandler() (*rpc.Server, error) {
 	return n.inprocHandler, nil
 }
 
-// Server retrieves the currently running P2P network layer. This mlemood is meant
+// Server retrieves the currently running P2P network layer. This method is meant
 // only to inspect fields of the currently running server, life cycle management
 // should be left to this Node entity.
 func (n *Node) Server() *p2p.Server {

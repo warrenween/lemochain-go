@@ -45,8 +45,8 @@ func TestHTTPErrorResponseWithValidRequest(t *testing.T) {
 	testHTTPErrorResponse(t, http.MethodPost, contentType, "", 0)
 }
 
-func testHTTPErrorResponse(t *testing.T, mlemood, contentType, body string, expected int) {
-	request := httptest.NewRequest(mlemood, "http://url.com", strings.NewReader(body))
+func testHTTPErrorResponse(t *testing.T, method, contentType, body string, expected int) {
+	request := httptest.NewRequest(method, "http://url.com", strings.NewReader(body))
 	request.Header.Set("content-type", contentType)
 	if code, _ := validateRequest(request); code != expected {
 		t.Fatalf("response code should be %d not %d", expected, code)

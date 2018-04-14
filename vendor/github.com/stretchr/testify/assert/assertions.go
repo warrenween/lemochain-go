@@ -54,7 +54,7 @@ func ObjectsAreEqual(expected, actual interface{}) bool {
 
 }
 
-// ObjectsAreEqualValues gets whlemoer two objects are equal, or if their
+// ObjectsAreEqualValues gets whether two objects are equal, or if their
 // values are equal.
 func ObjectsAreEqualValues(expected, actual interface{}) bool {
 	if ObjectsAreEqual(expected, actual) {
@@ -75,7 +75,7 @@ func ObjectsAreEqualValues(expected, actual interface{}) bool {
 }
 
 /* CallerInfo is necessary because the assert functions use the testing object
-internally, causing it to print the file:line of the assert mlemood, rather than where
+internally, causing it to print the file:line of the assert method, rather than where
 the problem actually occurred in calling code.*/
 
 // CallerInfo returns an array of strings containing the file and line number
@@ -141,7 +141,7 @@ func CallerInfo() []string {
 }
 
 // Stolen from the `go test` tool.
-// isTest tells whlemoer name looks like a test (or benchmark, according to prefix).
+// isTest tells whether name looks like a test (or benchmark, according to prefix).
 // It is a Test (say) if there is a character after Test that is not a lower-case letter.
 // We don't want TesticularCancer.
 func isTest(name, prefix string) bool {
@@ -298,7 +298,7 @@ func IsType(t TestingT, expectedType interface{}, object interface{}, msgAndArgs
 //
 //    assert.Equal(t, 123, 123)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 //
 // Pointer variable equality is determined based on the equality of the
 // referenced values (as opposed to the memory addresses). Function equality
@@ -342,7 +342,7 @@ func formatUnequalValues(expected, actual interface{}) (e string, a string) {
 //
 //    assert.EqualValues(t, uint32(123), int32(123))
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func EqualValues(t TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
 
 	if !ObjectsAreEqualValues(expected, actual) {
@@ -361,7 +361,7 @@ func EqualValues(t TestingT, expected, actual interface{}, msgAndArgs ...interfa
 //
 //    assert.Exactly(t, int32(123), int64(123))
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Exactly(t TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool {
 
 	aType := reflect.TypeOf(expected)
@@ -379,7 +379,7 @@ func Exactly(t TestingT, expected, actual interface{}, msgAndArgs ...interface{}
 //
 //    assert.NotNil(t, err)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NotNil(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
 	if !isNil(object) {
 		return true
@@ -406,7 +406,7 @@ func isNil(object interface{}) bool {
 //
 //    assert.Nil(t, err)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Nil(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
 	if isNil(object) {
 		return true
@@ -429,7 +429,7 @@ var numericZeros = []interface{}{
 	float64(0),
 }
 
-// isEmpty gets whlemoer the specified object is considered empty or not.
+// isEmpty gets whether the specified object is considered empty or not.
 func isEmpty(object interface{}) bool {
 
 	if object == nil {
@@ -479,7 +479,7 @@ func isEmpty(object interface{}) bool {
 //
 //  assert.Empty(t, obj)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Empty(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
 
 	pass := isEmpty(object)
@@ -498,7 +498,7 @@ func Empty(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
 //    assert.Equal(t, "two", obj[1])
 //  }
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NotEmpty(t TestingT, object interface{}, msgAndArgs ...interface{}) bool {
 
 	pass := !isEmpty(object)
@@ -527,7 +527,7 @@ func getLen(x interface{}) (ok bool, length int) {
 //
 //    assert.Len(t, mySlice, 3)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Len(t TestingT, object interface{}, length int, msgAndArgs ...interface{}) bool {
 	ok, l := getLen(object)
 	if !ok {
@@ -544,7 +544,7 @@ func Len(t TestingT, object interface{}, length int, msgAndArgs ...interface{}) 
 //
 //    assert.True(t, myBool)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func True(t TestingT, value bool, msgAndArgs ...interface{}) bool {
 
 	if value != true {
@@ -559,7 +559,7 @@ func True(t TestingT, value bool, msgAndArgs ...interface{}) bool {
 //
 //    assert.False(t, myBool)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func False(t TestingT, value bool, msgAndArgs ...interface{}) bool {
 
 	if value != false {
@@ -574,7 +574,7 @@ func False(t TestingT, value bool, msgAndArgs ...interface{}) bool {
 //
 //    assert.NotEqual(t, obj1, obj2)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 //
 // Pointer variable equality is determined based on the equality of the
 // referenced values (as opposed to the memory addresses).
@@ -637,7 +637,7 @@ func includeElement(list interface{}, element interface{}) (ok, found bool) {
 //    assert.Contains(t, ["Hello", "World"], "World")
 //    assert.Contains(t, {"Hello": "World"}, "Hello")
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Contains(t TestingT, s, contains interface{}, msgAndArgs ...interface{}) bool {
 
 	ok, found := includeElement(s, contains)
@@ -659,7 +659,7 @@ func Contains(t TestingT, s, contains interface{}, msgAndArgs ...interface{}) bo
 //    assert.NotContains(t, ["Hello", "World"], "Earth")
 //    assert.NotContains(t, {"Hello": "World"}, "Earth")
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NotContains(t TestingT, s, contains interface{}, msgAndArgs ...interface{}) bool {
 
 	ok, found := includeElement(s, contains)
@@ -679,7 +679,7 @@ func NotContains(t TestingT, s, contains interface{}, msgAndArgs ...interface{})
 //
 //    assert.Subset(t, [1, 2, 3], [1, 2], "But [1, 2, 3] does contain [1, 2]")
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Subset(t TestingT, list, subset interface{}, msgAndArgs ...interface{}) (ok bool) {
 	if subset == nil {
 		return true // we consider nil to be equal to the nil set
@@ -722,7 +722,7 @@ func Subset(t TestingT, list, subset interface{}, msgAndArgs ...interface{}) (ok
 //
 //    assert.NotSubset(t, [1, 3, 4], [1, 2], "But [1, 3, 4] does not contain [1, 2]")
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NotSubset(t TestingT, list, subset interface{}, msgAndArgs ...interface{}) (ok bool) {
 	if subset == nil {
 		return false // we consider nil to be equal to the nil set
@@ -770,7 +770,7 @@ func Condition(t TestingT, comp Comparison, msgAndArgs ...interface{}) bool {
 }
 
 // PanicTestFunc defines a func that should be passed to the assert.Panics and assert.NotPanics
-// mlemoods, and represents a simple func that takes no arguments, and returns nothing.
+// methods, and represents a simple func that takes no arguments, and returns nothing.
 type PanicTestFunc func()
 
 // didPanic returns true if the function passed to it panics. Otherwise, it returns false.
@@ -799,7 +799,7 @@ func didPanic(f PanicTestFunc) (bool, interface{}) {
 //
 //   assert.Panics(t, func(){ GoCrazy() })
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Panics(t TestingT, f PanicTestFunc, msgAndArgs ...interface{}) bool {
 
 	if funcDidPanic, panicValue := didPanic(f); !funcDidPanic {
@@ -814,7 +814,7 @@ func Panics(t TestingT, f PanicTestFunc, msgAndArgs ...interface{}) bool {
 //
 //   assert.PanicsWithValue(t, "crazy error", func(){ GoCrazy() })
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func PanicsWithValue(t TestingT, expected interface{}, f PanicTestFunc, msgAndArgs ...interface{}) bool {
 
 	funcDidPanic, panicValue := didPanic(f)
@@ -832,7 +832,7 @@ func PanicsWithValue(t TestingT, expected interface{}, f PanicTestFunc, msgAndAr
 //
 //   assert.NotPanics(t, func(){ RemainCalm() })
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NotPanics(t TestingT, f PanicTestFunc, msgAndArgs ...interface{}) bool {
 
 	if funcDidPanic, panicValue := didPanic(f); funcDidPanic {
@@ -846,7 +846,7 @@ func NotPanics(t TestingT, f PanicTestFunc, msgAndArgs ...interface{}) bool {
 //
 //   assert.WithinDuration(t, time.Now(), time.Now(), 10*time.Second)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func WithinDuration(t TestingT, expected, actual time.Time, delta time.Duration, msgAndArgs ...interface{}) bool {
 
 	dt := expected.Sub(actual)
@@ -897,7 +897,7 @@ func toFloat(x interface{}) (float64, bool) {
 //
 // 	 assert.InDelta(t, math.Pi, (22 / 7.0), 0.01)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func InDelta(t TestingT, expected, actual interface{}, delta float64, msgAndArgs ...interface{}) bool {
 
 	af, aok := toFloat(expected)
@@ -962,7 +962,7 @@ func calcRelativeError(expected, actual interface{}) (float64, error) {
 
 // InEpsilon asserts that expected and actual have a relative error less than epsilon
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func InEpsilon(t TestingT, expected, actual interface{}, epsilon float64, msgAndArgs ...interface{}) bool {
 	actualEpsilon, err := calcRelativeError(expected, actual)
 	if err != nil {
@@ -1008,7 +1008,7 @@ func InEpsilonSlice(t TestingT, expected, actual interface{}, epsilon float64, m
 //	   assert.Equal(t, expectedObj, actualObj)
 //   }
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NoError(t TestingT, err error, msgAndArgs ...interface{}) bool {
 	if err != nil {
 		return Fail(t, fmt.Sprintf("Received unexpected error:\n%+v", err), msgAndArgs...)
@@ -1024,7 +1024,7 @@ func NoError(t TestingT, err error, msgAndArgs ...interface{}) bool {
 //	   assert.Equal(t, expectedError, err)
 //   }
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Error(t TestingT, err error, msgAndArgs ...interface{}) bool {
 
 	if err == nil {
@@ -1040,7 +1040,7 @@ func Error(t TestingT, err error, msgAndArgs ...interface{}) bool {
 //   actualObj, err := SomeFunction()
 //   assert.EqualError(t, err,  expectedErrorString)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func EqualError(t TestingT, theError error, errString string, msgAndArgs ...interface{}) bool {
 	if !Error(t, theError, msgAndArgs...) {
 		return false
@@ -1075,7 +1075,7 @@ func matchRegexp(rx interface{}, str interface{}) bool {
 //  assert.Regexp(t, regexp.MustCompile("start"), "it's starting")
 //  assert.Regexp(t, "start...$", "it's not starting")
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func Regexp(t TestingT, rx interface{}, str interface{}, msgAndArgs ...interface{}) bool {
 
 	match := matchRegexp(rx, str)
@@ -1092,7 +1092,7 @@ func Regexp(t TestingT, rx interface{}, str interface{}, msgAndArgs ...interface
 //  assert.NotRegexp(t, regexp.MustCompile("starts"), "it's starting")
 //  assert.NotRegexp(t, "^start", "it's not starting")
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func NotRegexp(t TestingT, rx interface{}, str interface{}, msgAndArgs ...interface{}) bool {
 	match := matchRegexp(rx, str)
 
@@ -1124,7 +1124,7 @@ func NotZero(t TestingT, i interface{}, msgAndArgs ...interface{}) bool {
 //
 //  assert.JSONEq(t, `{"hello": "world", "foo": "bar"}`, `{"foo": "bar", "hello": "world"}`)
 //
-// Returns whlemoer the assertion was successful (true) or not (false).
+// Returns whether the assertion was successful (true) or not (false).
 func JSONEq(t TestingT, expected string, actual string, msgAndArgs ...interface{}) bool {
 	var expectedJSONAsInterface, actualJSONAsInterface interface{}
 
@@ -1184,7 +1184,7 @@ func diff(expected interface{}, actual interface{}) string {
 	return "\n\nDiff:\n" + diff
 }
 
-// validateEqualArgs checks whlemoer provided arguments can be safely used in the
+// validateEqualArgs checks whether provided arguments can be safely used in the
 // Equal/NotEqual functions.
 func validateEqualArgs(expected, actual interface{}) error {
 	if isFunction(expected) || isFunction(actual) {

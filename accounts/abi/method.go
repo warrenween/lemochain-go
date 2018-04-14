@@ -23,14 +23,14 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/crypto"
 )
 
-// Method represents a callable given a `Name` and whlemoer the mlemood is a constant.
-// If the mlemood is `Const` no transaction needs to be created for this
+// Method represents a callable given a `Name` and whether the method is a constant.
+// If the method is `Const` no transaction needs to be created for this
 // particular Method call. It can easily be simulated using a local VM.
-// For example a `Balance()` mlemood only needs to retrieve somlemoing
+// For example a `Balance()` method only needs to retrieve somlemoing
 // from the storage and therefor requires no Tx to be send to the
-// network. A mlemood such as `Transact` does require a Tx and thus will
+// network. A method such as `Transact` does require a Tx and thus will
 // be flagged `true`.
-// Input specifies the required input parameters for this gives mlemood.
+// Input specifies the required input parameters for this gives method.
 type Method struct {
 	Name    string
 	Const   bool
@@ -38,42 +38,42 @@ type Method struct {
 	Outputs Arguments
 }
 
-// Sig returns the mlemoods string signature according to the ABI spec.
+// Sig returns the methods string signature according to the ABI spec.
 //
 // Example
 //
 //     function foo(uint32 a, int b)    =    "foo(uint32,int256)"
 //
 // Please note that "int" is substitute for its canonical representation "int256"
-func (mlemood Method) Sig() string {
-	types := make([]string, len(mlemood.Inputs))
+func (method Method) Sig() string {
+	types := make([]string, len(method.Inputs))
 	i := 0
-	for _, input := range mlemood.Inputs {
+	for _, input := range method.Inputs {
 		types[i] = input.Type.String()
 		i++
 	}
-	return fmt.Sprintf("%v(%v)", mlemood.Name, strings.Join(types, ","))
+	return fmt.Sprintf("%v(%v)", method.Name, strings.Join(types, ","))
 }
 
-func (mlemood Method) String() string {
-	inputs := make([]string, len(mlemood.Inputs))
-	for i, input := range mlemood.Inputs {
+func (method Method) String() string {
+	inputs := make([]string, len(method.Inputs))
+	for i, input := range method.Inputs {
 		inputs[i] = fmt.Sprintf("%v %v", input.Name, input.Type)
 	}
-	outputs := make([]string, len(mlemood.Outputs))
-	for i, output := range mlemood.Outputs {
+	outputs := make([]string, len(method.Outputs))
+	for i, output := range method.Outputs {
 		if len(output.Name) > 0 {
 			outputs[i] = fmt.Sprintf("%v ", output.Name)
 		}
 		outputs[i] += output.Type.String()
 	}
 	constant := ""
-	if mlemood.Const {
+	if method.Const {
 		constant = "constant "
 	}
-	return fmt.Sprintf("function %v(%v) %sreturns(%v)", mlemood.Name, strings.Join(inputs, ", "), constant, strings.Join(outputs, ", "))
+	return fmt.Sprintf("function %v(%v) %sreturns(%v)", method.Name, strings.Join(inputs, ", "), constant, strings.Join(outputs, ", "))
 }
 
-func (mlemood Method) Id() []byte {
-	return crypto.Keccak256([]byte(mlemood.Sig()))[:4]
+func (method Method) Id() []byte {
+	return crypto.Keccak256([]byte(method.Sig()))[:4]
 }

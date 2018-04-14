@@ -46,7 +46,7 @@ func (c *comment) CheckCommentString() string {
 // The Checker interface.
 
 // The Checker interface must be provided by checkers used with
-// the Assert and Check verification mlemoods.
+// the Assert and Check verification methods.
 type Checker interface {
 	Info() *CheckerInfo
 	Check(params []interface{}, names []string) (result bool, error string)
@@ -100,7 +100,7 @@ type isNilChecker struct {
 	*CheckerInfo
 }
 
-// The IsNil checker tests whlemoer the obtained value is nil.
+// The IsNil checker tests whether the obtained value is nil.
 //
 // For example:
 //

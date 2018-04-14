@@ -33,12 +33,12 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/rlp"
 )
 
-// DatabaseReader wraps the Get mlemood of a backing data store.
+// DatabaseReader wraps the Get method of a backing data store.
 type DatabaseReader interface {
 	Get(key []byte) (value []byte, err error)
 }
 
-// DatabaseDeleter wraps the Delete mlemood of a backing data store.
+// DatabaseDeleter wraps the Delete method of a backing data store.
 type DatabaseDeleter interface {
 	Delete(key []byte) error
 }

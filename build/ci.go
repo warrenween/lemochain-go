@@ -710,7 +710,7 @@ func doWindowsInstaller(cmdline []string) {
 
 func doAndroidArchive(cmdline []string) {
 	var (
-		local  = flag.Bool("local", false, `Flag whlemoer we're only doing a local build (skip Maven artifacts)`)
+		local  = flag.Bool("local", false, `Flag whether we're only doing a local build (skip Maven artifacts)`)
 		signer = flag.String("signer", "", `Environment variable holding the signing key (e.g. ANDROID_SIGNING_KEY)`)
 		deploy = flag.String("deploy", "", `Destination to deploy the archive (usually "https://oss.sonatype.org")`)
 		upload = flag.String("upload", "", `Destination to upload the archive (usually "glemostore/builds")`)
@@ -838,7 +838,7 @@ func newMavenMetadata(env build.Environment) mavenMetadata {
 
 func doXCodeFramework(cmdline []string) {
 	var (
-		local  = flag.Bool("local", false, `Flag whlemoer we're only doing a local build (skip Maven artifacts)`)
+		local  = flag.Bool("local", false, `Flag whether we're only doing a local build (skip Maven artifacts)`)
 		signer = flag.String("signer", "", `Environment variable holding the signing key (e.g. IOS_SIGNING_KEY)`)
 		deploy = flag.String("deploy", "", `Destination to deploy the archive (usually "trunk")`)
 		upload = flag.String("upload", "", `Destination to upload the archives (usually "glemostore/builds")`)
@@ -929,7 +929,7 @@ func newPodMetadata(env build.Environment, archive string) podMetadata {
 
 func doXgo(cmdline []string) {
 	var (
-		alltools = flag.Bool("alltools", false, `Flag whlemoer we're building all known tools, or only on in particular`)
+		alltools = flag.Bool("alltools", false, `Flag whether we're building all known tools, or only on in particular`)
 	)
 	flag.CommandLine.Parse(cmdline)
 	env := build.Env()

@@ -30,7 +30,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 )
 
-// ChainIndexerBackend defines the mlemoods needed to process chain segments in
+// ChainIndexerBackend defines the methods needed to process chain segments in
 // the background and write the segment results into the database. These can be
 // used to create filter blooms or CHTs.
 type ChainIndexerBackend interface {
@@ -70,7 +70,7 @@ type ChainIndexer struct {
 	backend  ChainIndexerBackend // Background processor generating the index data content
 	children []*ChainIndexer     // Child indexers to cascade chain updates to
 
-	active uint32          // Flag whlemoer the event loop was started
+	active uint32          // Flag whether the event loop was started
 	update chan struct{}   // Notification channel that headers should be processed
 	quit   chan chan error // Quit channel to tear down running goroutines
 

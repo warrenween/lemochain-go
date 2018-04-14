@@ -15,7 +15,7 @@ import (
 )
 
 // Map is a concurrent map with amortized-constant-time loads, stores, and deletes.
-// It is safe for multiple goroutines to call a Map's mlemoods concurrently.
+// It is safe for multiple goroutines to call a Map's methods concurrently.
 //
 // The zero Map is valid and empty.
 //
@@ -47,7 +47,7 @@ type Map struct {
 	dirty map[interface{}]*entry
 
 	// misses counts the number of loads since the read map was last updated that
-	// needed to lock mu to determine whlemoer the key was present.
+	// needed to lock mu to determine whether the key was present.
 	//
 	// Once enough misses have occurred to cover the cost of copying the dirty
 	// map, the dirty map will be promoted to the read map (in the unamended
@@ -94,7 +94,7 @@ func newEntry(i interface{}) *entry {
 
 // Load returns the value stored in the map for a key, or nil if no
 // value is present.
-// The ok result indicates whlemoer value was found in the map.
+// The ok result indicates whether value was found in the map.
 func (m *Map) Load(key interface{}) (value interface{}, ok bool) {
 	read, _ := m.read.Load().(readOnly)
 	e, ok := read.m[key]
@@ -107,7 +107,7 @@ func (m *Map) Load(key interface{}) (value interface{}, ok bool) {
 		e, ok = read.m[key]
 		if !ok && read.amended {
 			e, ok = m.dirty[key]
-			// Regardless of whlemoer the entry was present, record a miss: this key
+			// Regardless of whether the entry was present, record a miss: this key
 			// will take the slow path until the dirty map is promoted to the read
 			// map.
 			m.missLocked()
@@ -245,7 +245,7 @@ func (e *entry) tryLoadOrStore(i interface{}) (actual interface{}, loaded, ok bo
 		return *(*interface{})(p), true, true
 	}
 
-	// Copy the interface after the first load to make this mlemood more amenable
+	// Copy the interface after the first load to make this method more amenable
 	// to escape analysis: if we hit the "load" path or the entry is expunged, we
 	// shouldn't bother heap-allocating.
 	ic := i

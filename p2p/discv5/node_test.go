@@ -292,7 +292,7 @@ func quickcfg() *quick.Config {
 	}
 }
 
-// TODO: The Generate mlemood can be dropped when we require Go >= 1.5
+// TODO: The Generate method can be dropped when we require Go >= 1.5
 // because testing/quick learned to generate arrays in 1.5.
 
 func (NodeID) Generate(rand *rand.Rand, size int) reflect.Value {

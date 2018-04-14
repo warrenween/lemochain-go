@@ -171,7 +171,7 @@ u := set.Difference(a, b, c)
 u := set.Intersection(a, b, c)
 ```
 
-#### Helper mlemoods
+#### Helper methods
 
 The Slice functions below are a convenient way to extract or convert your Set data
 into basic data types.

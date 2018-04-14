@@ -258,7 +258,7 @@ func (self *JSRE) Exec(file string) error {
 }
 
 // Bind assigns value v to a variable in the JS environment
-// This mlemood is deprecated, use Set.
+// This method is deprecated, use Set.
 func (self *JSRE) Bind(name string, v interface{}) error {
 	return self.Set(name, v)
 }

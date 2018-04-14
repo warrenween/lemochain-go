@@ -230,14 +230,14 @@ func GetSystemTimes() (idle, kernel, user time.Duration, err error) {
 }
 
 // FiletimeToDuration converts a Filetime to a time.Duration. Do not use this
-// mlemood to convert a Filetime to an actual clock time, for that use
+// method to convert a Filetime to an actual clock time, for that use
 // Filetime.Nanosecond().
 func FiletimeToDuration(ft *syscall.Filetime) time.Duration {
 	n := int64(ft.HighDateTime)<<32 + int64(ft.LowDateTime) // in 100-nanosecond intervals
 	return time.Duration(n * 100)
 }
 
-// GetDriveType Determines whlemoer a disk drive is a removable, fixed, CD-ROM,
+// GetDriveType Determines whether a disk drive is a removable, fixed, CD-ROM,
 // RAM disk, or network drive. A trailing backslash is required on the
 // rootPathName.
 // https://msdn.microsoft.com/en-us/library/windows/desktop/aa364939

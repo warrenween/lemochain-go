@@ -63,16 +63,16 @@ func Bind(types []string, abis []string, bytecodes []string, pkg string, lang La
 			return r
 		}, abis[i])
 
-		// Extract the call and transact mlemoods; events; and sort them alphabetically
+		// Extract the call and transact methods; events; and sort them alphabetically
 		var (
 			calls     = make(map[string]*tmplMethod)
 			transacts = make(map[string]*tmplMethod)
 			events    = make(map[string]*tmplEvent)
 		)
 		for _, original := range evmABI.Methods {
-			// Normalize the mlemood for capital cases and non-anonymous inputs/outputs
+			// Normalize the method for capital cases and non-anonymous inputs/outputs
 			normalized := original
-			normalized.Name = mlemoodNormalizer[lang](original.Name)
+			normalized.Name = methodNormalizer[lang](original.Name)
 
 			normalized.Inputs = make([]abi.Argument, len(original.Inputs))
 			copy(normalized.Inputs, original.Inputs)
@@ -88,7 +88,7 @@ func Bind(types []string, abis []string, bytecodes []string, pkg string, lang La
 					normalized.Outputs[j].Name = capitalise(output.Name)
 				}
 			}
-			// Append the mlemoods to the call or transact lists
+			// Append the methods to the call or transact lists
 			if original.Const {
 				calls[original.Name] = &tmplMethod{Original: original, Normalized: normalized, Structured: structured(original.Outputs)}
 			} else {
@@ -102,7 +102,7 @@ func Bind(types []string, abis []string, bytecodes []string, pkg string, lang La
 			}
 			// Normalize the event for capital cases and non-anonymous outputs
 			normalized := original
-			normalized.Name = mlemoodNormalizer[lang](original.Name)
+			normalized.Name = methodNormalizer[lang](original.Name)
 
 			normalized.Inputs = make([]abi.Argument, len(original.Inputs))
 			copy(normalized.Inputs, original.Inputs)
@@ -336,14 +336,14 @@ func bindTopicTypeJava(kind abi.Type) string {
 }
 
 // namedType is a set of functions that transform language specific types to
-// named versions that my be used inside mlemood names.
+// named versions that my be used inside method names.
 var namedType = map[Lang]func(string, abi.Type) string{
 	LangGo:   func(string, abi.Type) string { panic("this shouldn't be needed") },
 	LangJava: namedTypeJava,
 }
 
 // namedTypeJava converts some primitive data types to named variants that can
-// be used as parts of mlemood names.
+// be used as parts of method names.
 func namedTypeJava(javaKind string, solKind abi.Type) string {
 	switch javaKind {
 	case "byte[]":
@@ -378,9 +378,9 @@ func namedTypeJava(javaKind string, solKind abi.Type) string {
 	}
 }
 
-// mlemoodNormalizer is a name transformer that modifies Solidity mlemood names to
+// methodNormalizer is a name transformer that modifies Solidity method names to
 // conform to target language naming concentions.
-var mlemoodNormalizer = map[Lang]func(string) string{
+var methodNormalizer = map[Lang]func(string) string{
 	LangGo:   capitalise,
 	LangJava: decapitalise,
 }
@@ -431,7 +431,7 @@ func toCamelCase(input string) string {
 	return result
 }
 
-// structured checks whlemoer a list of ABI data types has enough information to
+// structured checks whether a list of ABI data types has enough information to
 // operate through a proper Go struct or if flat returns are needed.
 func structured(args abi.Arguments) bool {
 	if len(args) < 2 {

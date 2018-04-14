@@ -80,17 +80,17 @@ type ChequebookTransactorSession struct {
 
 // ChequebookRaw is an auto generated low-level Go binding around an Lemochain contract.
 type ChequebookRaw struct {
-	Contract *Chequebook // Generic contract binding to access the raw mlemoods on
+	Contract *Chequebook // Generic contract binding to access the raw methods on
 }
 
 // ChequebookCallerRaw is an auto generated low-level read-only Go binding around an Lemochain contract.
 type ChequebookCallerRaw struct {
-	Contract *ChequebookCaller // Generic read-only contract binding to access the raw mlemoods on
+	Contract *ChequebookCaller // Generic read-only contract binding to access the raw methods on
 }
 
 // ChequebookTransactorRaw is an auto generated low-level write-only Go binding around an Lemochain contract.
 type ChequebookTransactorRaw struct {
-	Contract *ChequebookTransactor // Generic write-only contract binding to access the raw mlemoods on
+	Contract *ChequebookTransactor // Generic write-only contract binding to access the raw methods on
 }
 
 // NewChequebook creates a new instance of Chequebook, bound to a specific deployed contract.
@@ -138,45 +138,45 @@ func bindChequebook(address common.Address, caller bind.ContractCaller, transact
 	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Chequebook *ChequebookRaw) Call(opts *bind.CallOpts, result interface{}, mlemood string, params ...interface{}) error {
-	return _Chequebook.Contract.ChequebookCaller.contract.Call(opts, result, mlemood, params...)
+func (_Chequebook *ChequebookRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+	return _Chequebook.Contract.ChequebookCaller.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (_Chequebook *ChequebookRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _Chequebook.Contract.ChequebookTransactor.contract.Transfer(opts)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (_Chequebook *ChequebookRaw) Transact(opts *bind.TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
-	return _Chequebook.Contract.ChequebookTransactor.contract.Transact(opts, mlemood, params...)
+// Transact invokes the (paid) contract method with params as input values.
+func (_Chequebook *ChequebookRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _Chequebook.Contract.ChequebookTransactor.contract.Transact(opts, method, params...)
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Chequebook *ChequebookCallerRaw) Call(opts *bind.CallOpts, result interface{}, mlemood string, params ...interface{}) error {
-	return _Chequebook.Contract.contract.Call(opts, result, mlemood, params...)
+func (_Chequebook *ChequebookCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+	return _Chequebook.Contract.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (_Chequebook *ChequebookTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _Chequebook.Contract.contract.Transfer(opts)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (_Chequebook *ChequebookTransactorRaw) Transact(opts *bind.TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
-	return _Chequebook.Contract.contract.Transact(opts, mlemood, params...)
+// Transact invokes the (paid) contract method with params as input values.
+func (_Chequebook *ChequebookTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _Chequebook.Contract.contract.Transact(opts, method, params...)
 }
 
-// Sent is a free data retrieval call binding the contract mlemood 0x7bf786f8.
+// Sent is a free data retrieval call binding the contract method 0x7bf786f8.
 //
 // Solidity: function sent( address) constant returns(uint256)
 func (_Chequebook *ChequebookCaller) Sent(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
@@ -188,56 +188,56 @@ func (_Chequebook *ChequebookCaller) Sent(opts *bind.CallOpts, arg0 common.Addre
 	return *ret0, err
 }
 
-// Sent is a free data retrieval call binding the contract mlemood 0x7bf786f8.
+// Sent is a free data retrieval call binding the contract method 0x7bf786f8.
 //
 // Solidity: function sent( address) constant returns(uint256)
 func (_Chequebook *ChequebookSession) Sent(arg0 common.Address) (*big.Int, error) {
 	return _Chequebook.Contract.Sent(&_Chequebook.CallOpts, arg0)
 }
 
-// Sent is a free data retrieval call binding the contract mlemood 0x7bf786f8.
+// Sent is a free data retrieval call binding the contract method 0x7bf786f8.
 //
 // Solidity: function sent( address) constant returns(uint256)
 func (_Chequebook *ChequebookCallerSession) Sent(arg0 common.Address) (*big.Int, error) {
 	return _Chequebook.Contract.Sent(&_Chequebook.CallOpts, arg0)
 }
 
-// Cash is a paid mutator transaction binding the contract mlemood 0xfbf788d6.
+// Cash is a paid mutator transaction binding the contract method 0xfbf788d6.
 //
 // Solidity: function cash(beneficiary address, amount uint256, sig_v uint8, sig_r bytes32, sig_s bytes32) returns()
 func (_Chequebook *ChequebookTransactor) Cash(opts *bind.TransactOpts, beneficiary common.Address, amount *big.Int, sig_v uint8, sig_r [32]byte, sig_s [32]byte) (*types.Transaction, error) {
 	return _Chequebook.contract.Transact(opts, "cash", beneficiary, amount, sig_v, sig_r, sig_s)
 }
 
-// Cash is a paid mutator transaction binding the contract mlemood 0xfbf788d6.
+// Cash is a paid mutator transaction binding the contract method 0xfbf788d6.
 //
 // Solidity: function cash(beneficiary address, amount uint256, sig_v uint8, sig_r bytes32, sig_s bytes32) returns()
 func (_Chequebook *ChequebookSession) Cash(beneficiary common.Address, amount *big.Int, sig_v uint8, sig_r [32]byte, sig_s [32]byte) (*types.Transaction, error) {
 	return _Chequebook.Contract.Cash(&_Chequebook.TransactOpts, beneficiary, amount, sig_v, sig_r, sig_s)
 }
 
-// Cash is a paid mutator transaction binding the contract mlemood 0xfbf788d6.
+// Cash is a paid mutator transaction binding the contract method 0xfbf788d6.
 //
 // Solidity: function cash(beneficiary address, amount uint256, sig_v uint8, sig_r bytes32, sig_s bytes32) returns()
 func (_Chequebook *ChequebookTransactorSession) Cash(beneficiary common.Address, amount *big.Int, sig_v uint8, sig_r [32]byte, sig_s [32]byte) (*types.Transaction, error) {
 	return _Chequebook.Contract.Cash(&_Chequebook.TransactOpts, beneficiary, amount, sig_v, sig_r, sig_s)
 }
 
-// Kill is a paid mutator transaction binding the contract mlemood 0x41c0e1b5.
+// Kill is a paid mutator transaction binding the contract method 0x41c0e1b5.
 //
 // Solidity: function kill() returns()
 func (_Chequebook *ChequebookTransactor) Kill(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _Chequebook.contract.Transact(opts, "kill")
 }
 
-// Kill is a paid mutator transaction binding the contract mlemood 0x41c0e1b5.
+// Kill is a paid mutator transaction binding the contract method 0x41c0e1b5.
 //
 // Solidity: function kill() returns()
 func (_Chequebook *ChequebookSession) Kill() (*types.Transaction, error) {
 	return _Chequebook.Contract.Kill(&_Chequebook.TransactOpts)
 }
 
-// Kill is a paid mutator transaction binding the contract mlemood 0x41c0e1b5.
+// Kill is a paid mutator transaction binding the contract method 0x41c0e1b5.
 //
 // Solidity: function kill() returns()
 func (_Chequebook *ChequebookTransactorSession) Kill() (*types.Transaction, error) {
@@ -257,7 +257,7 @@ type ChequebookOverdraftIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *ChequebookOverdraftIterator) Next() bool {

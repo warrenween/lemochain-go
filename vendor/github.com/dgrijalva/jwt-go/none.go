@@ -1,10 +1,10 @@
 package jwt
 
-// Implements the none signing mlemood.  This is required by the spec
+// Implements the none signing method.  This is required by the spec
 // but you probably should never use it.
 var SigningMethodNone *signingMethodNone
 
-const UnsafeAllowNoneSignatureType unsafeNoneMagicConstant = "none signing mlemood allowed"
+const UnsafeAllowNoneSignatureType unsafeNoneMagicConstant = "none signing method allowed"
 
 var NoneSignatureTypeDisallowedError error
 
@@ -27,19 +27,19 @@ func (m *signingMethodNone) Alg() string {
 // Only allow 'none' alg type if UnsafeAllowNoneSignatureType is specified as the key
 func (m *signingMethodNone) Verify(signingString, signature string, key interface{}) (err error) {
 	// Key must be UnsafeAllowNoneSignatureType to prevent accidentally
-	// accepting 'none' signing mlemood
+	// accepting 'none' signing method
 	if _, ok := key.(unsafeNoneMagicConstant); !ok {
 		return NoneSignatureTypeDisallowedError
 	}
-	// If signing mlemood is none, signature must be an empty string
+	// If signing method is none, signature must be an empty string
 	if signature != "" {
 		return NewValidationError(
-			"'none' signing mlemood with non-empty signature",
+			"'none' signing method with non-empty signature",
 			ValidationErrorSignatureInvalid,
 		)
 	}
 
-	// Accept 'none' signing mlemood.
+	// Accept 'none' signing method.
 	return nil
 }
 

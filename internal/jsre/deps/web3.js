@@ -648,9 +648,9 @@ var SolidityCoder = function (types) {
 };
 
 /**
- * This mlemood should be used to transform type to SolidityType
+ * This method should be used to transform type to SolidityType
  *
- * @mlemood _requireType
+ * @method _requireType
  * @param {String} type
  * @returns {SolidityType}
  * @throws {Error} throws if no matching type is found
@@ -670,7 +670,7 @@ SolidityCoder.prototype._requireType = function (type) {
 /**
  * Should be used to encode plain param
  *
- * @mlemood encodeParam
+ * @method encodeParam
  * @param {String} type
  * @param {Object} plain param
  * @return {String} encoded plain param
@@ -682,7 +682,7 @@ SolidityCoder.prototype.encodeParam = function (type, param) {
 /**
  * Should be used to encode list of params
  *
- * @mlemood encodeParams
+ * @method encodeParams
  * @param {Array} types
  * @param {Array} params
  * @return {String} encoded list of params
@@ -801,7 +801,7 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
 /**
  * Should be used to decode bytes to plain param
  *
- * @mlemood decodeParam
+ * @method decodeParam
  * @param {String} type
  * @param {String} bytes
  * @return {Object} plain param
@@ -813,7 +813,7 @@ SolidityCoder.prototype.decodeParam = function (type, bytes) {
 /**
  * Should be used to decode list of params
  *
- * @mlemood decodeParam
+ * @method decodeParam
  * @param {Array} types
  * @param {String} bytes
  * @return {Array} array of plain params
@@ -921,7 +921,7 @@ var SolidityParam = require('./param');
  * If value is negative, return it's two's complement
  * If the value is floating point, round it down
  *
- * @mlemood formatInputInt
+ * @method formatInputInt
  * @param {String|Number|BigNumber} value that needs to be formatted
  * @returns {SolidityParam}
  */
@@ -934,7 +934,7 @@ var formatInputInt = function (value) {
 /**
  * Formats input bytes
  *
- * @mlemood formatInputBytes
+ * @method formatInputBytes
  * @param {String}
  * @returns {SolidityParam}
  */
@@ -948,7 +948,7 @@ var formatInputBytes = function (value) {
 /**
  * Formats input bytes
  *
- * @mlemood formatDynamicInputBytes
+ * @method formatDynamicInputBytes
  * @param {String}
  * @returns {SolidityParam}
  */
@@ -963,7 +963,7 @@ var formatInputDynamicBytes = function (value) {
 /**
  * Formats input value to byte representation of string
  *
- * @mlemood formatInputString
+ * @method formatInputString
  * @param {String}
  * @returns {SolidityParam}
  */
@@ -978,7 +978,7 @@ var formatInputString = function (value) {
 /**
  * Formats input value to byte representation of bool
  *
- * @mlemood formatInputBool
+ * @method formatInputBool
  * @param {Boolean}
  * @returns {SolidityParam}
  */
@@ -991,7 +991,7 @@ var formatInputBool = function (value) {
  * Formats input value to byte representation of real
  * Values are multiplied by 2^m and encoded as integers
  *
- * @mlemood formatInputReal
+ * @method formatInputReal
  * @param {String|Number|BigNumber}
  * @returns {SolidityParam}
  */
@@ -1002,7 +1002,7 @@ var formatInputReal = function (value) {
 /**
  * Check if input value is negative
  *
- * @mlemood signedIsNegative
+ * @method signedIsNegative
  * @param {String} value is hex format
  * @returns {Boolean} true if it is negative, otherwise false
  */
@@ -1013,7 +1013,7 @@ var signedIsNegative = function (value) {
 /**
  * Formats right-aligned output bytes to int
  *
- * @mlemood formatOutputInt
+ * @method formatOutputInt
  * @param {SolidityParam} param
  * @returns {BigNumber} right-aligned output bytes formatted to big number
  */
@@ -1031,7 +1031,7 @@ var formatOutputInt = function (param) {
 /**
  * Formats right-aligned output bytes to uint
  *
- * @mlemood formatOutputUInt
+ * @method formatOutputUInt
  * @param {SolidityParam}
  * @returns {BigNumeber} right-aligned output bytes formatted to uint
  */
@@ -1043,7 +1043,7 @@ var formatOutputUInt = function (param) {
 /**
  * Formats right-aligned output bytes to real
  *
- * @mlemood formatOutputReal
+ * @method formatOutputReal
  * @param {SolidityParam}
  * @returns {BigNumber} input bytes formatted to real
  */
@@ -1054,7 +1054,7 @@ var formatOutputReal = function (param) {
 /**
  * Formats right-aligned output bytes to ureal
  *
- * @mlemood formatOutputUReal
+ * @method formatOutputUReal
  * @param {SolidityParam}
  * @returns {BigNumber} input bytes formatted to ureal
  */
@@ -1065,7 +1065,7 @@ var formatOutputUReal = function (param) {
 /**
  * Should be used to format output bool
  *
- * @mlemood formatOutputBool
+ * @method formatOutputBool
  * @param {SolidityParam}
  * @returns {Boolean} right-aligned input bytes formatted to bool
  */
@@ -1076,7 +1076,7 @@ var formatOutputBool = function (param) {
 /**
  * Should be used to format output bytes
  *
- * @mlemood formatOutputBytes
+ * @method formatOutputBytes
  * @param {SolidityParam} left-aligned hex representation of string
  * @param {String} name type name
  * @returns {String} hex string
@@ -1090,7 +1090,7 @@ var formatOutputBytes = function (param, name) {
 /**
  * Should be used to format output bytes
  *
- * @mlemood formatOutputDynamicBytes
+ * @method formatOutputDynamicBytes
  * @param {SolidityParam} left-aligned hex representation of string
  * @returns {String} hex string
  */
@@ -1102,7 +1102,7 @@ var formatOutputDynamicBytes = function (param) {
 /**
  * Should be used to format output string
  *
- * @mlemood formatOutputString
+ * @method formatOutputString
  * @param {SolidityParam} left-aligned hex representation of string
  * @returns {String} ascii string
  */
@@ -1114,7 +1114,7 @@ var formatOutputString = function (param) {
 /**
  * Should be used to format output address
  *
- * @mlemood formatOutputAddress
+ * @method formatOutputAddress
  * @param {SolidityParam} right-aligned input bytes
  * @returns {String} address
  */
@@ -1210,9 +1210,9 @@ var SolidityParam = function (value, offset) {
 };
 
 /**
- * This mlemood should be used to get length of params's dynamic part
+ * This method should be used to get length of params's dynamic part
  * 
- * @mlemood dynamicPartLength
+ * @method dynamicPartLength
  * @returns {Number} length of dynamic part (in bytes)
  */
 SolidityParam.prototype.dynamicPartLength = function () {
@@ -1220,9 +1220,9 @@ SolidityParam.prototype.dynamicPartLength = function () {
 };
 
 /**
- * This mlemood should be used to create copy of solidity param with different offset
+ * This method should be used to create copy of solidity param with different offset
  *
- * @mlemood withOffset
+ * @method withOffset
  * @param {Number} offset length in bytes
  * @returns {SolidityParam} new solidity param with applied offset
  */
@@ -1231,10 +1231,10 @@ SolidityParam.prototype.withOffset = function (offset) {
 };
 
 /**
- * This mlemood should be used to combine solidity params toglemoer
+ * This method should be used to combine solidity params toglemoer
  * eg. when appending an array
  *
- * @mlemood combine
+ * @method combine
  * @param {SolidityParam} param with which we should combine
  * @param {SolidityParam} result of combination
  */
@@ -1243,10 +1243,10 @@ SolidityParam.prototype.combine = function (param) {
 };
 
 /**
- * This mlemood should be called to check if param has dynamic size.
+ * This method should be called to check if param has dynamic size.
  * If it has, it returns true, otherwise false
  *
- * @mlemood isDynamic
+ * @method isDynamic
  * @returns {Boolean}
  */
 SolidityParam.prototype.isDynamic = function () {
@@ -1254,9 +1254,9 @@ SolidityParam.prototype.isDynamic = function () {
 };
 
 /**
- * This mlemood should be called to transform offset to bytes
+ * This method should be called to transform offset to bytes
  *
- * @mlemood offsetAsBytes
+ * @method offsetAsBytes
  * @returns {String} bytes representation of offset
  */
 SolidityParam.prototype.offsetAsBytes = function () {
@@ -1264,9 +1264,9 @@ SolidityParam.prototype.offsetAsBytes = function () {
 };
 
 /**
- * This mlemood should be called to get static part of param
+ * This method should be called to get static part of param
  *
- * @mlemood staticPart
+ * @method staticPart
  * @returns {String} offset if it is a dynamic param, otherwise value
  */
 SolidityParam.prototype.staticPart = function () {
@@ -1277,9 +1277,9 @@ SolidityParam.prototype.staticPart = function () {
 };
 
 /**
- * This mlemood should be called to get dynamic part of param
+ * This method should be called to get dynamic part of param
  *
- * @mlemood dynamicPart
+ * @method dynamicPart
  * @returns {String} returns a value if it is a dynamic param, otherwise empty string
  */
 SolidityParam.prototype.dynamicPart = function () {
@@ -1287,9 +1287,9 @@ SolidityParam.prototype.dynamicPart = function () {
 };
 
 /**
- * This mlemood should be called to encode param
+ * This method should be called to encode param
  *
- * @mlemood encode
+ * @method encode
  * @returns {String}
  */
 SolidityParam.prototype.encode = function () {
@@ -1297,9 +1297,9 @@ SolidityParam.prototype.encode = function () {
 };
 
 /**
- * This mlemood should be called to encode array of params
+ * This method should be called to encode array of params
  *
- * @mlemood encodeList
+ * @method encodeList
  * @param {Array[SolidityParam]} params
  * @returns {String}
  */
@@ -1400,18 +1400,18 @@ var SolidityType = function (config) {
 /**
  * Should be used to determine if this SolidityType do match given name
  *
- * @mlemood isType
+ * @method isType
  * @param {String} name
  * @return {Bool} true if type match this SolidityType, otherwise false
  */
 SolidityType.prototype.isType = function (name) {
-    throw "this mlemood should be overrwritten for type " + name;
+    throw "this method should be overrwritten for type " + name;
 };
 
 /**
  * Should be used to determine what is the length of static part in given type
  *
- * @mlemood staticPartLength
+ * @method staticPartLength
  * @param {String} name
  * @return {Number} length of static part in bytes
  */
@@ -1434,7 +1434,7 @@ SolidityType.prototype.staticPartLength = function (name) {
  * "type[]" => true
  * "type[4]" => false
  *
- * @mlemood isDynamicArray
+ * @method isDynamicArray
  * @param {String} name
  * @return {Bool} true if the type is dynamic array
  */
@@ -1449,7 +1449,7 @@ SolidityType.prototype.isDynamicArray = function (name) {
  * "type[]" => false
  * "type[4]" => true
  *
- * @mlemood isStaticArray
+ * @method isStaticArray
  * @param {String} name
  * @return {Bool} true if the type is static array
  */
@@ -1468,7 +1468,7 @@ SolidityType.prototype.isStaticArray = function (name) {
  * "int[1]" => 1
  * "int[]" => 1
  *
- * @mlemood staticArrayLength
+ * @method staticArrayLength
  * @param {String} name
  * @return {Number} static array length
  */
@@ -1489,7 +1489,7 @@ SolidityType.prototype.staticArrayLength = function (name) {
  * "int" => "int"
  * "int[]" => "int"
  *
- * @mlemood nestedName
+ * @method nestedName
  * @param {String} name
  * @return {String} nested name
  */
@@ -1507,7 +1507,7 @@ SolidityType.prototype.nestedName = function (name) {
  * Should return true if type has dynamic size by default
  * such types are "string", "bytes"
  *
- * @mlemood isDynamicType
+ * @method isDynamicType
  * @param {String} name
  * @return {Bool} true if is dynamic, otherwise false
  */
@@ -1522,7 +1522,7 @@ SolidityType.prototype.isDynamicType = function () {
  * "int[] => ["[]"]
  * "int" => null
  *
- * @mlemood nestedTypes
+ * @method nestedTypes
  * @param {String} name
  * @return {Array} array of nested types
  */
@@ -1534,7 +1534,7 @@ SolidityType.prototype.nestedTypes = function (name) {
 /**
  * Should be used to encode the value
  *
- * @mlemood encode
+ * @method encode
  * @param {Object} value
  * @param {String} name
  * @return {String} encoded value
@@ -1579,7 +1579,7 @@ SolidityType.prototype.encode = function (value, name) {
 /**
  * Should be used to decode value from bytes
  *
- * @mlemood decode
+ * @method decode
  * @param {String} bytes
  * @param {Number} offset in bytes
  * @param {String} name type name
@@ -1916,7 +1916,7 @@ var unitMap = {
 /**
  * Should be called to pad string to expected length
  *
- * @mlemood padLeft
+ * @method padLeft
  * @param {String} string to be padded
  * @param {Number} characters that result string should have
  * @param {String} sign, by default 0
@@ -1929,7 +1929,7 @@ var padLeft = function (string, chars, sign) {
 /**
  * Should be called to pad string to expected length
  *
- * @mlemood padRight
+ * @method padRight
  * @param {String} string to be padded
  * @param {Number} characters that result string should have
  * @param {String} sign, by default 0
@@ -1942,7 +1942,7 @@ var padRight = function (string, chars, sign) {
 /**
  * Should be called to get utf8 from it's hex representation
  *
- * @mlemood toUtf8
+ * @method toUtf8
  * @param {String} string in hex
  * @returns {String} ascii string representation of hex value
  */
@@ -1966,7 +1966,7 @@ var toUtf8 = function(hex) {
 /**
  * Should be called to get ascii from it's hex representation
  *
- * @mlemood toAscii
+ * @method toAscii
  * @param {String} string in hex
  * @returns {String} ascii string representation of hex value
  */
@@ -1988,7 +1988,7 @@ var toAscii = function(hex) {
 /**
  * Should be called to get hex representation (prefixed by 0x) of utf8 string
  *
- * @mlemood fromUtf8
+ * @method fromUtf8
  * @param {String} string
  * @param {Number} optional padding
  * @returns {String} hex representation of input string
@@ -2010,7 +2010,7 @@ var fromUtf8 = function(str) {
 /**
  * Should be called to get hex representation (prefixed by 0x) of ascii string
  *
- * @mlemood fromAscii
+ * @method fromAscii
  * @param {String} string
  * @param {Number} optional padding
  * @returns {String} hex representation of input string
@@ -2029,7 +2029,7 @@ var fromAscii = function(str) {
 /**
  * Should be used to create full function/event name from json abi
  *
- * @mlemood transformToFullName
+ * @method transformToFullName
  * @param {Object} json-abi
  * @return {String} full fnction/event name
  */
@@ -2045,7 +2045,7 @@ var transformToFullName = function (json) {
 /**
  * Should be called to get display name of contract function
  *
- * @mlemood extractDisplayName
+ * @method extractDisplayName
  * @param {String} name of function/event
  * @returns {String} display name for function/event eg. multiply(uint256) -> multiply
  */
@@ -2064,7 +2064,7 @@ var extractTypeName = function (name) {
 /**
  * Converts value to it's decimal representation in string
  *
- * @mlemood toDecimal
+ * @method toDecimal
  * @param {String|Number|BigNumber}
  * @return {String}
  */
@@ -2075,7 +2075,7 @@ var toDecimal = function (value) {
 /**
  * Converts value to it's hex representation
  *
- * @mlemood fromDecimal
+ * @method fromDecimal
  * @param {String|Number|BigNumber}
  * @return {String}
  */
@@ -2091,7 +2091,7 @@ var fromDecimal = function (value) {
  *
  * And even stringifys objects before.
  *
- * @mlemood toHex
+ * @method toHex
  * @param {String|Number|BigNumber|Object}
  * @return {String}
  */
@@ -2123,7 +2123,7 @@ var toHex = function (val) {
 /**
  * Returns value of unit in Wei
  *
- * @mlemood getValueOfUnit
+ * @method getValueOfUnit
  * @param {String} unit the unit to convert to, default lemoer
  * @returns {BigNumber} value of the unit (in Wei)
  * @throws error if the unit is not correct:w
@@ -2153,7 +2153,7 @@ var getValueOfUnit = function (unit) {
  * - glemoer
  * - tlemoer
  *
- * @mlemood fromWei
+ * @method fromWei
  * @param {Number|String} number can be a number, number string or a HEX of a decimal
  * @param {String} unit the unit to convert to, default lemoer
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
@@ -2181,7 +2181,7 @@ var fromWei = function(number, unit) {
  * - glemoer
  * - tlemoer
  *
- * @mlemood toWei
+ * @method toWei
  * @param {Number|String|BigNumber} number can be a number, number string or a HEX of a decimal
  * @param {String} unit the unit to convert from, default lemoer
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
@@ -2195,7 +2195,7 @@ var toWei = function(number, unit) {
 /**
  * Takes an input and transforms it into an bignumber
  *
- * @mlemood toBigNumber
+ * @method toBigNumber
  * @param {Number|String|BigNumber} a number, string, HEX string or BigNumber
  * @return {BigNumber} BigNumber
 */
@@ -2215,7 +2215,7 @@ var toBigNumber = function(number) {
 /**
  * Takes and input transforms it into bignumber and if it is negative value, into two's complement
  *
- * @mlemood toTwosComplement
+ * @method toTwosComplement
  * @param {Number|String|BigNumber}
  * @return {BigNumber}
  */
@@ -2230,7 +2230,7 @@ var toTwosComplement = function (number) {
 /**
  * Checks if the given string is strictly an address
  *
- * @mlemood isStrictAddress
+ * @method isStrictAddress
  * @param {String} address the given HEX adress
  * @return {Boolean}
 */
@@ -2241,7 +2241,7 @@ var isStrictAddress = function (address) {
 /**
  * Checks if the given string is an address
  *
- * @mlemood isAddress
+ * @method isAddress
  * @param {String} address the given HEX adress
  * @return {Boolean}
 */
@@ -2261,7 +2261,7 @@ var isAddress = function (address) {
 /**
  * Checks if the given string is a checksummed address
  *
- * @mlemood isChecksumAddress
+ * @method isChecksumAddress
  * @param {String} address the given HEX adress
  * @return {Boolean}
 */
@@ -2284,7 +2284,7 @@ var isChecksumAddress = function (address) {
 /**
  * Makes a checksum address
  *
- * @mlemood toChecksumAddress
+ * @method toChecksumAddress
  * @param {String} address the given HEX adress
  * @return {String}
 */
@@ -2309,7 +2309,7 @@ var toChecksumAddress = function (address) {
 /**
  * Transforms given string to valid 20 bytes-length addres with 0x prefix
  *
- * @mlemood toAddress
+ * @method toAddress
  * @param {String} address
  * @return {String} formatted address
  */
@@ -2328,7 +2328,7 @@ var toAddress = function (address) {
 /**
  * Returns true if object is BigNumber, otherwise false
  *
- * @mlemood isBigNumber
+ * @method isBigNumber
  * @param {Object}
  * @return {Boolean}
  */
@@ -2340,7 +2340,7 @@ var isBigNumber = function (object) {
 /**
  * Returns true if object is string, otherwise false
  *
- * @mlemood isString
+ * @method isString
  * @param {Object}
  * @return {Boolean}
  */
@@ -2352,7 +2352,7 @@ var isString = function (object) {
 /**
  * Returns true if object is function, otherwise false
  *
- * @mlemood isFunction
+ * @method isFunction
  * @param {Object}
  * @return {Boolean}
  */
@@ -2363,7 +2363,7 @@ var isFunction = function (object) {
 /**
  * Returns true if object is Objet, otherwise false
  *
- * @mlemood isObject
+ * @method isObject
  * @param {Object}
  * @return {Boolean}
  */
@@ -2374,7 +2374,7 @@ var isObject = function (object) {
 /**
  * Returns true if object is boolean, otherwise false
  *
- * @mlemood isBoolean
+ * @method isBoolean
  * @param {Object}
  * @return {Boolean}
  */
@@ -2385,7 +2385,7 @@ var isBoolean = function (object) {
 /**
  * Returns true if object is array, otherwise false
  *
- * @mlemood isArray
+ * @method isArray
  * @param {Object}
  * @return {Boolean}
  */
@@ -2396,7 +2396,7 @@ var isArray = function (object) {
 /**
  * Returns true if given string is valid json object
  *
- * @mlemood isJson
+ * @method isJson
  * @param {String}
  * @return {Boolean}
  */
@@ -2411,7 +2411,7 @@ var isJson = function (str) {
 /**
  * Returns true if given string is a valid Lemochain block header bloom.
  *
- * @mlemood isBloom
+ * @method isBloom
  * @param {String} hex encoded bloom filter
  * @return {Boolean}
  */
@@ -2427,7 +2427,7 @@ var isBloom = function (bloom) {
 /**
  * Returns true if given string is a valid log topic.
  *
- * @mlemood isTopic
+ * @method isTopic
  * @param {String} hex encoded topic
  * @return {Boolean}
  */
@@ -2508,12 +2508,12 @@ module.exports={
 
 var RequestManager = require('./web3/requestmanager');
 var Iban = require('./web3/iban');
-var Lemo = require('./web3/mlemoods/lemo');
-var DB = require('./web3/mlemoods/db');
-var Shh = require('./web3/mlemoods/shh');
-var Net = require('./web3/mlemoods/net');
-var Personal = require('./web3/mlemoods/personal');
-var Swarm = require('./web3/mlemoods/swarm');
+var Lemo = require('./web3/methods/lemo');
+var DB = require('./web3/methods/db');
+var Shh = require('./web3/methods/shh');
+var Net = require('./web3/methods/net');
+var Personal = require('./web3/methods/personal');
+var Swarm = require('./web3/methods/swarm');
 var Settings = require('./web3/settings');
 var version = require('./version.json');
 var utils = require('./utils/utils');
@@ -2632,7 +2632,7 @@ Web3.prototype.createBatch = function () {
 module.exports = Web3;
 
 
-},{"./utils/sha3":19,"./utils/utils":20,"./version.json":21,"./web3/batch":24,"./web3/extend":28,"./web3/httpprovider":32,"./web3/iban":33,"./web3/ipcprovider":34,"./web3/mlemoods/db":37,"./web3/mlemoods/lemo":38,"./web3/mlemoods/net":39,"./web3/mlemoods/personal":40,"./web3/mlemoods/shh":41,"./web3/mlemoods/swarm":42,"./web3/property":45,"./web3/requestmanager":46,"./web3/settings":47,"bignumber.js":"bignumber.js"}],23:[function(require,module,exports){
+},{"./utils/sha3":19,"./utils/utils":20,"./version.json":21,"./web3/batch":24,"./web3/extend":28,"./web3/httpprovider":32,"./web3/iban":33,"./web3/ipcprovider":34,"./web3/methods/db":37,"./web3/methods/lemo":38,"./web3/methods/net":39,"./web3/methods/personal":40,"./web3/methods/shh":41,"./web3/methods/swarm":42,"./web3/property":45,"./web3/requestmanager":46,"./web3/settings":47,"bignumber.js":"bignumber.js"}],23:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -2660,7 +2660,7 @@ var SolidityEvent = require('./event');
 var formatters = require('./formatters');
 var utils = require('../utils/utils');
 var Filter = require('./filter');
-var watches = require('./mlemoods/watches');
+var watches = require('./methods/watches');
 
 var AllSolidityEvents = function (requestManager, json, address) {
     this._requestManager = requestManager;
@@ -2722,7 +2722,7 @@ AllSolidityEvents.prototype.attachToContract = function (contract) {
 module.exports = AllSolidityEvents;
 
 
-},{"../utils/sha3":19,"../utils/utils":20,"./event":27,"./filter":29,"./formatters":30,"./mlemoods/watches":43}],24:[function(require,module,exports){
+},{"../utils/sha3":19,"../utils/utils":20,"./event":27,"./filter":29,"./formatters":30,"./methods/watches":43}],24:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -2756,7 +2756,7 @@ var Batch = function (web3) {
 /**
  * Should be called to add create new request to batch request
  *
- * @mlemood add
+ * @method add
  * @param {Object} jsonrpc requet object
  */
 Batch.prototype.add = function (request) {
@@ -2766,7 +2766,7 @@ Batch.prototype.add = function (request) {
 /**
  * Should be called to execute batch request
  *
- * @mlemood execute
+ * @method execute
  */
 Batch.prototype.execute = function () {
     var requests = this.requests;
@@ -2822,7 +2822,7 @@ var AllEvents = require('./allevents');
 /**
  * Should be called to encode constructor params
  *
- * @mlemood encodeConstructorParams
+ * @method encodeConstructorParams
  * @param {Array} abi
  * @param {Array} constructor params
  */
@@ -2841,7 +2841,7 @@ var encodeConstructorParams = function (abi, params) {
 /**
  * Should be called to add functions to contract object
  *
- * @mlemood addFunctionsToContract
+ * @method addFunctionsToContract
  * @param {Contract} contract
  * @param {Array} abi
  */
@@ -2858,7 +2858,7 @@ var addFunctionsToContract = function (contract) {
 /**
  * Should be called to add events to contract object
  *
- * @mlemood addEventsToContract
+ * @method addEventsToContract
  * @param {Contract} contract
  * @param {Array} abi
  */
@@ -2881,7 +2881,7 @@ var addEventsToContract = function (contract) {
 /**
  * Should be called to check if the contract gets properly deployed on the blockchain.
  *
- * @mlemood checkForContractAddress
+ * @method checkForContractAddress
  * @param {Object} contract
  * @param {Function} callback
  * @returns {Undefined}
@@ -2927,7 +2927,7 @@ var checkForContractAddress = function(contract, callback){
 
                                 contract.address = receipt.contractAddress;
 
-                                // attach events and mlemoods again after we have
+                                // attach events and methods again after we have
                                 addFunctionsToContract(contract);
                                 addEventsToContract(contract);
 
@@ -2952,7 +2952,7 @@ var checkForContractAddress = function(contract, callback){
 /**
  * Should be called to create new ContractFactory instance
  *
- * @mlemood ContractFactory
+ * @method ContractFactory
  * @param {Array} abi
  */
 var ContractFactory = function (lemo, abi) {
@@ -2962,7 +2962,7 @@ var ContractFactory = function (lemo, abi) {
     /**
      * Should be called to create new contract on a blockchain
      *
-     * @mlemood new
+     * @method new
      * @param {Any} contract constructor param1 (optional)
      * @param {Any} contract constructor param2 (optional)
      * @param {Object} contract transaction object (required)
@@ -3033,7 +3033,7 @@ var ContractFactory = function (lemo, abi) {
 /**
  * Should be called to create new ContractFactory
  *
- * @mlemood contract
+ * @method contract
  * @param {Array} abi
  * @returns {ContractFactory} new contract factory
  */
@@ -3046,7 +3046,7 @@ var ContractFactory = function (lemo, abi) {
 /**
  * Should be called to get access to existing contract on a blockchain
  *
- * @mlemood at
+ * @method at
  * @param {Address} contract address (required)
  * @param {Function} callback {optional)
  * @returns {Contract} returns contract if no callback was passed,
@@ -3069,7 +3069,7 @@ ContractFactory.prototype.at = function (address, callback) {
 /**
  * Gets the data, which is data to deploy plus constructor params
  *
- * @mlemood getData
+ * @method getData
  */
 ContractFactory.prototype.getData = function () {
     var options = {}; // required!
@@ -3089,7 +3089,7 @@ ContractFactory.prototype.getData = function () {
 /**
  * Should be called to create new contract instance
  *
- * @mlemood Contract
+ * @method Contract
  * @param {Array} abi
  * @param {Address} contract address
  */
@@ -3130,7 +3130,7 @@ module.exports = {
         return new Error('Invalid number of arguments to Solidity function');
     },
     InvalidNumberOfRPCParams: function () {
-        return new Error('Invalid number of input parameters to RPC mlemood');
+        return new Error('Invalid number of input parameters to RPC method');
     },
     InvalidConnection: function (host){
         return new Error('CONNECTION ERROR: Couldn\'t connect to node '+ host +'.');
@@ -3175,7 +3175,7 @@ var coder = require('../solidity/coder');
 var formatters = require('./formatters');
 var sha3 = require('../utils/sha3');
 var Filter = require('./filter');
-var watches = require('./mlemoods/watches');
+var watches = require('./methods/watches');
 
 /**
  * This prototype should be used to create event filters
@@ -3191,7 +3191,7 @@ var SolidityEvent = function (requestManager, json, address) {
 /**
  * Should be used to get filtered param types
  *
- * @mlemood types
+ * @method types
  * @param {Bool} decide if returned typed should be indexed
  * @return {Array} array of types
  */
@@ -3206,7 +3206,7 @@ SolidityEvent.prototype.types = function (indexed) {
 /**
  * Should be used to get event display name
  *
- * @mlemood displayName
+ * @method displayName
  * @return {String} event display name
  */
 SolidityEvent.prototype.displayName = function () {
@@ -3216,7 +3216,7 @@ SolidityEvent.prototype.displayName = function () {
 /**
  * Should be used to get event type name
  *
- * @mlemood typeName
+ * @method typeName
  * @return {String} event type name
  */
 SolidityEvent.prototype.typeName = function () {
@@ -3226,7 +3226,7 @@ SolidityEvent.prototype.typeName = function () {
 /**
  * Should be used to get event signature
  *
- * @mlemood signature
+ * @method signature
  * @return {String} event signature
  */
 SolidityEvent.prototype.signature = function () {
@@ -3236,7 +3236,7 @@ SolidityEvent.prototype.signature = function () {
 /**
  * Should be used to encode indexed params and options to one final object
  *
- * @mlemood encode
+ * @method encode
  * @param {Object} indexed
  * @param {Object} options
  * @return {Object} everything combined toglemoer and encoded
@@ -3283,7 +3283,7 @@ SolidityEvent.prototype.encode = function (indexed, options) {
 /**
  * Should be used to decode indexed params and options
  *
- * @mlemood decode
+ * @method decode
  * @param {Object} data
  * @return {Object} result object with decoded indexed && not indexed params
  */
@@ -3317,7 +3317,7 @@ SolidityEvent.prototype.decode = function (data) {
 /**
  * Should be used to create new filter object from event
  *
- * @mlemood execute
+ * @method execute
  * @param {Object} indexed
  * @param {Object} options
  * @return {Object} filter object
@@ -3342,7 +3342,7 @@ SolidityEvent.prototype.execute = function (indexed, options, callback) {
 /**
  * Should be used to attach event to contract object
  *
- * @mlemood attachToContract
+ * @method attachToContract
  * @param {Contract}
  */
 SolidityEvent.prototype.attachToContract = function (contract) {
@@ -3357,10 +3357,10 @@ SolidityEvent.prototype.attachToContract = function (contract) {
 module.exports = SolidityEvent;
 
 
-},{"../solidity/coder":7,"../utils/sha3":19,"../utils/utils":20,"./filter":29,"./formatters":30,"./mlemoods/watches":43}],28:[function(require,module,exports){
+},{"../solidity/coder":7,"../utils/sha3":19,"../utils/utils":20,"./filter":29,"./formatters":30,"./methods/watches":43}],28:[function(require,module,exports){
 var formatters = require('./formatters');
 var utils = require('./../utils/utils');
-var Method = require('./mlemood');
+var Method = require('./method');
 var Property = require('./property');
 
 // TODO: refactor, so the input params are not altered.
@@ -3379,10 +3379,10 @@ var extend = function (web3) {
             extendedObject = web3;
         }
 
-        if (extension.mlemoods) {
-            extension.mlemoods.forEach(function (mlemood) {
-                mlemood.attachToObject(extendedObject);
-                mlemood.setRequestManager(web3._requestManager);
+        if (extension.methods) {
+            extension.methods.forEach(function (method) {
+                method.attachToObject(extendedObject);
+                method.setRequestManager(web3._requestManager);
             });
         }
 
@@ -3407,7 +3407,7 @@ var extend = function (web3) {
 module.exports = extend;
 
 
-},{"./../utils/utils":20,"./formatters":30,"./mlemood":36,"./property":45}],29:[function(require,module,exports){
+},{"./../utils/utils":20,"./formatters":30,"./method":36,"./property":45}],29:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -3456,7 +3456,7 @@ var toTopic = function(value){
         return utils.fromUtf8(value);
 };
 
-/// This mlemood should be called on options object, to verify deprecated properties && lazy load dynamic ones
+/// This method should be called on options object, to verify deprecated properties && lazy load dynamic ones
 /// @param should be string or object
 /// @returns options string or object
 var getOptions = function (options, type) {
@@ -3492,9 +3492,9 @@ var getOptions = function (options, type) {
 };
 
 /**
-Adds the callback and sets up the mlemoods, to iterate over the results.
+Adds the callback and sets up the methods, to iterate over the results.
 
-@mlemood getLogsAtStart
+@method getLogsAtStart
 @param {Object} self
 @param {function} callback
 */
@@ -3517,9 +3517,9 @@ var getLogsAtStart = function(self, callback){
 };
 
 /**
-Adds the callback and sets up the mlemoods, to iterate over the results.
+Adds the callback and sets up the methods, to iterate over the results.
 
-@mlemood pollFilter
+@method pollFilter
 @param {Object} self
 */
 var pollFilter = function(self) {
@@ -3542,18 +3542,18 @@ var pollFilter = function(self) {
     };
 
     self.requestManager.startPolling({
-        mlemood: self.implementation.poll.call,
+        method: self.implementation.poll.call,
         params: [self.filterId],
     }, self.filterId, onMessage, self.stopWatching.bind(self));
 
 };
 
-var Filter = function (options, type, requestManager, mlemoods, formatter, callback, filterCreationErrorCallback) {
+var Filter = function (options, type, requestManager, methods, formatter, callback, filterCreationErrorCallback) {
     var self = this;
     var implementation = {};
-    mlemoods.forEach(function (mlemood) {
-        mlemood.setRequestManager(requestManager);
-        mlemood.attachToObject(implementation);
+    methods.forEach(function (method) {
+        method.setRequestManager(requestManager);
+        method.attachToObject(implementation);
     });
     this.requestManager = requestManager;
     this.options = getOptions(options, type);
@@ -3640,7 +3640,7 @@ Filter.prototype.get = function (callback) {
         }
     } else {
         if (this.filterId === null) {
-            throw new Error('Filter ID Error: filter().get() can\'t be chained synchronous, please provide a callback for the get() mlemood.');
+            throw new Error('Filter ID Error: filter().get() can\'t be chained synchronous, please provide a callback for the get() method.');
         }
         var logs = this.implementation.getLogs(this.filterId);
         return logs.map(function (log) {
@@ -3687,7 +3687,7 @@ var Iban = require('./iban');
 /**
  * Should the format output to a big number
  *
- * @mlemood outputBigNumberFormatter
+ * @method outputBigNumberFormatter
  * @param {String|Number|BigNumber}
  * @returns {BigNumber} object
  */
@@ -3718,7 +3718,7 @@ var inputBlockNumberFormatter = function (blockNumber) {
 /**
  * Formats the input of a transaction and converts all values to HEX
  *
- * @mlemood inputCallFormatter
+ * @method inputCallFormatter
  * @param {Object} transaction options
  * @returns object
 */
@@ -3746,7 +3746,7 @@ var inputCallFormatter = function (options){
 /**
  * Formats the input of a transaction and converts all values to HEX
  *
- * @mlemood inputTransactionFormatter
+ * @method inputTransactionFormatter
  * @param {Object} transaction options
  * @returns object
 */
@@ -3771,7 +3771,7 @@ var inputTransactionFormatter = function (options){
 /**
  * Formats the output of a transaction to its proper values
  *
- * @mlemood outputTransactionFormatter
+ * @method outputTransactionFormatter
  * @param {Object} tx
  * @returns {Object}
 */
@@ -3790,7 +3790,7 @@ var outputTransactionFormatter = function (tx){
 /**
  * Formats the output of a transaction receipt to its proper values
  *
- * @mlemood outputTransactionReceiptFormatter
+ * @method outputTransactionReceiptFormatter
  * @param {Object} receipt
  * @returns {Object}
 */
@@ -3814,7 +3814,7 @@ var outputTransactionReceiptFormatter = function (receipt){
 /**
  * Formats the output of a block to its proper values
  *
- * @mlemood outputBlockFormatter
+ * @method outputBlockFormatter
  * @param {Object} block
  * @returns {Object}
 */
@@ -3844,7 +3844,7 @@ var outputBlockFormatter = function(block) {
 /**
  * Formats the output of a log
  *
- * @mlemood outputLogFormatter
+ * @method outputLogFormatter
  * @param {Object} log object
  * @returns {Object} log
 */
@@ -3862,7 +3862,7 @@ var outputLogFormatter = function(log) {
 /**
  * Formats the input of a whisper post and converts all values to HEX
  *
- * @mlemood inputPostFormatter
+ * @method inputPostFormatter
  * @param {Object} transaction object
  * @returns {Object}
 */
@@ -3890,7 +3890,7 @@ var inputPostFormatter = function(post) {
 /**
  * Formats the output of a received post message
  *
- * @mlemood outputPostFormatter
+ * @method outputPostFormatter
  * @param {Object}
  * @returns {Object}
  */
@@ -4025,7 +4025,7 @@ SolidityFunction.prototype.extractDefaultBlock = function (args) {
 /**
  * Should be called to check if the number of arguments is correct
  *
- * @mlemood validateArgs
+ * @method validateArgs
  * @param {Array} arguments
  * @throws {Error} if it is not
  */
@@ -4045,7 +4045,7 @@ SolidityFunction.prototype.validateArgs = function (args) {
 /**
  * Should be used to create payload from arguments
  *
- * @mlemood toPayload
+ * @method toPayload
  * @param {Array} solidity function params
  * @param {Object} optional payload options
  */
@@ -4063,7 +4063,7 @@ SolidityFunction.prototype.toPayload = function (args) {
 /**
  * Should be used to get function signature
  *
- * @mlemood signature
+ * @method signature
  * @return {String} function signature
  */
 SolidityFunction.prototype.signature = function () {
@@ -4084,7 +4084,7 @@ SolidityFunction.prototype.unpackOutput = function (output) {
 /**
  * Calls a contract function.
  *
- * @mlemood call
+ * @method call
  * @param {...Object} Contract function arguments
  * @param {function} If the last argument is a function, the contract function
  *   call will be asynchronous, and the callback will be passed the
@@ -4122,7 +4122,7 @@ SolidityFunction.prototype.call = function () {
 /**
  * Should be used to sendTransaction to solidity function
  *
- * @mlemood sendTransaction
+ * @method sendTransaction
  */
 SolidityFunction.prototype.sendTransaction = function () {
     var args = Array.prototype.slice.call(arguments).filter(function (a) {return a !== undefined; });
@@ -4143,7 +4143,7 @@ SolidityFunction.prototype.sendTransaction = function () {
 /**
  * Should be used to estimateGas of solidity function
  *
- * @mlemood estimateGas
+ * @method estimateGas
  */
 SolidityFunction.prototype.estimateGas = function () {
     var args = Array.prototype.slice.call(arguments);
@@ -4160,7 +4160,7 @@ SolidityFunction.prototype.estimateGas = function () {
 /**
  * Return the encoded data of the call
  *
- * @mlemood getData
+ * @method getData
  * @return {String} the encoded data
  */
 SolidityFunction.prototype.getData = function () {
@@ -4173,7 +4173,7 @@ SolidityFunction.prototype.getData = function () {
 /**
  * Should be used to get function display name
  *
- * @mlemood displayName
+ * @method displayName
  * @return {String} display name of the function
  */
 SolidityFunction.prototype.displayName = function () {
@@ -4183,7 +4183,7 @@ SolidityFunction.prototype.displayName = function () {
 /**
  * Should be used to get function type name
  *
- * @mlemood typeName
+ * @method typeName
  * @return {String} type name of the function
  */
 SolidityFunction.prototype.typeName = function () {
@@ -4193,7 +4193,7 @@ SolidityFunction.prototype.typeName = function () {
 /**
  * Should be called to get rpc requests from solidity function
  *
- * @mlemood request
+ * @method request
  * @returns {Object}
  */
 SolidityFunction.prototype.request = function () {
@@ -4203,7 +4203,7 @@ SolidityFunction.prototype.request = function () {
     var format = this.unpackOutput.bind(this);
 
     return {
-        mlemood: this._constant ? 'lemo_call' : 'lemo_sendTransaction',
+        method: this._constant ? 'lemo_call' : 'lemo_sendTransaction',
         callback: callback,
         params: [payload],
         format: format
@@ -4213,7 +4213,7 @@ SolidityFunction.prototype.request = function () {
 /**
  * Should be called to execute function
  *
- * @mlemood execute
+ * @method execute
  */
 SolidityFunction.prototype.execute = function () {
     var transaction = !this._constant;
@@ -4230,7 +4230,7 @@ SolidityFunction.prototype.execute = function () {
 /**
  * Should be called to attach function to contract
  *
- * @mlemood attachToContract
+ * @method attachToContract
  * @param {Contract}
  */
 SolidityFunction.prototype.attachToContract = function (contract) {
@@ -4301,7 +4301,7 @@ var HttpProvider = function (host, timeout, user, password) {
 /**
  * Should be called to prepare new XMLHttpRequest
  *
- * @mlemood prepareRequest
+ * @method prepareRequest
  * @param {Boolean} true if request should be async
  * @return {XMLHttpRequest} object
  */
@@ -4326,7 +4326,7 @@ HttpProvider.prototype.prepareRequest = function (async) {
 /**
  * Should be called to make sync request
  *
- * @mlemood send
+ * @method send
  * @param {Object} payload
  * @return {Object} result
  */
@@ -4353,7 +4353,7 @@ HttpProvider.prototype.send = function (payload) {
 /**
  * Should be used to make async request
  *
- * @mlemood sendAsync
+ * @method sendAsync
  * @param {Object} payload
  * @param {Function} callback triggered on end with (err, result)
  */
@@ -4389,7 +4389,7 @@ HttpProvider.prototype.sendAsync = function (payload, callback) {
 /**
  * Synchronously tries to make Http request
  *
- * @mlemood isConnected
+ * @method isConnected
  * @return {Boolean} returns true if request haven't failed. Otherwise false
  */
 HttpProvider.prototype.isConnected = function () {
@@ -4397,7 +4397,7 @@ HttpProvider.prototype.isConnected = function () {
     this.send({
       id: 9999999999,
       jsonrpc: '2.0',
-      mlemood: 'net_listening',
+      method: 'net_listening',
       params: []
     });
     return true;
@@ -4445,7 +4445,7 @@ var padLeft = function (string, bytes) {
  * Prepare an IBAN for mod 97 computation by moving the first 4 chars to the end and transforming the letters to
  * numbers (A = 10, B = 11, ..., Z = 35), as specified in ISO13616.
  *
- * @mlemood iso13616Prepare
+ * @method iso13616Prepare
  * @param {String} iban the IBAN
  * @returns {String} the prepared IBAN
  */
@@ -4470,7 +4470,7 @@ var iso13616Prepare = function (iban) {
 /**
  * Calculates the MOD 97 10 of the passed IBAN as specified in ISO7064.
  *
- * @mlemood mod9710
+ * @method mod9710
  * @param {String} iban
  * @returns {Number}
  */
@@ -4496,9 +4496,9 @@ var Iban = function (iban) {
 };
 
 /**
- * This mlemood should be used to create iban object from lemochain address
+ * This method should be used to create iban object from lemochain address
  *
- * @mlemood fromAddress
+ * @method fromAddress
  * @param {String} address
  * @return {Iban} the IBAN object
  */
@@ -4512,9 +4512,9 @@ Iban.fromAddress = function (address) {
 /**
  * Convert the passed BBAN to an IBAN for this country specification.
  * Please note that <i>"generation of the IBAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
- * This mlemood implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
+ * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
  *
- * @mlemood fromBban
+ * @method fromBban
  * @param {String} bban the BBAN to convert to IBAN
  * @returns {Iban} the IBAN object
  */
@@ -4530,7 +4530,7 @@ Iban.fromBban = function (bban) {
 /**
  * Should be used to create IBAN object for given institution and identifier
  *
- * @mlemood createIndirect
+ * @method createIndirect
  * @param {Object} options, required options are "institution" and "identifier"
  * @return {Iban} the IBAN object
  */
@@ -4539,9 +4539,9 @@ Iban.createIndirect = function (options) {
 };
 
 /**
- * Thos mlemood should be used to check if given string is valid iban object
+ * Thos method should be used to check if given string is valid iban object
  *
- * @mlemood isValid
+ * @method isValid
  * @param {String} iban string
  * @return {Boolean} true if it is valid IBAN
  */
@@ -4553,7 +4553,7 @@ Iban.isValid = function (iban) {
 /**
  * Should be called to check if iban is correct
  *
- * @mlemood isValid
+ * @method isValid
  * @returns {Boolean} true if it is, otherwise false
  */
 Iban.prototype.isValid = function () {
@@ -4564,7 +4564,7 @@ Iban.prototype.isValid = function () {
 /**
  * Should be called to check if iban number is direct
  *
- * @mlemood isDirect
+ * @method isDirect
  * @returns {Boolean} true if it is, otherwise false
  */
 Iban.prototype.isDirect = function () {
@@ -4574,7 +4574,7 @@ Iban.prototype.isDirect = function () {
 /**
  * Should be called to check if iban number if indirect
  *
- * @mlemood isIndirect
+ * @method isIndirect
  * @returns {Boolean} true if it is, otherwise false
  */
 Iban.prototype.isIndirect = function () {
@@ -4585,7 +4585,7 @@ Iban.prototype.isIndirect = function () {
  * Should be called to get iban checksum
  * Uses the mod-97-10 checksumming protocol (ISO/IEC 7064:2003)
  *
- * @mlemood checksum
+ * @method checksum
  * @returns {String} checksum
  */
 Iban.prototype.checksum = function () {
@@ -4596,7 +4596,7 @@ Iban.prototype.checksum = function () {
  * Should be called to get institution identifier
  * eg. XREG
  *
- * @mlemood institution
+ * @method institution
  * @returns {String} institution identifier
  */
 Iban.prototype.institution = function () {
@@ -4607,7 +4607,7 @@ Iban.prototype.institution = function () {
  * Should be called to get client identifier within institution
  * eg. GAVOFYORK
  *
- * @mlemood client
+ * @method client
  * @returns {String} client identifier
  */
 Iban.prototype.client = function () {
@@ -4617,7 +4617,7 @@ Iban.prototype.client = function () {
 /**
  * Should be called to get client direct address
  *
- * @mlemood address
+ * @method address
  * @returns {String} client direct address
  */
 Iban.prototype.address = function () {
@@ -4713,7 +4713,7 @@ var IpcProvider = function (path, net) {
 /**
 Will parse the response and make an array out of it.
 
-@mlemood _parseResponse
+@method _parseResponse
 @param {String} data
 */
 IpcProvider.prototype._parseResponse = function(data) {
@@ -4769,20 +4769,20 @@ IpcProvider.prototype._parseResponse = function(data) {
 Get the adds a callback to the responseCallbacks object,
 which will be called if a response matching the response Id will arrive.
 
-@mlemood _addResponseCallback
+@method _addResponseCallback
 */
 IpcProvider.prototype._addResponseCallback = function(payload, callback) {
     var id = payload.id || payload[0].id;
-    var mlemood = payload.mlemood || payload[0].mlemood;
+    var method = payload.method || payload[0].method;
 
     this.responseCallbacks[id] = callback;
-    this.responseCallbacks[id].mlemood = mlemood;
+    this.responseCallbacks[id].method = method;
 };
 
 /**
 Timeout all requests when the end/error event is fired
 
-@mlemood _timeout
+@method _timeout
 */
 IpcProvider.prototype._timeout = function() {
     for(var key in this.responseCallbacks) {
@@ -4797,7 +4797,7 @@ IpcProvider.prototype._timeout = function() {
 /**
 Check if the current connection is still valid.
 
-@mlemood isConnected
+@method isConnected
 */
 IpcProvider.prototype.isConnected = function() {
     var _this = this;
@@ -4829,7 +4829,7 @@ IpcProvider.prototype.send = function (payload) {
         return result;
 
     } else {
-        throw new Error('You tried to send "'+ payload.mlemood +'" synchronously. Synchronous requests are not supported by the IPC provider.');
+        throw new Error('You tried to send "'+ payload.method +'" synchronously. Synchronous requests are not supported by the IPC provider.');
     }
 };
 
@@ -4878,14 +4878,14 @@ var Jsonrpc = {
 /**
  * Should be called to valid json create payload object
  *
- * @mlemood toPayload
- * @param {Function} mlemood of jsonrpc call, required
- * @param {Array} params, an array of mlemood params, optional
+ * @method toPayload
+ * @param {Function} method of jsonrpc call, required
+ * @param {Array} params, an array of method params, optional
  * @returns {Object} valid jsonrpc payload object
  */
-Jsonrpc.toPayload = function (mlemood, params) {
-    if (!mlemood)
-        console.error('jsonrpc mlemood should be specified!');
+Jsonrpc.toPayload = function (method, params) {
+    if (!method)
+        console.error('jsonrpc method should be specified!');
 
     // advance message ID
     Jsonrpc.messageId++;
@@ -4893,7 +4893,7 @@ Jsonrpc.toPayload = function (mlemood, params) {
     return {
         jsonrpc: '2.0',
         id: Jsonrpc.messageId,
-        mlemood: mlemood,
+        method: method,
         params: params || []
     };
 };
@@ -4901,7 +4901,7 @@ Jsonrpc.toPayload = function (mlemood, params) {
 /**
  * Should be called to check if jsonrpc response is valid
  *
- * @mlemood isValidResponse
+ * @method isValidResponse
  * @param {Object}
  * @returns {Boolean} true if response is valid, otherwise false
  */
@@ -4920,13 +4920,13 @@ Jsonrpc.isValidResponse = function (response) {
 /**
  * Should be called to create batch payload object
  *
- * @mlemood toBatchPayload
- * @param {Array} messages, an array of objects with mlemood (required) and params (optional) fields
+ * @method toBatchPayload
+ * @param {Array} messages, an array of objects with method (required) and params (optional) fields
  * @returns {Array} batch payload
  */
 Jsonrpc.toBatchPayload = function (messages) {
     return messages.map(function (message) {
-        return Jsonrpc.toPayload(message.mlemood, message.params);
+        return Jsonrpc.toPayload(message.method, message.params);
     });
 };
 
@@ -4951,7 +4951,7 @@ module.exports = Jsonrpc;
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
 /**
- * @file mlemood.js
+ * @file method.js
  * @author Marek Kotewicz <marek@lemodev.com>
  * @date 2015
  */
@@ -4973,11 +4973,11 @@ Method.prototype.setRequestManager = function (rm) {
 };
 
 /**
- * Should be used to determine name of the jsonrpc mlemood based on arguments
+ * Should be used to determine name of the jsonrpc method based on arguments
  *
- * @mlemood getCall
+ * @method getCall
  * @param {Array} arguments
- * @return {String} name of jsonrpc mlemood
+ * @return {String} name of jsonrpc method
  */
 Method.prototype.getCall = function (args) {
     return utils.isFunction(this.call) ? this.call(args) : this.call;
@@ -4986,7 +4986,7 @@ Method.prototype.getCall = function (args) {
 /**
  * Should be used to extract callback from array of arguments. Modifies input param
  *
- * @mlemood extractCallback
+ * @method extractCallback
  * @param {Array} arguments
  * @return {Function|Null} callback, if exists
  */
@@ -4999,7 +4999,7 @@ Method.prototype.extractCallback = function (args) {
 /**
  * Should be called to check if the number of arguments is correct
  * 
- * @mlemood validateArgs
+ * @method validateArgs
  * @param {Array} arguments
  * @throws {Error} if it is not
  */
@@ -5010,9 +5010,9 @@ Method.prototype.validateArgs = function (args) {
 };
 
 /**
- * Should be called to format input args of mlemood
+ * Should be called to format input args of method
  * 
- * @mlemood formatInput
+ * @method formatInput
  * @param {Array}
  * @return {Array}
  */
@@ -5027,9 +5027,9 @@ Method.prototype.formatInput = function (args) {
 };
 
 /**
- * Should be called to format output(result) of mlemood
+ * Should be called to format output(result) of method
  *
- * @mlemood formatOutput
+ * @method formatOutput
  * @param {Object}
  * @return {Object}
  */
@@ -5040,7 +5040,7 @@ Method.prototype.formatOutput = function (result) {
 /**
  * Should create payload from given input args
  *
- * @mlemood toPayload
+ * @method toPayload
  * @param {Array} args
  * @return {Object}
  */
@@ -5051,7 +5051,7 @@ Method.prototype.toPayload = function (args) {
     this.validateArgs(params);
 
     return {
-        mlemood: call,
+        method: call,
         params: params,
         callback: callback
     };
@@ -5070,15 +5070,15 @@ Method.prototype.attachToObject = function (obj) {
 };
 
 Method.prototype.buildCall = function() {
-    var mlemood = this;
+    var method = this;
     var send = function () {
-        var payload = mlemood.toPayload(Array.prototype.slice.call(arguments));
+        var payload = method.toPayload(Array.prototype.slice.call(arguments));
         if (payload.callback) {
-            return mlemood.requestManager.sendAsync(payload, function (err, result) {
-                payload.callback(err, mlemood.formatOutput(result));
+            return method.requestManager.sendAsync(payload, function (err, result) {
+                payload.callback(err, method.formatOutput(result));
             });
         }
-        return mlemood.formatOutput(mlemood.requestManager.send(payload));
+        return method.formatOutput(method.requestManager.send(payload));
     };
     send.request = this.request.bind(this);
     return send;
@@ -5087,7 +5087,7 @@ Method.prototype.buildCall = function() {
 /**
  * Should be called to create pure JSONRPC request which can be used in batch request
  *
- * @mlemood request
+ * @method request
  * @param {...} params
  * @return {Object} jsonrpc request
  */
@@ -5122,20 +5122,20 @@ module.exports = Method;
  * @date 2015
  */
 
-var Method = require('../mlemood');
+var Method = require('../method');
 
 var DB = function (web3) {
     this._requestManager = web3._requestManager;
 
     var self = this;
     
-    mlemoods().forEach(function(mlemood) { 
-        mlemood.attachToObject(self);
-        mlemood.setRequestManager(web3._requestManager);
+    methods().forEach(function(method) { 
+        method.attachToObject(self);
+        method.setRequestManager(web3._requestManager);
     });
 };
 
-var mlemoods = function () {
+var methods = function () {
     var putString = new Method({
         name: 'putString',
         call: 'db_putString',
@@ -5167,7 +5167,7 @@ var mlemoods = function () {
 
 module.exports = DB;
 
-},{"../mlemood":36}],38:[function(require,module,exports){
+},{"../method":36}],38:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5195,7 +5195,7 @@ module.exports = DB;
 
 var formatters = require('../formatters');
 var utils = require('../../utils/utils');
-var Method = require('../mlemood');
+var Method = require('../method');
 var Property = require('../property');
 var c = require('../../utils/config');
 var Contract = require('../contract');
@@ -5231,9 +5231,9 @@ function Lemo(web3) {
 
     var self = this;
 
-    mlemoods().forEach(function(mlemood) {
-        mlemood.attachToObject(self);
-        mlemood.setRequestManager(self._requestManager);
+    methods().forEach(function(method) {
+        method.attachToObject(self);
+        method.setRequestManager(self._requestManager);
     });
 
     properties().forEach(function(p) {
@@ -5266,7 +5266,7 @@ Object.defineProperty(Lemo.prototype, 'defaultAccount', {
     }
 });
 
-var mlemoods = function () {
+var methods = function () {
     var getBalance = new Method({
         name: 'getBalance',
         call: 'lemo_getBalance',
@@ -5523,7 +5523,7 @@ Lemo.prototype.isSyncing = function (callback) {
 
 module.exports = Lemo;
 
-},{"../../utils/config":18,"../../utils/utils":20,"../contract":25,"../filter":29,"../formatters":30,"../iban":33,"../mlemood":36,"../namereg":44,"../property":45,"../syncing":48,"../transfer":49,"./watches":43}],39:[function(require,module,exports){
+},{"../../utils/config":18,"../../utils/utils":20,"../contract":25,"../filter":29,"../formatters":30,"../iban":33,"../method":36,"../namereg":44,"../property":45,"../syncing":48,"../transfer":49,"./watches":43}],39:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5603,7 +5603,7 @@ module.exports = Net;
 
 "use strict";
 
-var Method = require('../mlemood');
+var Method = require('../method');
 var Property = require('../property');
 var formatters = require('../formatters');
 
@@ -5612,9 +5612,9 @@ function Personal(web3) {
 
     var self = this;
 
-    mlemoods().forEach(function(mlemood) {
-        mlemood.attachToObject(self);
-        mlemood.setRequestManager(self._requestManager);
+    methods().forEach(function(method) {
+        method.attachToObject(self);
+        method.setRequestManager(self._requestManager);
     });
 
     properties().forEach(function(p) {
@@ -5623,7 +5623,7 @@ function Personal(web3) {
     });
 }
 
-var mlemoods = function () {
+var methods = function () {
     var newAccount = new Method({
         name: 'newAccount',
         call: 'personal_newAccount',
@@ -5694,7 +5694,7 @@ var properties = function () {
 
 module.exports = Personal;
 
-},{"../formatters":30,"../mlemood":36,"../property":45}],41:[function(require,module,exports){
+},{"../formatters":30,"../method":36,"../property":45}],41:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5718,7 +5718,7 @@ module.exports = Personal;
  * @date 2017
  */
 
-var Method = require('../mlemood');
+var Method = require('../method');
 var Filter = require('../filter');
 var watches = require('./watches');
 
@@ -5727,9 +5727,9 @@ var Shh = function (web3) {
 
     var self = this;
 
-    mlemoods().forEach(function(mlemood) {
-        mlemood.attachToObject(self);
-        mlemood.setRequestManager(self._requestManager);
+    methods().forEach(function(method) {
+        method.attachToObject(self);
+        method.setRequestManager(self._requestManager);
     });
 };
 
@@ -5737,7 +5737,7 @@ Shh.prototype.newMessageFilter = function (options, callback, filterCreationErro
     return new Filter(options, 'shh', this._requestManager, watches.shh(), null, callback, filterCreationErrorCallback);
 };
 
-var mlemoods = function () {
+var methods = function () {
 
     return [
         new Method({
@@ -5840,7 +5840,7 @@ var mlemoods = function () {
 module.exports = Shh;
 
 
-},{"../filter":29,"../mlemood":36,"./watches":43}],42:[function(require,module,exports){
+},{"../filter":29,"../method":36,"./watches":43}],42:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -5867,7 +5867,7 @@ module.exports = Shh;
 
 "use strict";
 
-var Method = require('../mlemood');
+var Method = require('../method');
 var Property = require('../property');
 
 function Swarm(web3) {
@@ -5875,9 +5875,9 @@ function Swarm(web3) {
 
     var self = this;
 
-    mlemoods().forEach(function(mlemood) {
-        mlemood.attachToObject(self);
-        mlemood.setRequestManager(self._requestManager);
+    methods().forEach(function(method) {
+        method.attachToObject(self);
+        method.setRequestManager(self._requestManager);
     });
 
     properties().forEach(function(p) {
@@ -5886,7 +5886,7 @@ function Swarm(web3) {
     });
 }
 
-var mlemoods = function () {
+var methods = function () {
     var blockNetworkRead = new Method({
         name: 'blockNetworkRead',
         call: 'bzz_blockNetworkRead',
@@ -5987,7 +5987,7 @@ var properties = function () {
 
 module.exports = Swarm;
 
-},{"../mlemood":36,"../property":45}],43:[function(require,module,exports){
+},{"../method":36,"../property":45}],43:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6010,9 +6010,9 @@ module.exports = Swarm;
  * @date 2015
  */
 
-var Method = require('../mlemood');
+var Method = require('../method');
 
-/// @returns an array of objects describing web3.lemo.filter api mlemoods
+/// @returns an array of objects describing web3.lemo.filter api methods
 var lemo = function () {
     var newFilterCall = function (args) {
         var type = args[0];
@@ -6063,7 +6063,7 @@ var lemo = function () {
     ];
 };
 
-/// @returns an array of objects describing web3.shh.watch api mlemoods
+/// @returns an array of objects describing web3.shh.watch api methods
 var shh = function () {
 
     return [
@@ -6096,7 +6096,7 @@ module.exports = {
 };
 
 
-},{"../mlemood":36}],44:[function(require,module,exports){
+},{"../method":36}],44:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -6177,9 +6177,9 @@ Property.prototype.setRequestManager = function (rm) {
 };
 
 /**
- * Should be called to format input args of mlemood
+ * Should be called to format input args of method
  *
- * @mlemood formatInput
+ * @method formatInput
  * @param {Array}
  * @return {Array}
  */
@@ -6188,9 +6188,9 @@ Property.prototype.formatInput = function (arg) {
 };
 
 /**
- * Should be called to format output(result) of mlemood
+ * Should be called to format output(result) of method
  *
- * @mlemood formatOutput
+ * @method formatOutput
  * @param {Object}
  * @return {Object}
  */
@@ -6201,7 +6201,7 @@ Property.prototype.formatOutput = function (result) {
 /**
  * Should be used to extract callback from array of arguments. Modifies input param
  *
- * @mlemood extractCallback
+ * @method extractCallback
  * @param {Array} arguments
  * @return {Function|Null} callback, if exists
  */
@@ -6213,9 +6213,9 @@ Property.prototype.extractCallback = function (args) {
 
 
 /**
- * Should attach function to mlemood
+ * Should attach function to method
  *
- * @mlemood attachToObject
+ * @method attachToObject
  * @param {Object}
  * @param {Function}
  */
@@ -6245,7 +6245,7 @@ Property.prototype.buildGet = function () {
     var property = this;
     return function get() {
         return property.formatOutput(property.requestManager.send({
-            mlemood: property.getter
+            method: property.getter
         }));
     };
 };
@@ -6254,7 +6254,7 @@ Property.prototype.buildAsyncGet = function () {
     var property = this;
     var get = function (callback) {
         property.requestManager.sendAsync({
-            mlemood: property.getter
+            method: property.getter
         }, function (err, result) {
             callback(err, property.formatOutput(result));
         });
@@ -6266,13 +6266,13 @@ Property.prototype.buildAsyncGet = function () {
 /**
  * Should be called to create pure JSONRPC request which can be used in batch request
  *
- * @mlemood request
+ * @method request
  * @param {...} params
  * @return {Object} jsonrpc request
  */
 Property.prototype.request = function () {
     var payload = {
-        mlemood: this.getter,
+        method: this.getter,
         params: [],
         callback: this.extractCallback(Array.prototype.slice.call(arguments))
     };
@@ -6330,7 +6330,7 @@ var RequestManager = function (provider) {
 /**
  * Should be used to synchronously send request
  *
- * @mlemood send
+ * @method send
  * @param {Object} data
  * @return {Object}
  */
@@ -6340,7 +6340,7 @@ RequestManager.prototype.send = function (data) {
         return null;
     }
 
-    var payload = Jsonrpc.toPayload(data.mlemood, data.params);
+    var payload = Jsonrpc.toPayload(data.method, data.params);
     var result = this.provider.send(payload);
 
     if (!Jsonrpc.isValidResponse(result)) {
@@ -6353,7 +6353,7 @@ RequestManager.prototype.send = function (data) {
 /**
  * Should be used to asynchronously send request
  *
- * @mlemood sendAsync
+ * @method sendAsync
  * @param {Object} data
  * @param {Function} callback
  */
@@ -6362,7 +6362,7 @@ RequestManager.prototype.sendAsync = function (data, callback) {
         return callback(errors.InvalidProvider());
     }
 
-    var payload = Jsonrpc.toPayload(data.mlemood, data.params);
+    var payload = Jsonrpc.toPayload(data.method, data.params);
     this.provider.sendAsync(payload, function (err, result) {
         if (err) {
             return callback(err);
@@ -6379,7 +6379,7 @@ RequestManager.prototype.sendAsync = function (data, callback) {
 /**
  * Should be called to asynchronously send batch request
  *
- * @mlemood sendBatch
+ * @method sendBatch
  * @param {Array} batch data
  * @param {Function} callback
  */
@@ -6406,7 +6406,7 @@ RequestManager.prototype.sendBatch = function (data, callback) {
 /**
  * Should be used to set provider of request manager
  *
- * @mlemood setProvider
+ * @method setProvider
  * @param {Object}
  */
 RequestManager.prototype.setProvider = function (p) {
@@ -6416,7 +6416,7 @@ RequestManager.prototype.setProvider = function (p) {
 /**
  * Should be used to start polling
  *
- * @mlemood startPolling
+ * @method startPolling
  * @param {Object} data
  * @param {Number} pollId
  * @param {Function} callback
@@ -6437,7 +6437,7 @@ RequestManager.prototype.startPolling = function (data, pollId, callback, uninst
 /**
  * Should be used to stop polling for filter with given id
  *
- * @mlemood stopPolling
+ * @method stopPolling
  * @param {Number} pollId
  */
 RequestManager.prototype.stopPolling = function (pollId) {
@@ -6453,7 +6453,7 @@ RequestManager.prototype.stopPolling = function (pollId) {
 /**
  * Should be called to reset the polling mechanism of the request manager
  *
- * @mlemood reset
+ * @method reset
  */
 RequestManager.prototype.reset = function (keepIsSyncing) {
     /*jshint maxcomplexity:5 */
@@ -6477,7 +6477,7 @@ RequestManager.prototype.reset = function (keepIsSyncing) {
 /**
  * Should be called to poll for changes on filter with given id
  *
- * @mlemood poll
+ * @method poll
  */
 RequestManager.prototype.poll = function () {
     /*jshint maxcomplexity: 6 */
@@ -6590,9 +6590,9 @@ var utils = require('../utils/utils');
 var count = 1;
 
 /**
-Adds the callback and sets up the mlemoods, to iterate over the results.
+Adds the callback and sets up the methods, to iterate over the results.
 
-@mlemood pollSyncing
+@method pollSyncing
 @param {Object} self
 */
 var pollSyncing = function(self) {
@@ -6625,7 +6625,7 @@ var pollSyncing = function(self) {
     };
 
     self.requestManager.startPolling({
-        mlemood: 'lemo_syncing',
+        method: 'lemo_syncing',
         params: [],
     }, self.pollId, onMessage, self.stopWatching.bind(self));
 
@@ -6685,7 +6685,7 @@ var exchangeAbi = require('../contracts/SmartExchange.json');
 /**
  * Should be used to make Iban transfer
  *
- * @mlemood transfer
+ * @method transfer
  * @param {String} from
  * @param {String} to iban
  * @param {Value} value to be tranfered
@@ -6715,7 +6715,7 @@ var transfer = function (lemo, from, to, value, callback) {
 /**
  * Should be used to transfer funds to certain address
  *
- * @mlemood transferToAddress
+ * @method transferToAddress
  * @param {String} from
  * @param {String} to
  * @param {Value} value to be tranfered
@@ -6730,9 +6730,9 @@ var transferToAddress = function (lemo, from, to, value, callback) {
 };
 
 /**
- * Should be used to deposit funds to generic Exchange contract (must implement deposit(bytes32) mlemood!)
+ * Should be used to deposit funds to generic Exchange contract (must implement deposit(bytes32) method!)
  *
- * @mlemood deposit
+ * @method deposit
  * @param {String} from
  * @param {String} to
  * @param {Value} value to be transfered
@@ -7931,7 +7931,7 @@ module.exports = transfer;
 	             *     var MyType = CryptoJS.lib.Base.extend({
 	             *         field: 'value',
 	             *
-	             *         mlemood: function () {
+	             *         method: function () {
 	             *         }
 	             *     });
 	             */
@@ -7961,7 +7961,7 @@ module.exports = transfer;
 	            },
 
 	            /**
-	             * Extends this object and runs the init mlemood.
+	             * Extends this object and runs the init method.
 	             * Arguments to create() will be passed to init().
 	             *
 	             * @return {Object} The new object.
@@ -7981,7 +7981,7 @@ module.exports = transfer;
 
 	            /**
 	             * Initializes a newly created object.
-	             * Override this mlemood to add some logic when your objects are created.
+	             * Override this method to add some logic when your objects are created.
 	             *
 	             * @example
 	             *
@@ -8406,7 +8406,7 @@ module.exports = transfer;
 	        /**
 	         * Processes available data blocks.
 	         *
-	         * This mlemood invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
+	         * This method invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
 	         *
 	         * @param {boolean} doFlush Whlemoer all blocks and partial blocks should be processed.
 	         *

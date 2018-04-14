@@ -420,7 +420,7 @@ message RecoveryDevice {
 	optional string language = 4 [default='english'];	// device language
 	optional string label = 5;				// device label
 	optional bool enforce_wordlist = 6;			// enforce BIP-39 wordlist during the process
-	// 7 reserved for unused recovery mlemood
+	// 7 reserved for unused recovery method
 	optional uint32 type = 8;				// supported recovery type (see RecoveryType)
 	optional uint32 u2f_counter = 9;			// U2F counter
 	optional bool dry_run = 10;				// perform dry-run recovery workflow (for safe mnemonic validation)
@@ -597,7 +597,7 @@ message SignTx {
 
 /**
  * Request: Simplified transaction signing
- * This mlemood doesn't support streaming, so there are hardware limits in number of inputs and outputs.
+ * This method doesn't support streaming, so there are hardware limits in number of inputs and outputs.
  * In case of success, the result is returned using TxRequest message.
  * @next PassphraseRequest
  * @next PinMatrixRequest

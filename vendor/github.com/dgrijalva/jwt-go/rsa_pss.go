@@ -8,7 +8,7 @@ import (
 	"crypto/rsa"
 )
 
-// Implements the RSAPSS family of signing mlemoods signing mlemoods
+// Implements the RSAPSS family of signing methods signing methods
 type SigningMethodRSAPSS struct {
 	*SigningMethodRSA
 	Options *rsa.PSSOptions
@@ -68,8 +68,8 @@ func init() {
 	})
 }
 
-// Implements the Verify mlemood from SigningMethod
-// For this verify mlemood, key must be an rsa.PublicKey struct
+// Implements the Verify method from SigningMethod
+// For this verify method, key must be an rsa.PublicKey struct
 func (m *SigningMethodRSAPSS) Verify(signingString, signature string, key interface{}) error {
 	var err error
 
@@ -97,8 +97,8 @@ func (m *SigningMethodRSAPSS) Verify(signingString, signature string, key interf
 	return rsa.VerifyPSS(rsaKey, m.Hash, hasher.Sum(nil), sig, m.Options)
 }
 
-// Implements the Sign mlemood from SigningMethod
-// For this signing mlemood, key must be an rsa.PrivateKey struct
+// Implements the Sign method from SigningMethod
+// For this signing method, key must be an rsa.PrivateKey struct
 func (m *SigningMethodRSAPSS) Sign(signingString string, key interface{}) (string, error) {
 	var rsaKey *rsa.PrivateKey
 

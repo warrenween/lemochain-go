@@ -188,7 +188,7 @@ type fakeIGD struct {
 	// address of the HTTP server.
 	ssdpResp string
 	// This one should contain XML payloads for all requests
-	// performed. The keys contain mlemood and path, e.g. "GET /foo/bar".
+	// performed. The keys contain method and path, e.g. "GET /foo/bar".
 	// As with ssdpResp, "{{listenAddr}}" is replaced with the TCP
 	// listen address.
 	httpResps map[string]string

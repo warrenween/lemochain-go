@@ -210,7 +210,7 @@ func (self *_object) construct(argumentList []Value) Value {
 // 15.3.5.3
 func (self *_object) hasInstance(of Value) bool {
 	if !self.isCall() {
-		// We should not have a hasInstance mlemood
+		// We should not have a hasInstance method
 		panic(self.runtime.panicTypeError())
 	}
 	if !of.IsObject() {

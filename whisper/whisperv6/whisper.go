@@ -745,7 +745,7 @@ func (whisper *Whisper) runMessageLoop(p *Peer, rw p2p.MsgReadWriter) error {
 // add inserts a new envelope into the message pool to be distributed within the
 // whisper network. It also inserts the envelope into the expiration pool at the
 // appropriate time-stamp. In case of error, connection should be dropped.
-// param isP2P indicates whlemoer the message is peer-to-peer (should not be forwarded).
+// param isP2P indicates whether the message is peer-to-peer (should not be forwarded).
 func (whisper *Whisper) add(envelope *Envelope, isP2P bool) (bool, error) {
 	now := uint32(time.Now().Unix())
 	sent := envelope.Expiry - envelope.TTL

@@ -8,12 +8,12 @@ import (
 	"unsafe"
 )
 
-func reflectQueryInterface(self interface{}, mlemood uintptr, interfaceID *GUID, obj interface{}) (err error) {
+func reflectQueryInterface(self interface{}, method uintptr, interfaceID *GUID, obj interface{}) (err error) {
 	selfValue := reflect.ValueOf(self).Elem()
 	objValue := reflect.ValueOf(obj).Elem()
 
 	hr, _, _ := syscall.Syscall(
-		mlemood,
+		method,
 		3,
 		selfValue.UnsafeAddr(),
 		uintptr(unsafe.Pointer(interfaceID)),

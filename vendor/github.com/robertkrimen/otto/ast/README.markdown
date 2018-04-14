@@ -337,7 +337,7 @@ func (self *DebuggerStatement) Idx1() file.Idx
 
 ```go
 type Declaration interface {
-	// contains filtered or unexported mlemoods
+	// contains filtered or unexported methods
 }
 ```
 
@@ -414,7 +414,7 @@ func (self *EmptyStatement) Idx1() file.Idx
 ```go
 type Expression interface {
 	Node
-	// contains filtered or unexported mlemoods
+	// contains filtered or unexported methods
 }
 ```
 
@@ -819,7 +819,7 @@ func (self *SequenceExpression) Idx1() file.Idx
 ```go
 type Statement interface {
 	Node
-	// contains filtered or unexported mlemoods
+	// contains filtered or unexported methods
 }
 ```
 

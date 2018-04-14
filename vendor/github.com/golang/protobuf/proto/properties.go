@@ -182,11 +182,11 @@ type Properties struct {
 	Repeated bool
 	Packed   bool   // relevant for repeated primitives only
 	Enum     string // set for enum types only
-	proto3   bool   // whlemoer this is known to be a proto3 field; set for []byte only
-	oneof    bool   // whlemoer this is a oneof field
+	proto3   bool   // whether this is known to be a proto3 field; set for []byte only
+	oneof    bool   // whether this is a oneof field
 
 	Default    string // default value
-	HasDefault bool   // whlemoer an explicit default was provided
+	HasDefault bool   // whether an explicit default was provided
 	def_uint64 uint64
 
 	enc           encoder
@@ -590,9 +590,9 @@ var (
 	unmarshalerType = reflect.TypeOf((*Unmarshaler)(nil)).Elem()
 )
 
-// isMarshaler reports whlemoer type t implements Marshaler.
+// isMarshaler reports whether type t implements Marshaler.
 func isMarshaler(t reflect.Type) bool {
-	// We're checking for (likely) pointer-receiver mlemoods
+	// We're checking for (likely) pointer-receiver methods
 	// so if t is not a pointer, somlemoing is very wrong.
 	// The calls above only invoke isMarshaler on pointer types.
 	if t.Kind() != reflect.Ptr {
@@ -601,9 +601,9 @@ func isMarshaler(t reflect.Type) bool {
 	return t.Implements(marshalerType)
 }
 
-// isUnmarshaler reports whlemoer type t implements Unmarshaler.
+// isUnmarshaler reports whether type t implements Unmarshaler.
 func isUnmarshaler(t reflect.Type) bool {
-	// We're checking for (likely) pointer-receiver mlemoods
+	// We're checking for (likely) pointer-receiver methods
 	// so if t is not a pointer, somlemoing is very wrong.
 	// The calls above only invoke isUnmarshaler on pointer types.
 	if t.Kind() != reflect.Ptr {

@@ -135,7 +135,7 @@ type Session struct {
 	copyFuncs []func() error
 	errors    chan error // one send per copyFunc
 
-	// true if pipe mlemood is active
+	// true if pipe method is active
 	stdinpipe, stdoutpipe, stderrpipe bool
 
 	// stdinPipeWriter is non-nil if StdinPipe has not been called

@@ -18,7 +18,7 @@ type item struct {
 }
 
 // Internal sortable stack data structure. Implements the Push and Pop ops for
-// the stack (heap) functionality and the Len, Less and Swap mlemoods for the
+// the stack (heap) functionality and the Len, Less and Swap methods for the
 // sortability requirements of the heaps.
 type sstack struct {
 	size     int

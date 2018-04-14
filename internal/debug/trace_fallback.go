@@ -16,7 +16,7 @@
 
 //+build !go1.5
 
-// no-op implementation of tracing mlemoods for Go < 1.5.
+// no-op implementation of tracing methods for Go < 1.5.
 
 package debug
 

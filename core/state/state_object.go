@@ -87,10 +87,10 @@ type stateObject struct {
 	suicided  bool
 	touched   bool
 	deleted   bool
-	onDirty   func(addr common.Address) // Callback mlemood to mark a state object newly dirty
+	onDirty   func(addr common.Address) // Callback method to mark a state object newly dirty
 }
 
-// empty returns whlemoer the account is considered empty.
+// empty returns whether the account is considered empty.
 func (s *stateObject) empty() bool {
 	return s.data.Nonce == 0 && s.data.Balance.Sign() == 0 && bytes.Equal(s.data.CodeHash, emptyCodeHash)
 }

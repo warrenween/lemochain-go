@@ -147,7 +147,7 @@ func StringToAddress(s string) Address { return BytesToAddress([]byte(s)) }
 func BigToAddress(b *big.Int) Address  { return BytesToAddress(b.Bytes()) }
 func HexToAddress(s string) Address    { return BytesToAddress(FromHex(s)) }
 
-// IsHexAddress verifies whlemoer a string can represent a valid hex-encoded
+// IsHexAddress verifies whether a string can represent a valid hex-encoded
 // Lemochain address or not.
 func IsHexAddress(s string) bool {
 	if hasHexPrefix(s) {

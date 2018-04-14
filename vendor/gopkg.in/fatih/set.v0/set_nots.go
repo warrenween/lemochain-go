@@ -97,12 +97,12 @@ func (s *set) Clear() {
 	s.m = make(map[interface{}]struct{})
 }
 
-// IsEmpty reports whlemoer the Set is empty.
+// IsEmpty reports whether the Set is empty.
 func (s *set) IsEmpty() bool {
 	return s.Size() == 0
 }
 
-// IsEqual test whlemoer s and t are the same in size and have the same items.
+// IsEqual test whether s and t are the same in size and have the same items.
 func (s *set) IsEqual(t Interface) bool {
 	// Force locking only if given set is threadsafe.
 	if conv, ok := t.(*Set); ok {
@@ -124,7 +124,7 @@ func (s *set) IsEqual(t Interface) bool {
 	return equal
 }
 
-// IsSubset tests whlemoer t is a subset of s.
+// IsSubset tests whether t is a subset of s.
 func (s *set) IsSubset(t Interface) (subset bool) {
 	subset = true
 
@@ -136,7 +136,7 @@ func (s *set) IsSubset(t Interface) (subset bool) {
 	return
 }
 
-// IsSuperset tests whlemoer t is a superset of s.
+// IsSuperset tests whether t is a superset of s.
 func (s *set) IsSuperset(t Interface) bool {
 	return t.IsSubset(s)
 }
@@ -163,7 +163,7 @@ func (s *set) String() string {
 }
 
 // List returns a slice of all items. There is also StringSlice() and
-// IntSlice() mlemoods for returning slices of type string or int.
+// IntSlice() methods for returning slices of type string or int.
 func (s *set) List() []interface{} {
 	list := make([]interface{}, 0, len(s.m))
 

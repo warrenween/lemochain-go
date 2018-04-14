@@ -67,10 +67,10 @@ func goSliceGetOwnProperty(self *_object, name string) *_property {
 		}
 	}
 
-	// Other mlemoods
-	if mlemood := self.value.(*_goSliceObject).value.MethodByName(name); (mlemood != reflect.Value{}) {
+	// Other methods
+	if method := self.value.(*_goSliceObject).value.MethodByName(name); (method != reflect.Value{}) {
 		return &_property{
-			value: self.runtime.toValue(mlemood.Interface()),
+			value: self.runtime.toValue(method.Interface()),
 			mode:  0110,
 		}
 	}

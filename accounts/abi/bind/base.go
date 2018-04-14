@@ -30,7 +30,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/event"
 )
 
-// SignerFn is a signer function callback when a contract requires a mlemood to
+// SignerFn is a signer function callback when a contract requires a method to
 // sign the transaction before submission.
 type SignerFn func(types.Signer, common.Address, *types.Transaction) (*types.Transaction, error)
 
@@ -73,11 +73,11 @@ type WatchOpts struct {
 }
 
 // BoundContract is the base wrapper object that reflects a contract on the
-// Lemochain network. It contains a collection of mlemoods that are used by the
+// Lemochain network. It contains a collection of methods that are used by the
 // higher level contract bindings to operate.
 type BoundContract struct {
 	address    common.Address     // Deployment address of the contract on the Lemochain blockchain
-	abi        abi.ABI            // Reflect based ABI to access the correct Lemochain mlemoods
+	abi        abi.ABI            // Reflect based ABI to access the correct Lemochain methods
 	caller     ContractCaller     // Read interface to interact with the blockchain
 	transactor ContractTransactor // Write interface to interact with the blockchain
 	filterer   ContractFilterer   // Event filtering to interact with the blockchain
@@ -113,17 +113,17 @@ func DeployContract(opts *TransactOpts, abi abi.ABI, bytecode []byte, backend Co
 	return c.address, tx, c, nil
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (c *BoundContract) Call(opts *CallOpts, result interface{}, mlemood string, params ...interface{}) error {
+func (c *BoundContract) Call(opts *CallOpts, result interface{}, method string, params ...interface{}) error {
 	// Don't crash on a lazy user
 	if opts == nil {
 		opts = new(CallOpts)
 	}
 	// Pack the input, call and unpack the results
-	input, err := c.abi.Pack(mlemood, params...)
+	input, err := c.abi.Pack(method, params...)
 	if err != nil {
 		return err
 	}
@@ -161,13 +161,13 @@ func (c *BoundContract) Call(opts *CallOpts, result interface{}, mlemood string,
 	if err != nil {
 		return err
 	}
-	return c.abi.Unpack(result, mlemood, output)
+	return c.abi.Unpack(result, method, output)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (c *BoundContract) Transact(opts *TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
+// Transact invokes the (paid) contract method with params as input values.
+func (c *BoundContract) Transact(opts *TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	// Otherwise pack up the parameters and invoke the contract
-	input, err := c.abi.Pack(mlemood, params...)
+	input, err := c.abi.Pack(method, params...)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func (c *BoundContract) Transact(opts *TransactOpts, mlemood string, params ...i
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (c *BoundContract) Transfer(opts *TransactOpts) (*types.Transaction, error) {
 	return c.transact(opts, &c.address, nil)
 }
@@ -209,7 +209,7 @@ func (c *BoundContract) transact(opts *TransactOpts, contract *common.Address, i
 	}
 	gasLimit := opts.GasLimit
 	if gasLimit == 0 {
-		// Gas estimation cannot succeed without code for mlemood invocations
+		// Gas estimation cannot succeed without code for method invocations
 		if contract != nil {
 			if code, err := c.transactor.PendingCodeAt(ensureContext(opts.Context), c.address); err != nil {
 				return nil, err
@@ -269,7 +269,7 @@ func (c *BoundContract) FilterLogs(opts *FilterOpts, name string, query ...[]int
 	if opts.End != nil {
 		config.ToBlock = new(big.Int).SetUint64(*opts.End)
 	}
-	/* TODO(karalabe): Replace the rest of the mlemood below with this when supported
+	/* TODO(karalabe): Replace the rest of the method below with this when supported
 	sub, err := c.filterer.SubscribeFilterLogs(ensureContext(opts.Context), config, logs)
 	*/
 	buff, err := c.filterer.FilterLogs(ensureContext(opts.Context), config)
@@ -340,7 +340,7 @@ func (c *BoundContract) UnpackLog(out interface{}, event string, log types.Log) 
 	return parseTopics(out, indexed, log.Topics[1:])
 }
 
-// ensureContext is a helper mlemood to ensure a context is not nil, even if the
+// ensureContext is a helper method to ensure a context is not nil, even if the
 // user specified it as such.
 func ensureContext(ctx context.Context) context.Context {
 	if ctx == nil {

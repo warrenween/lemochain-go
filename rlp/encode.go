@@ -35,7 +35,7 @@ var (
 // encoding rules or want to encode private fields.
 type Encoder interface {
 	// EncodeRLP should write the RLP encoding of its receiver to w.
-	// If the implementation is a pointer mlemood, it may also be
+	// If the implementation is a pointer method, it may also be
 	// called for nil pointers.
 	//
 	// Implementations should generate valid RLP. The data written is
@@ -485,7 +485,7 @@ func writeEncoderNoPtr(val reflect.Value, w *encbuf) error {
 		// package json simply doesn't call MarshalJSON for cases like
 		// this, but encodes the value as if it didn't implement the
 		// interface. We don't want to handle it that way.
-		return fmt.Errorf("rlp: game over: unadressable value of type %v, EncodeRLP is pointer mlemood", val.Type())
+		return fmt.Errorf("rlp: game over: unadressable value of type %v, EncodeRLP is pointer method", val.Type())
 	}
 	return val.Addr().Interface().(Encoder).EncodeRLP(w)
 }

@@ -51,8 +51,8 @@ const deepUpdate = (updater: Object, update: Object, prev: Object): $Shape<Conte
 };
 
 // shouldUpdate returns the structure of a message. It is used to prevent unnecessary render
-// mlemood triggerings. In the affected component's shouldComponentUpdate mlemood it can be checked
-// whlemoer the involved data was changed or not by checking the message structure.
+// method triggerings. In the affected component's shouldComponentUpdate method it can be checked
+// whether the involved data was changed or not by checking the message structure.
 //
 // We could return the message itself too, but it's safer not to give access to it.
 const shouldUpdate = (updater: Object, msg: Object) => {

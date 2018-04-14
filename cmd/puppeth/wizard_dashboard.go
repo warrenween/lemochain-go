@@ -133,7 +133,7 @@ func (w *wizard) deployDashboard() {
 			infos.faucet = page
 		}
 	}
-	// If we have lemostats running, ask whlemoer to make the secret public or not
+	// If we have lemostats running, ask whether to make the secret public or not
 	if w.conf.lemostats != "" {
 		fmt.Println()
 		fmt.Println("Include lemostats secret on dashboard (y/n)? (default = yes)")

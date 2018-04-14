@@ -16,7 +16,7 @@ var (
 	// NoColor defines if the output is colorized or not. It's dynamically set to
 	// false or true based on the stdout's file descriptor referring to a terminal
 	// or not. This is a global option and affects all colors. For more control
-	// over each color block use the mlemoods DisableColor() individually.
+	// over each color block use the methods DisableColor() individually.
 	NoColor = !isatty.IsTerminal(os.Stdout.Fd()) || os.Getenv("TERM") == "dumb"
 
 	// Output defines the standard output of the print functions. By default
@@ -194,7 +194,7 @@ func (c *Color) Fprint(w io.Writer, a ...interface{}) (n int, err error) {
 // Print formats using the default formats for its operands and writes to
 // standard output. Spaces are added between operands when neither is a
 // string. It returns the number of bytes written and any write error
-// encountered. This is the standard fmt.Print() mlemood wrapped with the given
+// encountered. This is the standard fmt.Print() method wrapped with the given
 // color.
 func (c *Color) Print(a ...interface{}) (n int, err error) {
 	c.Set()
@@ -216,7 +216,7 @@ func (c *Color) Fprintf(w io.Writer, format string, a ...interface{}) (n int, er
 
 // Printf formats according to a format specifier and writes to standard output.
 // It returns the number of bytes written and any write error encountered.
-// This is the standard fmt.Printf() mlemood wrapped with the given color.
+// This is the standard fmt.Printf() method wrapped with the given color.
 func (c *Color) Printf(format string, a ...interface{}) (n int, err error) {
 	c.Set()
 	defer c.unset()
@@ -238,7 +238,7 @@ func (c *Color) Fprintln(w io.Writer, a ...interface{}) (n int, err error) {
 // Println formats using the default formats for its operands and writes to
 // standard output. Spaces are always added between operands and a newline is
 // appended. It returns the number of bytes written and any write error
-// encountered. This is the standard fmt.Print() mlemood wrapped with the given
+// encountered. This is the standard fmt.Print() method wrapped with the given
 // color.
 func (c *Color) Println(a ...interface{}) (n int, err error) {
 	c.Set()
@@ -371,13 +371,13 @@ func (c *Color) unformat() string {
 
 // DisableColor disables the color output. Useful to not change any existing
 // code and still being able to output. Can be used for flags like
-// "--no-color". To enable back use EnableColor() mlemood.
+// "--no-color". To enable back use EnableColor() method.
 func (c *Color) DisableColor() {
 	c.noColor = boolPtr(true)
 }
 
 // EnableColor enables the color output. Use it in conjunction with
-// DisableColor(). Otherwise this mlemood has no side effects.
+// DisableColor(). Otherwise this method has no side effects.
 func (c *Color) EnableColor() {
 	c.noColor = boolPtr(false)
 }
@@ -392,7 +392,7 @@ func (c *Color) isNoColorSet() bool {
 	return NoColor
 }
 
-// Equals returns a boolean value indicating whlemoer two colors are equal.
+// Equals returns a boolean value indicating whether two colors are equal.
 func (c *Color) Equals(c2 *Color) bool {
 	if len(c.params) != len(c2.params) {
 		return false

@@ -187,7 +187,7 @@ func (ctx ppctx) printObject(obj *otto.Object, level int, inArray bool) {
 
 func (ctx ppctx) fields(obj *otto.Object) []string {
 	var (
-		vals, mlemoods []string
+		vals, methods []string
 		seen          = make(map[string]bool)
 	)
 	add := func(k string) {
@@ -196,15 +196,15 @@ func (ctx ppctx) fields(obj *otto.Object) []string {
 		}
 		seen[k] = true
 		if v, _ := obj.Get(k); v.IsFunction() {
-			mlemoods = append(mlemoods, k)
+			methods = append(methods, k)
 		} else {
 			vals = append(vals, k)
 		}
 	}
 	iterOwnAndConstructorKeys(ctx.vm, obj, add)
 	sort.Strings(vals)
-	sort.Strings(mlemoods)
-	return append(vals, mlemoods...)
+	sort.Strings(methods)
+	return append(vals, methods...)
 }
 
 func iterOwnAndConstructorKeys(vm *otto.Otto, obj *otto.Object, f func(string)) {

@@ -26,14 +26,14 @@ func (c *connection) clientAuthenticate(config *ClientConfig) error {
 		return err
 	}
 
-	// during the authentication phase the client first attempts the "none" mlemood
-	// then any untried mlemoods suggested by the server.
+	// during the authentication phase the client first attempts the "none" method
+	// then any untried methods suggested by the server.
 	tried := make(map[string]bool)
 	var lastMethods []string
 
 	sessionID := c.transport.getSessionID()
 	for auth := AuthMethod(new(noneAuth)); auth != nil; {
-		ok, mlemoods, err := auth.auth(sessionID, config.User, c.transport, config.Rand)
+		ok, methods, err := auth.auth(sessionID, config.User, c.transport, config.Rand)
 		if err != nil {
 			return err
 		}
@@ -41,21 +41,21 @@ func (c *connection) clientAuthenticate(config *ClientConfig) error {
 			// success
 			return nil
 		}
-		tried[auth.mlemood()] = true
-		if mlemoods == nil {
-			mlemoods = lastMethods
+		tried[auth.method()] = true
+		if methods == nil {
+			methods = lastMethods
 		}
-		lastMethods = mlemoods
+		lastMethods = methods
 
 		auth = nil
 
 	findNext:
 		for _, a := range config.Auth {
-			candidateMethod := a.mlemood()
+			candidateMethod := a.method()
 			if tried[candidateMethod] {
 				continue
 			}
-			for _, mlemo := range mlemoods {
+			for _, mlemo := range methods {
 				if mlemo == candidateMethod {
 					auth = a
 					break findNext
@@ -63,7 +63,7 @@ func (c *connection) clientAuthenticate(config *ClientConfig) error {
 			}
 		}
 	}
-	return fmt.Errorf("ssh: unable to authenticate, attempted mlemoods %v, no supported mlemoods remain", keys(tried))
+	return fmt.Errorf("ssh: unable to authenticate, attempted methods %v, no supported methods remain", keys(tried))
 }
 
 func keys(m map[string]bool) []string {
@@ -75,17 +75,17 @@ func keys(m map[string]bool) []string {
 	return s
 }
 
-// An AuthMethod represents an instance of an RFC 4252 authentication mlemood.
+// An AuthMethod represents an instance of an RFC 4252 authentication method.
 type AuthMethod interface {
 	// auth authenticates user over transport t.
 	// Returns true if authentication is successful.
 	// If authentication is not successful, a []string of alternative
-	// mlemood names is returned. If the slice is nil, it will be ignored
-	// and the previous set of possible mlemoods will be reused.
+	// method names is returned. If the slice is nil, it will be ignored
+	// and the previous set of possible methods will be reused.
 	auth(session []byte, user string, p packetConn, rand io.Reader) (bool, []string, error)
 
-	// mlemood returns the RFC 4252 mlemood name.
-	mlemood() string
+	// method returns the RFC 4252 method name.
+	method() string
 }
 
 // "none" authentication, RFC 4252 section 5.2.
@@ -103,7 +103,7 @@ func (n *noneAuth) auth(session []byte, user string, c packetConn, rand io.Reade
 	return handleAuthResponse(c)
 }
 
-func (n *noneAuth) mlemood() string {
+func (n *noneAuth) method() string {
 	return "none"
 }
 
@@ -131,7 +131,7 @@ func (cb passwordCallback) auth(session []byte, user string, c packetConn, rand 
 	if err := c.writePacket(Marshal(&passwordAuthMsg{
 		User:     user,
 		Service:  serviceSSH,
-		Method:   cb.mlemood(),
+		Method:   cb.method(),
 		Reply:    false,
 		Password: pw,
 	})); err != nil {
@@ -141,7 +141,7 @@ func (cb passwordCallback) auth(session []byte, user string, c packetConn, rand 
 	return handleAuthResponse(c)
 }
 
-func (cb passwordCallback) mlemood() string {
+func (cb passwordCallback) method() string {
 	return "password"
 }
 
@@ -174,7 +174,7 @@ type publickeyAuthMsg struct {
 // pairs for authentication.
 type publicKeyCallback func() ([]Signer, error)
 
-func (cb publicKeyCallback) mlemood() string {
+func (cb publicKeyCallback) method() string {
 	return "publickey"
 }
 
@@ -188,7 +188,7 @@ func (cb publicKeyCallback) auth(session []byte, user string, c packetConn, rand
 	if err != nil {
 		return false, nil, err
 	}
-	var mlemoods []string
+	var methods []string
 	for _, signer := range signers {
 		ok, err := validateKey(signer.PublicKey(), user, c)
 		if err != nil {
@@ -203,7 +203,7 @@ func (cb publicKeyCallback) auth(session []byte, user string, c packetConn, rand
 		sign, err := signer.Sign(rand, buildDataSignedForAuth(session, userAuthRequestMsg{
 			User:    user,
 			Service: serviceSSH,
-			Method:  cb.mlemood(),
+			Method:  cb.method(),
 		}, []byte(pub.Type()), pubKey))
 		if err != nil {
 			return false, nil, err
@@ -216,7 +216,7 @@ func (cb publicKeyCallback) auth(session []byte, user string, c packetConn, rand
 		msg := publickeyAuthMsg{
 			User:     user,
 			Service:  serviceSSH,
-			Method:   cb.mlemood(),
+			Method:   cb.method(),
 			HasSig:   true,
 			Algoname: pub.Type(),
 			PubKey:   pubKey,
@@ -227,26 +227,26 @@ func (cb publicKeyCallback) auth(session []byte, user string, c packetConn, rand
 			return false, nil, err
 		}
 		var success bool
-		success, mlemoods, err = handleAuthResponse(c)
+		success, methods, err = handleAuthResponse(c)
 		if err != nil {
 			return false, nil, err
 		}
 
-		// If authentication succeeds or the list of available mlemoods does not
-		// contain the "publickey" mlemood, do not attempt to authenticate with any
+		// If authentication succeeds or the list of available methods does not
+		// contain the "publickey" method, do not attempt to authenticate with any
 		// other keys.  According to RFC 4252 Section 7, the latter can occur when
-		// additional authentication mlemoods are required.
-		if success || !containsMethod(mlemoods, cb.mlemood()) {
-			return success, mlemoods, err
+		// additional authentication methods are required.
+		if success || !containsMethod(methods, cb.method()) {
+			return success, methods, err
 		}
 	}
 
-	return false, mlemoods, nil
+	return false, methods, nil
 }
 
-func containsMethod(mlemoods []string, mlemood string) bool {
-	for _, m := range mlemoods {
-		if m == mlemood {
+func containsMethod(methods []string, method string) bool {
+	for _, m := range methods {
+		if m == method {
 			return true
 		}
 	}
@@ -313,8 +313,8 @@ func PublicKeysCallback(getSigners func() (signers []Signer, err error)) AuthMet
 	return publicKeyCallback(getSigners)
 }
 
-// handleAuthResponse returns whlemoer the preceding authentication request succeeded
-// along with a list of remaining authentication mlemoods to try next and
+// handleAuthResponse returns whether the preceding authentication request succeeded
+// along with a list of remaining authentication methods to try next and
 // an error if an unexpected response was received.
 func handleAuthResponse(c packetConn) (bool, []string, error) {
 	for {
@@ -355,7 +355,7 @@ func KeyboardInteractive(challenge KeyboardInteractiveChallenge) AuthMethod {
 	return challenge
 }
 
-func (cb KeyboardInteractiveChallenge) mlemood() string {
+func (cb KeyboardInteractiveChallenge) method() string {
 	return "keyboard-interactive"
 }
 
@@ -365,7 +365,7 @@ func (cb KeyboardInteractiveChallenge) auth(session []byte, user string, c packe
 		Service    string
 		Method     string
 		Language   string
-		Submlemoods string
+		Submethods string
 	}
 
 	if err := c.writePacket(Marshal(&initiateMsg{
@@ -456,21 +456,21 @@ type retryableAuthMethod struct {
 	maxTries   int
 }
 
-func (r *retryableAuthMethod) auth(session []byte, user string, c packetConn, rand io.Reader) (ok bool, mlemoods []string, err error) {
+func (r *retryableAuthMethod) auth(session []byte, user string, c packetConn, rand io.Reader) (ok bool, methods []string, err error) {
 	for i := 0; r.maxTries <= 0 || i < r.maxTries; i++ {
-		ok, mlemoods, err = r.authMethod.auth(session, user, c, rand)
+		ok, methods, err = r.authMethod.auth(session, user, c, rand)
 		if ok || err != nil { // either success or error terminate
-			return ok, mlemoods, err
+			return ok, methods, err
 		}
 	}
-	return ok, mlemoods, err
+	return ok, methods, err
 }
 
-func (r *retryableAuthMethod) mlemood() string {
-	return r.authMethod.mlemood()
+func (r *retryableAuthMethod) method() string {
+	return r.authMethod.method()
 }
 
-// RetryableAuthMethod is a decorator for other auth mlemoods enabling them to
+// RetryableAuthMethod is a decorator for other auth methods enabling them to
 // be retried up to maxTries before considering that AuthMethod itself failed.
 // If maxTries is <= 0, will retry indefinitely
 //

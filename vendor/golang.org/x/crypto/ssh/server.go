@@ -14,7 +14,7 @@ import (
 )
 
 // The Permissions type holds fine-grained permissions that are
-// specific to a user or a specific authentication mlemood for a user.
+// specific to a user or a specific authentication method for a user.
 // The Permissions value for a successful authentication attempt is
 // available in ServerConn, so it can be used to pass information from
 // the user-authentication phase to the application layer.
@@ -87,7 +87,7 @@ type ServerConfig struct {
 
 	// AuthLogCallback, if non-nil, is called to log all authentication
 	// attempts.
-	AuthLogCallback func(conn ConnMetadata, mlemood string, err error)
+	AuthLogCallback func(conn ConnMetadata, method string, err error)
 
 	// ServerVersion is the version identification string to announce in
 	// the public handshake.
@@ -111,7 +111,7 @@ func (s *ServerConfig) AddHostKey(key Signer) {
 	s.hostKeys = append(s.hostKeys, key)
 }
 
-// cachedPubKey contains the results of querying whlemoer a public key is
+// cachedPubKey contains the results of querying whether a public key is
 // acceptable for a user.
 type cachedPubKey struct {
 	user       string
@@ -123,7 +123,7 @@ type cachedPubKey struct {
 const maxCachedPubKeys = 16
 
 // pubKeyCache caches tests for public keys.  Since SSH clients
-// will query whlemoer a public key is acceptable before attempting to
+// will query whether a public key is acceptable before attempting to
 // authenticate with it, we end up with duplicate queries for public
 // key validity.  The cache only applies to a single ServerConn.
 type pubKeyCache struct {
@@ -198,7 +198,7 @@ func (s *connection) serverHandshake(config *ServerConfig) (*Permissions, error)
 	}
 
 	if !config.NoClientAuth && config.PasswordCallback == nil && config.PublicKeyCallback == nil && config.KeyboardInteractiveCallback == nil {
-		return nil, errors.New("ssh: no authentication mlemoods configured but NoClientAuth is also false")
+		return nil, errors.New("ssh: no authentication methods configured but NoClientAuth is also false")
 	}
 
 	if config.ServerVersion != "" {
@@ -289,11 +289,11 @@ func checkSourceAddress(addr net.Addr, sourceAddrs string) error {
 }
 
 // ServerAuthError implements the error interface. It appends any authentication
-// errors that may occur, and is returned if all of the authentication mlemoods
+// errors that may occur, and is returned if all of the authentication methods
 // provided by the user failed to authenticate.
 type ServerAuthError struct {
 	// Errors contains authentication errors returned by the authentication
-	// callback mlemoods.
+	// callback methods.
 	Errors []error
 }
 
@@ -466,7 +466,7 @@ userAuthLoop:
 				perms = candidate.perms
 			}
 		default:
-			authErr = fmt.Errorf("ssh: unknown mlemood %q", userAuthReq.Method)
+			authErr = fmt.Errorf("ssh: unknown method %q", userAuthReq.Method)
 		}
 
 		authErrs = append(authErrs, authErr)
@@ -493,7 +493,7 @@ userAuthLoop:
 		}
 
 		if len(failureMsg.Methods) == 0 {
-			return nil, errors.New("ssh: no authentication mlemoods configured but NoClientAuth is also false")
+			return nil, errors.New("ssh: no authentication methods configured but NoClientAuth is also false")
 		}
 
 		if err := s.transport.writePacket(Marshal(&failureMsg)); err != nil {

@@ -36,7 +36,7 @@ func (s *NoopService) Stop() error               { return nil }
 
 func NewNoopService(*ServiceContext) (Service, error) { return new(NoopService), nil }
 
-// Set of services all wrapping the base NoopService resulting in the same mlemood
+// Set of services all wrapping the base NoopService resulting in the same method
 // signatures but different outer types.
 type NoopServiceA struct{ NoopService }
 type NoopServiceB struct{ NoopService }
@@ -47,7 +47,7 @@ func NewNoopServiceB(*ServiceContext) (Service, error) { return new(NoopServiceB
 func NewNoopServiceC(*ServiceContext) (Service, error) { return new(NoopServiceC), nil }
 
 // InstrumentedService is an implementation of Service for which all interface
-// mlemoods can be instrumented both return value as well as event hook wise.
+// methods can be instrumented both return value as well as event hook wise.
 type InstrumentedService struct {
 	protocols []p2p.Protocol
 	apis      []rpc.API
@@ -86,7 +86,7 @@ func (s *InstrumentedService) Stop() error {
 	return s.stop
 }
 
-// InstrumentingWrapper is a mlemood to specialize a service constructor returning
+// InstrumentingWrapper is a method to specialize a service constructor returning
 // a generic InstrumentedService into one returning a wrapping specific one.
 type InstrumentingWrapper func(base ServiceConstructor) ServiceConstructor
 
@@ -104,7 +104,7 @@ func InstrumentingWrapperMaker(base ServiceConstructor, kind reflect.Type) Servi
 }
 
 // Set of services all wrapping the base InstrumentedService resulting in the
-// same mlemood signatures but different outer types.
+// same method signatures but different outer types.
 type InstrumentedServiceA struct{ InstrumentedService }
 type InstrumentedServiceB struct{ InstrumentedService }
 type InstrumentedServiceC struct{ InstrumentedService }
@@ -121,7 +121,7 @@ func InstrumentedServiceMakerC(base ServiceConstructor) ServiceConstructor {
 	return InstrumentingWrapperMaker(base, reflect.TypeOf(InstrumentedServiceC{}))
 }
 
-// OneMethodApi is a single-mlemood API handler to be returned by test services.
+// OneMethodApi is a single-method API handler to be returned by test services.
 type OneMethodApi struct {
 	fun func()
 }

@@ -257,7 +257,7 @@ type PipeListener struct {
 	acceptOverlapped *syscall.Overlapped
 }
 
-// Accept implements the Accept mlemood in the net.Listener interface; it
+// Accept implements the Accept method in the net.Listener interface; it
 // waits for the next call and returns a generic net.Conn.
 func (l *PipeListener) Accept() (net.Conn, error) {
 	c, err := l.AcceptPipe()
@@ -428,7 +428,7 @@ func (c *PipeConn) completeRequest(data iodata, deadline *time.Time, overlapped 
 	return int(data.n), data.err
 }
 
-// Read implements the net.Conn Read mlemood.
+// Read implements the net.Conn Read method.
 func (c *PipeConn) Read(b []byte) (int, error) {
 	// Use ReadFile() rather than Read() because the latter
 	// contains a workaround that eats ERROR_BROKEN_PIPE.
@@ -442,7 +442,7 @@ func (c *PipeConn) Read(b []byte) (int, error) {
 	return c.completeRequest(iodata{n, err}, c.readDeadline, overlapped)
 }
 
-// Write implements the net.Conn Write mlemood.
+// Write implements the net.Conn Write method.
 func (c *PipeConn) Write(b []byte) (int, error) {
 	overlapped, err := newOverlapped()
 	if err != nil {
@@ -470,7 +470,7 @@ func (c *PipeConn) RemoteAddr() net.Addr {
 	return c.addr
 }
 
-// SetDeadline implements the net.Conn SetDeadline mlemood.
+// SetDeadline implements the net.Conn SetDeadline method.
 // Note that timeouts are only supported on Windows Vista/Server 2008 and above
 func (c *PipeConn) SetDeadline(t time.Time) error {
 	c.SetReadDeadline(t)
@@ -478,14 +478,14 @@ func (c *PipeConn) SetDeadline(t time.Time) error {
 	return nil
 }
 
-// SetReadDeadline implements the net.Conn SetReadDeadline mlemood.
+// SetReadDeadline implements the net.Conn SetReadDeadline method.
 // Note that timeouts are only supported on Windows Vista/Server 2008 and above
 func (c *PipeConn) SetReadDeadline(t time.Time) error {
 	c.readDeadline = &t
 	return nil
 }
 
-// SetWriteDeadline implements the net.Conn SetWriteDeadline mlemood.
+// SetWriteDeadline implements the net.Conn SetWriteDeadline method.
 // Note that timeouts are only supported on Windows Vista/Server 2008 and above
 func (c *PipeConn) SetWriteDeadline(t time.Time) error {
 	c.writeDeadline = &t

@@ -126,7 +126,7 @@ func (curve *KoblitzCurve) IsOnCurve(x, y *big.Int) bool {
 func (curve *KoblitzCurve) addZ1AndZ2EqualsOne(x1, y1, z1, x2, y2, x3, y3, z3 *fieldVal) {
 	// To compute the point addition efficiently, this implementation splits
 	// the equation into intermediate elements which are used to minimize
-	// the number of field multiplications using the mlemood shown at:
+	// the number of field multiplications using the method shown at:
 	// http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#addition-mmadd-2007-bl
 	//
 	// In particular it performs the calculations using the following:
@@ -193,7 +193,7 @@ func (curve *KoblitzCurve) addZ1EqualsZ2(x1, y1, z1, x2, y2, x3, y3, z3 *fieldVa
 	// To compute the point addition efficiently, this implementation splits
 	// the equation into intermediate elements which are used to minimize
 	// the number of field multiplications using a slightly modified version
-	// of the mlemood shown at:
+	// of the method shown at:
 	// http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#addition-mmadd-2007-bl
 	//
 	// In particular it performs the calculations using the following:
@@ -261,7 +261,7 @@ func (curve *KoblitzCurve) addZ1EqualsZ2(x1, y1, z1, x2, y2, x3, y3, z3 *fieldVa
 func (curve *KoblitzCurve) addZ2EqualsOne(x1, y1, z1, x2, y2, x3, y3, z3 *fieldVal) {
 	// To compute the point addition efficiently, this implementation splits
 	// the equation into intermediate elements which are used to minimize
-	// the number of field multiplications using the mlemood shown at:
+	// the number of field multiplications using the method shown at:
 	// http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#addition-madd-2007-bl
 	//
 	// In particular it performs the calculations using the following:
@@ -337,7 +337,7 @@ func (curve *KoblitzCurve) addZ2EqualsOne(x1, y1, z1, x2, y2, x3, y3, z3 *fieldV
 func (curve *KoblitzCurve) addGeneric(x1, y1, z1, x2, y2, z2, x3, y3, z3 *fieldVal) {
 	// To compute the point addition efficiently, this implementation splits
 	// the equation into intermediate elements which are used to minimize
-	// the number of field multiplications using the mlemood shown at:
+	// the number of field multiplications using the method shown at:
 	// http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#addition-add-2007-bl
 	//
 	// In particular it performs the calculations using the following:
@@ -493,7 +493,7 @@ func (curve *KoblitzCurve) doubleZ1EqualsOne(x1, y1, x3, y3, z3 *fieldVal) {
 	// are roughly 35% faster than field multiplications with the current
 	// implementation at the time this was written.
 	//
-	// This uses a slightly modified version of the mlemood shown at:
+	// This uses a slightly modified version of the method shown at:
 	// http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#doubling-mdbl-2007-bl
 	//
 	// In particular it performs the calculations using the following:
@@ -542,7 +542,7 @@ func (curve *KoblitzCurve) doubleGeneric(x1, y1, z1, x3, y3, z3 *fieldVal) {
 	// are roughly 35% faster than field multiplications with the current
 	// implementation at the time this was written.
 	//
-	// This uses a slightly modified version of the mlemood shown at:
+	// This uses a slightly modified version of the method shown at:
 	// http://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#doubling-dbl-2009-l
 	//
 	// In particular it performs the calculations using the following:
@@ -692,7 +692,7 @@ func NAF(k []byte) ([]byte, []byte) {
 	//
 	// The algorithm thus may need to go 1 more bit than the length of the
 	// bits we actually have, hence bits being 1 bit longer than was
-	// necessary.  Since we need to know whlemoer adding will cause a carry,
+	// necessary.  Since we need to know whether adding will cause a carry,
 	// we go from right-to-left in this addition.
 	var carry, curIsOne, nextIsOne bool
 	// these default to zero

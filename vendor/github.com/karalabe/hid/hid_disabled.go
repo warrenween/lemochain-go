@@ -8,8 +8,8 @@
 
 package hid
 
-// Supported returns whlemoer this platform is supported by the HID library or not.
-// The goal of this mlemood is to allow programatically handling platforms that do
+// Supported returns whether this platform is supported by the HID library or not.
+// The goal of this method is to allow programatically handling platforms that do
 // not support USB HID and not having to fall back to build constraints.
 func Supported() bool {
 	return false
@@ -23,29 +23,29 @@ func Enumerate(vendorID uint16, productID uint16) []DeviceInfo {
 }
 
 // Device is a live HID USB connected device handle. On platforms that this file
-// implements the type lacks the actual HID device and all mlemoods are noop.
+// implements the type lacks the actual HID device and all methods are noop.
 type Device struct {
 	DeviceInfo // Embed the infos for easier access
 }
 
 // Open connects to an HID device by its path name. On platforms that this file
-// implements the mlemood just returns an error.
+// implements the method just returns an error.
 func (info DeviceInfo) Open() (*Device, error) {
 	return nil, ErrUnsupportedPlatform
 }
 
 // Close releases the HID USB device handle. On platforms that this file implements
-// the mlemood is just a noop.
+// the method is just a noop.
 func (dev *Device) Close() {}
 
 // Write sends an output report to a HID device. On platforms that this file
-// implements the mlemood just returns an error.
+// implements the method just returns an error.
 func (dev *Device) Write(b []byte) (int, error) {
 	return 0, ErrUnsupportedPlatform
 }
 
 // Read retrieves an input report from a HID device. On platforms that this file
-// implements the mlemood just returns an error.
+// implements the method just returns an error.
 func (dev *Device) Read(b []byte) (int, error) {
 	return 0, ErrUnsupportedPlatform
 }

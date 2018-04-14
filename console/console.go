@@ -157,16 +157,16 @@ func (c *Console) init(preload []string) error {
 	// Initialize the global name register (disabled for now)
 	//c.jsre.Run(`var GlobalRegistrar = lemo.contract(` + registrar.GlobalRegistrarAbi + `);   registrar = GlobalRegistrar.at("` + registrar.GlobalRegistrarAddr + `");`)
 
-	// If the console is in interactive mode, instrument password related mlemoods to query the user
+	// If the console is in interactive mode, instrument password related methods to query the user
 	if c.prompter != nil {
 		// Retrieve the account management object to instrument
 		personal, err := c.jsre.Get("personal")
 		if err != nil {
 			return err
 		}
-		// Override the openWallet, unlockAccount, newAccount and sign mlemoods since
-		// these require user interaction. Assign these mlemood in the Console the
-		// original web3 callbacks. These will be called by the jlemo.* mlemoods after
+		// Override the openWallet, unlockAccount, newAccount and sign methods since
+		// these require user interaction. Assign these method in the Console the
+		// original web3 callbacks. These will be called by the jlemo.* methods after
 		// they got the password from the user and send the original web3 request to
 		// the backend.
 		if obj := personal.Object(); obj != nil { // make sure the personal api is enabled over the interface
@@ -231,7 +231,7 @@ func (c *Console) clearHistory() {
 	}
 }
 
-// consoleOutput is an override for the console.log and console.error mlemoods to
+// consoleOutput is an override for the console.log and console.error methods to
 // stream the output into the configured output stream instead of stdout.
 func (c *Console) consoleOutput(call otto.FunctionCall) otto.Value {
 	output := []string{}
@@ -243,7 +243,7 @@ func (c *Console) consoleOutput(call otto.FunctionCall) otto.Value {
 }
 
 // AutoCompleteInput is a pre-assembled word completer to be used by the user
-// input prompter to provide hints to the user about the mlemoods available.
+// input prompter to provide hints to the user about the methods available.
 func (c *Console) AutoCompleteInput(line string, pos int) (string, []string, string) {
 	// No completions can be provided for empty inputs
 	if len(line) == 0 || pos == 0 {
@@ -253,7 +253,7 @@ func (c *Console) AutoCompleteInput(line string, pos int) (string, []string, str
 	// E.g. in case of nested lines lemo.getBalance(lemo.coinb<tab><tab>
 	start := pos - 1
 	for ; start > 0; start-- {
-		// Skip all mlemoods and namespaces (i.e. including the dot)
+		// Skip all methods and namespaces (i.e. including the dot)
 		if line[start] == '.' || (line[start] >= 'a' && line[start] <= 'z') || (line[start] >= 'A' && line[start] <= 'Z') {
 			continue
 		}

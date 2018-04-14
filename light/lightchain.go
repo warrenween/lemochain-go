@@ -139,7 +139,7 @@ func (self *LightChain) Odr() OdrBackend {
 	return self.odr
 }
 
-// loadLastState loads the last known chain state from the database. This mlemood
+// loadLastState loads the last known chain state from the database. This method
 // assumes that the chain manager mutex is held.
 func (self *LightChain) loadLastState() error {
 	if head := core.GetHeadHeaderHash(self.chainDb); head == (common.Hash{}) {
@@ -335,7 +335,7 @@ func (self *LightChain) postChainEvents(events []interface{}) {
 // chain, possibly creating a reorg. If an error is returned, it will return the
 // index number of the failing header as well an error describing what went wrong.
 //
-// The verify parameter can be used to fine tune whlemoer nonce verification
+// The verify parameter can be used to fine tune whether nonce verification
 // should be done or not. The reason behind the optional check is because some
 // of the header retrieval mechanisms already need to verfy nonces, as well as
 // because nonces can be verified sparsely, not needing to check each.

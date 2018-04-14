@@ -113,7 +113,7 @@ func (s *Set) Clear() {
 	s.m = make(map[interface{}]struct{})
 }
 
-// IsEqual test whlemoer s and t are the same in size and have the same items.
+// IsEqual test whether s and t are the same in size and have the same items.
 func (s *Set) IsEqual(t Interface) bool {
 	s.l.RLock()
 	defer s.l.RUnlock()
@@ -138,7 +138,7 @@ func (s *Set) IsEqual(t Interface) bool {
 	return equal
 }
 
-// IsSubset tests whlemoer t is a subset of s.
+// IsSubset tests whether t is a subset of s.
 func (s *Set) IsSubset(t Interface) (subset bool) {
 	s.l.RLock()
 	defer s.l.RUnlock()
@@ -168,7 +168,7 @@ func (s *Set) Each(f func(item interface{}) bool) {
 }
 
 // List returns a slice of all items. There is also StringSlice() and
-// IntSlice() mlemoods for returning slices of type string or int.
+// IntSlice() methods for returning slices of type string or int.
 func (s *Set) List() []interface{} {
 	s.l.RLock()
 	defer s.l.RUnlock()

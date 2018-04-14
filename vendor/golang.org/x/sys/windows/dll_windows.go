@@ -120,7 +120,7 @@ func (p *Proc) Addr() uintptr {
 // are supplied.
 //
 // The returned error is always non-nil, constructed from the result of GetLastError.
-// Callers must inspect the primary return value to decide whlemoer an error occurred
+// Callers must inspect the primary return value to decide whether an error occurred
 // (according to the semantics of the specific function being called) before consulting
 // the error. The error will be guaranteed to contain windows.Errno.
 func (p *Proc) Call(a ...uintptr) (r1, r2 uintptr, lastErr error) {
@@ -164,12 +164,12 @@ func (p *Proc) Call(a ...uintptr) (r1, r2 uintptr, lastErr error) {
 
 // A LazyDLL implements access to a single DLL.
 // It will delay the load of the DLL until the first
-// call to its Handle mlemood or to one of its
-// LazyProc's Addr mlemood.
+// call to its Handle method or to one of its
+// LazyProc's Addr method.
 type LazyDLL struct {
 	Name string
 
-	// System determines whlemoer the DLL must be loaded from the
+	// System determines whether the DLL must be loaded from the
 	// Windows System directory, bypassing the normal DLL search
 	// path.
 	System bool
@@ -244,7 +244,7 @@ func NewLazySystemDLL(name string) *LazyDLL {
 }
 
 // A LazyProc implements access to a procedure inside a LazyDLL.
-// It delays the lookup until the Addr mlemood is called.
+// It delays the lookup until the Addr method is called.
 type LazyProc struct {
 	Name string
 
@@ -301,7 +301,7 @@ func (p *LazyProc) Addr() uintptr {
 // are supplied. It will also panic if the procedure cannot be found.
 //
 // The returned error is always non-nil, constructed from the result of GetLastError.
-// Callers must inspect the primary return value to decide whlemoer an error occurred
+// Callers must inspect the primary return value to decide whether an error occurred
 // (according to the semantics of the specific function being called) before consulting
 // the error. The error will be guaranteed to contain windows.Errno.
 func (p *LazyProc) Call(a ...uintptr) (r1, r2 uintptr, lastErr error) {
@@ -318,7 +318,7 @@ func initCanDoSearchSystem32() {
 	// https://msdn.microsoft.com/en-us/library/ms684179(v=vs.85).aspx says:
 	// "Windows 7, Windows Server 2008 R2, Windows Vista, and Windows
 	// Server 2008: The LOAD_LIBRARY_SEARCH_* flags are available on
-	// systems that have KB2533623 installed. To determine whlemoer the
+	// systems that have KB2533623 installed. To determine whether the
 	// flags are available, use GetProcAddress to get the address of the
 	// AddDllDirectory, RemoveDllDirectory, or SetDefaultDllDirectories
 	// function. If GetProcAddress succeeds, the LOAD_LIBRARY_SEARCH_*

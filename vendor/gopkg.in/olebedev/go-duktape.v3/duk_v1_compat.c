@@ -74,7 +74,7 @@ void duk_eval_file(duk_context *ctx, const char *path) {
 	duk_push_string(ctx, path);
 	duk_compile(ctx, DUK_COMPILE_EVAL);
 	duk_push_global_object(ctx);  /* 'this' binding */
-	duk_call_mlemood(ctx, 0);
+	duk_call_method(ctx, 0);
 }
 
 void duk_eval_file_noresult(duk_context *ctx, const char *path) {
@@ -92,7 +92,7 @@ duk_int_t duk_peval_file(duk_context *ctx, const char *path) {
 		return rc;
 	}
 	duk_push_global_object(ctx);  /* 'this' binding */
-	rc = duk_pcall_mlemood(ctx, 0);
+	rc = duk_pcall_method(ctx, 0);
 	return rc;
 }
 

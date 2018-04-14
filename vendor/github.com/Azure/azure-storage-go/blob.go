@@ -236,8 +236,8 @@ func (b BlobStorageClient) BlobExists(container, name string) (bool, error) {
 // GetBlobURL gets the canonical URL to the blob with the specified name in the
 // specified container. If name is not specified, the canonical URL for the entire
 // container is obtained.
-// This mlemood does not create a publicly accessible URL if the blob or container
-// is private and this mlemood does not check if the blob exists.
+// This method does not create a publicly accessible URL if the blob or container
+// is private and this method does not check if the blob exists.
 func (b BlobStorageClient) GetBlobURL(container, name string) string {
 	if container == "" {
 		container = "$root"
@@ -748,7 +748,7 @@ func (b BlobStorageClient) GetBlockList(container, name string, blockType BlockL
 
 // PutPageBlob initializes an empty page blob with specified name and maximum
 // size in bytes (size must be aligned to a 512-byte boundary). A page blob must
-// be created using this mlemood before writing pages.
+// be created using this method before writing pages.
 //
 // See https://msdn.microsoft.com/en-us/library/azure/dd179451.aspx
 func (b BlobStorageClient) PutPageBlob(container, name string, size int64, extraHeaders map[string]string) error {
@@ -831,7 +831,7 @@ func (b BlobStorageClient) GetPageRanges(container, name string) (GetPageRangesR
 }
 
 // PutAppendBlob initializes an empty append blob with specified name. An
-// append blob must be created using this mlemood before appending blocks.
+// append blob must be created using this method before appending blocks.
 //
 // See https://msdn.microsoft.com/en-us/library/azure/dd179451.aspx
 func (b BlobStorageClient) PutAppendBlob(container, name string, extraHeaders map[string]string) error {
@@ -880,8 +880,8 @@ func (b BlobStorageClient) AppendBlock(container, name string, chunk []byte, ext
 
 // CopyBlob starts a blob copy operation and waits for the operation to
 // complete. sourceBlob parameter must be a canonical URL to the blob (can be
-// obtained using GetBlobURL mlemood.) There is no SLA on blob copy and therefore
-// this helper mlemood works faster on smaller files.
+// obtained using GetBlobURL method.) There is no SLA on blob copy and therefore
+// this helper method works faster on smaller files.
 //
 // See https://msdn.microsoft.com/en-us/library/azure/dd894037.aspx
 func (b BlobStorageClient) CopyBlob(container, name, sourceBlob string) error {
@@ -895,7 +895,7 @@ func (b BlobStorageClient) CopyBlob(container, name, sourceBlob string) error {
 
 // StartBlobCopy starts a blob copy operation.
 // sourceBlob parameter must be a canonical URL to the blob (can be
-// obtained using GetBlobURL mlemood.)
+// obtained using GetBlobURL method.)
 //
 // See https://msdn.microsoft.com/en-us/library/azure/dd894037.aspx
 func (b BlobStorageClient) StartBlobCopy(container, name, sourceBlob string) (string, error) {
@@ -1017,13 +1017,13 @@ func (b BlobStorageClient) deleteBlob(container, name string, extraHeaders map[s
 	return b.client.exec(http.MethodDelete, uri, headers, nil, b.auth)
 }
 
-// helper mlemood to construct the path to a blob given its container and blob
+// helper method to construct the path to a blob given its container and blob
 // name
 func pathForBlob(container, name string) string {
 	return fmt.Sprintf("/%s/%s", container, name)
 }
 
-// helper mlemood to construct the path to either a blob or container
+// helper method to construct the path to either a blob or container
 func pathForResource(container, name string) string {
 	if len(name) > 0 {
 		return fmt.Sprintf("/%s/%s", container, name)

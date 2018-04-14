@@ -58,7 +58,7 @@ func (s *NotificationTestService) SomeSubscription(ctx context.Context, n, val i
 
 	// by explicitly creating an subscription we make sure that the subscription id is send back to the client
 	// before the first subscription.Notify is called. Otherwise the events might be send before the response
-	// for the lemo_subscribe mlemood.
+	// for the lemo_subscribe method.
 	subscription := notifier.CreateSubscription()
 
 	go func() {
@@ -124,7 +124,7 @@ func TestNotifications(t *testing.T) {
 	val := 12345
 	request := map[string]interface{}{
 		"id":      1,
-		"mlemood":  "lemo_subscribe",
+		"method":  "lemo_subscribe",
 		"version": "2.0",
 		"params":  []interface{}{"someSubscription", n, val},
 	}
@@ -213,7 +213,7 @@ func waitForMessages(t *testing.T, in *json.Decoder, successes chan<- jsonSucces
 				params := msg["params"].(map[string]interface{})
 				notifications <- jsonNotification{
 					Version: msg["jsonrpc"].(string),
-					Method:  msg["mlemood"].(string),
+					Method:  msg["method"].(string),
 					Params:  jsonSubscription{params["subscription"].(string), params["result"]},
 				}
 				continue
@@ -259,7 +259,7 @@ func TestSubscriptionMultipleNamespaces(t *testing.T) {
 	for i, namespace := range namespaces {
 		request := map[string]interface{}{
 			"id":      i,
-			"mlemood":  fmt.Sprintf("%s_subscribe", namespace),
+			"method":  fmt.Sprintf("%s_subscribe", namespace),
 			"version": "2.0",
 			"params":  []interface{}{"someSubscription", n, i},
 		}
@@ -274,7 +274,7 @@ func TestSubscriptionMultipleNamespaces(t *testing.T) {
 	for i, namespace := range namespaces {
 		requests = append(requests, map[string]interface{}{
 			"id":      i,
-			"mlemood":  fmt.Sprintf("%s_subscribe", namespace),
+			"method":  fmt.Sprintf("%s_subscribe", namespace),
 			"version": "2.0",
 			"params":  []interface{}{"someSubscription", n, i},
 		})

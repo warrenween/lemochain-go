@@ -412,7 +412,7 @@ func (s *Service) login(conn *websocket.Conn) error {
 
 // report collects all possible data to report and send it to the stats server.
 // This should only be used on reconnects or rarely to avoid overloading the
-// server. Use the individual mlemoods for reporting subscribed events.
+// server. Use the individual methods for reporting subscribed events.
 func (s *Service) report(conn *websocket.Conn) error {
 	if err := s.reportLatency(conn); err != nil {
 		return err

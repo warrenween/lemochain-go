@@ -295,7 +295,7 @@ type Signer interface {
 	// PublicKey returns an associated PublicKey instance.
 	PublicKey() PublicKey
 
-	// Sign returns raw signature for the given data. This mlemood
+	// Sign returns raw signature for the given data. This method
 	// will apply the hash specified for the keytype to the data.
 	Sign(rand io.Reader, data []byte) (*Signature, error)
 }
@@ -793,7 +793,7 @@ func ParsePrivateKeyWithPassphrase(pemBytes, passPhrase []byte) (Signer, error) 
 	return NewSignerFromKey(key)
 }
 
-// encryptedBlock tells whlemoer a private key is
+// encryptedBlock tells whether a private key is
 // encrypted by examining its Proc-Type header
 // for a mention of ENCRYPTED
 // according to RFC 1421 Section 4.6.1.1.

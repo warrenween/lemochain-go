@@ -50,7 +50,7 @@ Lastly, the Swagger specification (https://swagger.io) that drives AutoRest
 github.com/Azure/go-autorest/autorest/date package provides time.Time derivations to ensure
 correct parsing and formatting.
 
-Errors raised by autorest objects and mlemoods will conform to the autorest.Error interface.
+Errors raised by autorest objects and methods will conform to the autorest.Error interface.
 
 See the included examples for more detail. For details on the suggested use of this package by
 generated clients, see the Client described below.

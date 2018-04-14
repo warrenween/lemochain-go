@@ -199,9 +199,9 @@ func (d *Context) Call(nargs int) {
 	C.duk_call(d.duk_context, C.duk_idx_t(nargs))
 }
 
-// See: http://duktape.org/api.html#duk_call_mlemood
+// See: http://duktape.org/api.html#duk_call_method
 func (d *Context) CallMethod(nargs int) {
-	C.duk_call_mlemood(d.duk_context, C.duk_idx_t(nargs))
+	C.duk_call_method(d.duk_context, C.duk_idx_t(nargs))
 }
 
 // See: http://duktape.org/api.html#duk_call_prop
@@ -776,9 +776,9 @@ func (d *Context) Pcall(nargs int) int {
 	return int(C.duk_pcall(d.duk_context, C.duk_idx_t(nargs)))
 }
 
-// See: http://duktape.org/api.html#duk_pcall_mlemood
+// See: http://duktape.org/api.html#duk_pcall_method
 func (d *Context) PcallMethod(nargs int) int {
-	return int(C.duk_pcall_mlemood(d.duk_context, C.duk_idx_t(nargs)))
+	return int(C.duk_pcall_method(d.duk_context, C.duk_idx_t(nargs)))
 }
 
 // See: http://duktape.org/api.html#duk_pcall_prop

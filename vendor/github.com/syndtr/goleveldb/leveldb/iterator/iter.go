@@ -18,47 +18,47 @@ var (
 	ErrIterReleased = errors.New("leveldb/iterator: iterator released")
 )
 
-// IteratorSeeker is the interface that wraps the 'seeks mlemood'.
+// IteratorSeeker is the interface that wraps the 'seeks method'.
 type IteratorSeeker interface {
 	// First moves the iterator to the first key/value pair. If the iterator
 	// only contains one key/value pair then First and Last would moves
 	// to the same key/value pair.
-	// It returns whlemoer such pair exist.
+	// It returns whether such pair exist.
 	First() bool
 
 	// Last moves the iterator to the last key/value pair. If the iterator
 	// only contains one key/value pair then First and Last would moves
 	// to the same key/value pair.
-	// It returns whlemoer such pair exist.
+	// It returns whether such pair exist.
 	Last() bool
 
 	// Seek moves the iterator to the first key/value pair whose key is greater
 	// than or equal to the given key.
-	// It returns whlemoer such pair exist.
+	// It returns whether such pair exist.
 	//
 	// It is safe to modify the contents of the argument after Seek returns.
 	Seek(key []byte) bool
 
 	// Next moves the iterator to the next key/value pair.
-	// It returns whlemoer the iterator is exhausted.
+	// It returns whether the iterator is exhausted.
 	Next() bool
 
 	// Prev moves the iterator to the previous key/value pair.
-	// It returns whlemoer the iterator is exhausted.
+	// It returns whether the iterator is exhausted.
 	Prev() bool
 }
 
-// CommonIterator is the interface that wraps common iterator mlemoods.
+// CommonIterator is the interface that wraps common iterator methods.
 type CommonIterator interface {
 	IteratorSeeker
 
-	// util.Releaser is the interface that wraps basic Release mlemood.
+	// util.Releaser is the interface that wraps basic Release method.
 	// When called Release will releases any resources associated with the
 	// iterator.
 	util.Releaser
 
 	// util.ReleaseSetter is the interface that wraps the basic SetReleaser
-	// mlemood.
+	// method.
 	util.ReleaseSetter
 
 	// TODO: Remove this when ready.
@@ -71,9 +71,9 @@ type CommonIterator interface {
 
 // Iterator iterates over a DB's key/value pairs in key order.
 //
-// When encounter an error any 'seeks mlemood' will return false and will
+// When encounter an error any 'seeks method' will return false and will
 // yield no key/value pairs. The error can be queried by calling the Error
-// mlemood. Calling Release is still necessary.
+// method. Calling Release is still necessary.
 //
 // An iterator must be released after use, but it is not necessary to read
 // an iterator until exhaustion.
@@ -85,17 +85,17 @@ type Iterator interface {
 
 	// Key returns the key of the current key/value pair, or nil if done.
 	// The caller should not modify the contents of the returned slice, and
-	// its contents may change on the next call to any 'seeks mlemood'.
+	// its contents may change on the next call to any 'seeks method'.
 	Key() []byte
 
 	// Value returns the value of the current key/value pair, or nil if done.
 	// The caller should not modify the contents of the returned slice, and
-	// its contents may change on the next call to any 'seeks mlemood'.
+	// its contents may change on the next call to any 'seeks method'.
 	Value() []byte
 }
 
 // ErrorCallbackSetter is the interface that wraps basic SetErrorCallback
-// mlemood.
+// method.
 //
 // ErrorCallbackSetter implemented by indexed and merged iterator.
 type ErrorCallbackSetter interface {
@@ -126,7 +126,7 @@ func (*emptyIterator) Value() []byte          { return nil }
 func (i *emptyIterator) Error() error         { return i.err }
 
 // NewEmptyIterator creates an empty iterator. The err parameter can be
-// nil, but if not nil the given err will be returned by Error mlemood.
+// nil, but if not nil the given err will be returned by Error method.
 func NewEmptyIterator(err error) Iterator {
 	return &emptyIterator{err: err}
 }

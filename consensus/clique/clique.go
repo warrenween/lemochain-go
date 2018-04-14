@@ -140,7 +140,7 @@ type SignerFn func(accounts.Account, []byte) ([]byte, error)
 // signing. It is the hash of the entire header apart from the 65 byte signature
 // contained at the end of the extra data.
 //
-// Note, the mlemood requires the extra data to be at least 65 bytes, otherwise it
+// Note, the method requires the extra data to be at least 65 bytes, otherwise it
 // panics. This is done to avoid accidentally using both forms (signature present
 // or not), which could be abused to produce different hashes for the same header.
 func sigHash(header *types.Header) (hash common.Hash) {
@@ -235,13 +235,13 @@ func (c *Clique) Author(header *types.Header) (common.Address, error) {
 	return ecrecover(header, c.signatures)
 }
 
-// VerifyHeader checks whlemoer a header conforms to the consensus rules.
+// VerifyHeader checks whether a header conforms to the consensus rules.
 func (c *Clique) VerifyHeader(chain consensus.ChainReader, header *types.Header, seal bool) error {
 	return c.verifyHeader(chain, header, nil)
 }
 
 // VerifyHeaders is similar to VerifyHeader, but verifies a batch of headers. The
-// mlemood returns a quit channel to abort the operations and a results channel to
+// method returns a quit channel to abort the operations and a results channel to
 // retrieve the async verifications (the order is that of the input slice).
 func (c *Clique) VerifyHeaders(chain consensus.ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
 	abort := make(chan struct{})
@@ -261,7 +261,7 @@ func (c *Clique) VerifyHeaders(chain consensus.ChainReader, headers []*types.Hea
 	return abort, results
 }
 
-// verifyHeader checks whlemoer a header conforms to the consensus rules.The
+// verifyHeader checks whether a header conforms to the consensus rules.The
 // caller may optionally pass in a batch of parents (ascending order) to avoid
 // looking those up from the database. This is useful for concurrently verifying
 // a batch of new headers.
@@ -453,14 +453,14 @@ func (c *Clique) VerifyUncles(chain consensus.ChainReader, block *types.Block) e
 	return nil
 }
 
-// VerifySeal implements consensus.Engine, checking whlemoer the signature contained
+// VerifySeal implements consensus.Engine, checking whether the signature contained
 // in the header satisfies the consensus protocol requirements.
 func (c *Clique) VerifySeal(chain consensus.ChainReader, header *types.Header) error {
 	return c.verifySeal(chain, header, nil)
 }
 
-// verifySeal checks whlemoer the signature contained in the header satisfies the
-// consensus protocol requirements. The mlemood accepts an optional list of parent
+// verifySeal checks whether the signature contained in the header satisfies the
+// consensus protocol requirements. The method accepts an optional list of parent
 // headers that aren't yet part of the local blockchain to generate the snapshots
 // from.
 func (c *Clique) verifySeal(chain consensus.ChainReader, header *types.Header, parents []*types.Header) error {

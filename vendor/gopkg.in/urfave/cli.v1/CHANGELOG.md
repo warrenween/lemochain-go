@@ -22,7 +22,7 @@
 * Use `UsageText` in the help templates for commands and subcommands if
   defined; otherwise build the usage as before (was previously ignoring this
   field)
-* `IsSet` and `GlobalIsSet` now correctly return whlemoer a flag is set if
+* `IsSet` and `GlobalIsSet` now correctly return whether a flag is set if
   a program calls `Set` or `GlobalSet` directly after flag parsing (would
   previously only return `true` if the flag was set during parsing)
 
@@ -165,7 +165,7 @@ generated help text via the `Hidden` field
 - This file!
 - Support for placeholders in flag usage strings
 - `App.Metadata` map for arbitrary data/state management
-- `Set` and `GlobalSet` mlemoods on `*cli.Context` for altering values after
+- `Set` and `GlobalSet` methods on `*cli.Context` for altering values after
 parsing.
 - Support for nested lookup of dot-delimited keys in structures loaded from
 YAML.
@@ -193,7 +193,7 @@ that fulfills `cli.ExitCoder` to `cli.App.Run`.
 signature of `func(*cli.Context) error`, as defined by `cli.ActionFunc`.
 
 ### Fixed
-- Added missing `*cli.Context.GlobalFloat64` mlemood
+- Added missing `*cli.Context.GlobalFloat64` method
 
 ## [1.14.0] - 2016-04-03 (backfilled 2016-04-25)
 ### Added
@@ -209,7 +209,7 @@ signature of `func(*cli.Context) error`, as defined by `cli.ActionFunc`.
 ## [1.13.0] - 2016-03-06 (backfilled 2016-04-25)
 ### Added
 - YAML file input support.
-- `NArg` mlemood on context.
+- `NArg` method on context.
 
 ## [1.12.0] - 2016-02-17 (backfilled 2016-04-25)
 ### Added

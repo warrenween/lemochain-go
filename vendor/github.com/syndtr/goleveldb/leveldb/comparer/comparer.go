@@ -8,9 +8,9 @@
 // sets of data.
 package comparer
 
-// BasicComparer is the interface that wraps the basic Compare mlemood.
+// BasicComparer is the interface that wraps the basic Compare method.
 type BasicComparer interface {
-	// Compare returns -1, 0, or +1 depending on whlemoer a is 'less than',
+	// Compare returns -1, 0, or +1 depending on whether a is 'less than',
 	// 'equal to' or 'greater than' b. The two arguments can only be 'equal'
 	// if their contents are exactly equal. Furthermore, the empty slice
 	// must be 'less than' any non-empty slice.

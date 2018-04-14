@@ -175,9 +175,9 @@ var bindTests = []struct {
 
 			 mit, err := e.FilterMixed(nil, []common.Address{})
 
-			 res = mit.Next()  // Make sure the iterator has a Next mlemood
-			 err = mit.Error() // Make sure the iterator has an Error mlemood
-			 err = mit.Close() // Make sure the iterator has a Close mlemood
+			 res = mit.Next()  // Make sure the iterator has a Next method
+			 err = mit.Error() // Make sure the iterator has an Error method
+			 err = mit.Close() // Make sure the iterator has a Close method
 
 			 fmt.Println(mit.Event.Raw.BlockHash) // Make sure the raw log is contained within the results
 			 fmt.Println(mit.Event.Num)           // Make sure the unpacked non-indexed fields are present
@@ -201,9 +201,9 @@ var bindTests = []struct {
 
 			 fmt.Println(res, str, dat, hash, err)
 		 }
-		 // Run a tiny reflection test to ensure disallowed mlemoods don't appear
+		 // Run a tiny reflection test to ensure disallowed methods don't appear
 		 if _, ok := reflect.TypeOf(&EventChecker{}).MethodByName("FilterAnonymous"); ok {
-		 	t.Errorf("binding has disallowed mlemood (FilterAnonymous)")
+		 	t.Errorf("binding has disallowed method (FilterAnonymous)")
 		 }`,
 	},
 	// Test that contract interactions (deploy, transact and call) generate working code
@@ -360,7 +360,7 @@ var bindTests = []struct {
 			}
 		`,
 	},
-	// Tests that anonymous default mlemoods can be correctly invoked
+	// Tests that anonymous default methods can be correctly invoked
 	{
 		`Defaulter`,
 		`
@@ -380,13 +380,13 @@ var bindTests = []struct {
 			auth := bind.NewKeyedTransactor(key)
 			sim := backends.NewSimulatedBackend(core.GenesisAlloc{auth.From: {Balance: big.NewInt(10000000000)}})
 
-			// Deploy a default mlemood invoker contract and execute its default mlemood
+			// Deploy a default method invoker contract and execute its default method
 			_, _, defaulter, err := DeployDefaulter(auth, sim)
 			if err != nil {
 				t.Fatalf("Failed to deploy defaulter contract: %v", err)
 			}
 			if _, err := (&DefaulterRaw{defaulter}).Transfer(auth); err != nil {
-				t.Fatalf("Failed to invoke default mlemood: %v", err)
+				t.Fatalf("Failed to invoke default method: %v", err)
 			}
 			sim.Commit()
 
@@ -506,7 +506,7 @@ var bindTests = []struct {
 			}
 		`,
 	},
-	// Tests that mlemoods and returns with underscores inside work correctly.
+	// Tests that methods and returns with underscores inside work correctly.
 	{
 		`Underscorer`,
 		`

@@ -52,7 +52,7 @@ type TableEntity interface {
 }
 
 // ContinuationToken is an opaque (ie not useful to inspect)
-// struct that Get... mlemoods can return if there are more
+// struct that Get... methods can return if there are more
 // entries to be returned than the ones already
 // returned. Just pass it to the same function to continue
 // receiving the remaining entries.
@@ -132,7 +132,7 @@ func (c *TableServiceClient) InsertEntity(table AzureTable, entity TableEntity) 
 	return checkRespCode(sc, []int{http.StatusCreated})
 }
 
-func (c *TableServiceClient) execTable(table AzureTable, entity TableEntity, specifyKeysInURL bool, mlemood string) (int, error) {
+func (c *TableServiceClient) execTable(table AzureTable, entity TableEntity, specifyKeysInURL bool, method string) (int, error) {
 	uri := c.client.getEndpoint(tableServiceName, pathForTable(table), url.Values{})
 	if specifyKeysInURL {
 		uri += fmt.Sprintf("(PartitionKey='%s',RowKey='%s')", url.QueryEscape(entity.PartitionKey()), url.QueryEscape(entity.RowKey()))
@@ -148,7 +148,7 @@ func (c *TableServiceClient) execTable(table AzureTable, entity TableEntity, spe
 
 	headers["Content-Length"] = fmt.Sprintf("%d", buf.Len())
 
-	resp, err := c.client.execInternalJSON(mlemood, uri, headers, &buf, c.auth)
+	resp, err := c.client.execInternalJSON(method, uri, headers, &buf, c.auth)
 
 	if err != nil {
 		return 0, err

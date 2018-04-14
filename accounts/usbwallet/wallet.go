@@ -174,7 +174,7 @@ func (w *wallet) Open(passphrase string) error {
 }
 
 // heartbeat is a health check loop for the USB wallets to periodically verify
-// whlemoer they are still present or if they malfunctioned.
+// whether they are still present or if they malfunctioned.
 func (w *wallet) heartbeat() {
 	w.log.Debug("USB wallet health-check started")
 	defer w.log.Debug("USB wallet health-check stopped")
@@ -430,7 +430,7 @@ func (w *wallet) selfDerive() {
 	errc <- err
 }
 
-// Contains implements accounts.Wallet, returning whlemoer a particular account is
+// Contains implements accounts.Wallet, returning whether a particular account is
 // or is not pinned into this wallet instance. Although we could attempt to resolve
 // unpinned accounts, that would be an non-negligible hardware operation.
 func (w *wallet) Contains(account accounts.Account) bool {
@@ -496,7 +496,7 @@ func (w *wallet) SelfDerive(base accounts.DerivationPath, chain lemochain.ChainS
 }
 
 // SignHash implements accounts.Wallet, however signing arbitrary data is not
-// supported for hardware wallets, so this mlemood will always return an error.
+// supported for hardware wallets, so this method will always return an error.
 func (w *wallet) SignHash(account accounts.Account, hash []byte) ([]byte, error) {
 	return nil, accounts.ErrNotSupported
 }
@@ -548,7 +548,7 @@ func (w *wallet) SignTx(account accounts.Account, tx *types.Transaction, chainID
 }
 
 // SignHashWithPassphrase implements accounts.Wallet, however signing arbitrary
-// data is not supported for Ledger wallets, so this mlemood will always return
+// data is not supported for Ledger wallets, so this method will always return
 // an error.
 func (w *wallet) SignHashWithPassphrase(account accounts.Account, passphrase string, hash []byte) ([]byte, error) {
 	return w.SignHash(account, hash)

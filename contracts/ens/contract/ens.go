@@ -79,17 +79,17 @@ type ENSTransactorSession struct {
 
 // ENSRaw is an auto generated low-level Go binding around an Lemochain contract.
 type ENSRaw struct {
-	Contract *ENS // Generic contract binding to access the raw mlemoods on
+	Contract *ENS // Generic contract binding to access the raw methods on
 }
 
 // ENSCallerRaw is an auto generated low-level read-only Go binding around an Lemochain contract.
 type ENSCallerRaw struct {
-	Contract *ENSCaller // Generic read-only contract binding to access the raw mlemoods on
+	Contract *ENSCaller // Generic read-only contract binding to access the raw methods on
 }
 
 // ENSTransactorRaw is an auto generated low-level write-only Go binding around an Lemochain contract.
 type ENSTransactorRaw struct {
-	Contract *ENSTransactor // Generic write-only contract binding to access the raw mlemoods on
+	Contract *ENSTransactor // Generic write-only contract binding to access the raw methods on
 }
 
 // NewENS creates a new instance of ENS, bound to a specific deployed contract.
@@ -137,45 +137,45 @@ func bindENS(address common.Address, caller bind.ContractCaller, transactor bind
 	return bind.NewBoundContract(address, parsed, caller, transactor, filterer), nil
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ENS *ENSRaw) Call(opts *bind.CallOpts, result interface{}, mlemood string, params ...interface{}) error {
-	return _ENS.Contract.ENSCaller.contract.Call(opts, result, mlemood, params...)
+func (_ENS *ENSRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+	return _ENS.Contract.ENSCaller.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (_ENS *ENSRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _ENS.Contract.ENSTransactor.contract.Transfer(opts)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (_ENS *ENSRaw) Transact(opts *bind.TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
-	return _ENS.Contract.ENSTransactor.contract.Transact(opts, mlemood, params...)
+// Transact invokes the (paid) contract method with params as input values.
+func (_ENS *ENSRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _ENS.Contract.ENSTransactor.contract.Transact(opts, method, params...)
 }
 
-// Call invokes the (constant) contract mlemood with params as input values and
+// Call invokes the (constant) contract method with params as input values and
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ENS *ENSCallerRaw) Call(opts *bind.CallOpts, result interface{}, mlemood string, params ...interface{}) error {
-	return _ENS.Contract.contract.Call(opts, result, mlemood, params...)
+func (_ENS *ENSCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+	return _ENS.Contract.contract.Call(opts, result, method, params...)
 }
 
 // Transfer initiates a plain transaction to move funds to the contract, calling
-// its default mlemood if one is available.
+// its default method if one is available.
 func (_ENS *ENSTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _ENS.Contract.contract.Transfer(opts)
 }
 
-// Transact invokes the (paid) contract mlemood with params as input values.
-func (_ENS *ENSTransactorRaw) Transact(opts *bind.TransactOpts, mlemood string, params ...interface{}) (*types.Transaction, error) {
-	return _ENS.Contract.contract.Transact(opts, mlemood, params...)
+// Transact invokes the (paid) contract method with params as input values.
+func (_ENS *ENSTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
+	return _ENS.Contract.contract.Transact(opts, method, params...)
 }
 
-// Owner is a free data retrieval call binding the contract mlemood 0x02571be3.
+// Owner is a free data retrieval call binding the contract method 0x02571be3.
 //
 // Solidity: function owner(node bytes32) constant returns(address)
 func (_ENS *ENSCaller) Owner(opts *bind.CallOpts, node [32]byte) (common.Address, error) {
@@ -187,21 +187,21 @@ func (_ENS *ENSCaller) Owner(opts *bind.CallOpts, node [32]byte) (common.Address
 	return *ret0, err
 }
 
-// Owner is a free data retrieval call binding the contract mlemood 0x02571be3.
+// Owner is a free data retrieval call binding the contract method 0x02571be3.
 //
 // Solidity: function owner(node bytes32) constant returns(address)
 func (_ENS *ENSSession) Owner(node [32]byte) (common.Address, error) {
 	return _ENS.Contract.Owner(&_ENS.CallOpts, node)
 }
 
-// Owner is a free data retrieval call binding the contract mlemood 0x02571be3.
+// Owner is a free data retrieval call binding the contract method 0x02571be3.
 //
 // Solidity: function owner(node bytes32) constant returns(address)
 func (_ENS *ENSCallerSession) Owner(node [32]byte) (common.Address, error) {
 	return _ENS.Contract.Owner(&_ENS.CallOpts, node)
 }
 
-// Resolver is a free data retrieval call binding the contract mlemood 0x0178b8bf.
+// Resolver is a free data retrieval call binding the contract method 0x0178b8bf.
 //
 // Solidity: function resolver(node bytes32) constant returns(address)
 func (_ENS *ENSCaller) Resolver(opts *bind.CallOpts, node [32]byte) (common.Address, error) {
@@ -213,21 +213,21 @@ func (_ENS *ENSCaller) Resolver(opts *bind.CallOpts, node [32]byte) (common.Addr
 	return *ret0, err
 }
 
-// Resolver is a free data retrieval call binding the contract mlemood 0x0178b8bf.
+// Resolver is a free data retrieval call binding the contract method 0x0178b8bf.
 //
 // Solidity: function resolver(node bytes32) constant returns(address)
 func (_ENS *ENSSession) Resolver(node [32]byte) (common.Address, error) {
 	return _ENS.Contract.Resolver(&_ENS.CallOpts, node)
 }
 
-// Resolver is a free data retrieval call binding the contract mlemood 0x0178b8bf.
+// Resolver is a free data retrieval call binding the contract method 0x0178b8bf.
 //
 // Solidity: function resolver(node bytes32) constant returns(address)
 func (_ENS *ENSCallerSession) Resolver(node [32]byte) (common.Address, error) {
 	return _ENS.Contract.Resolver(&_ENS.CallOpts, node)
 }
 
-// Ttl is a free data retrieval call binding the contract mlemood 0x16a25cbd.
+// Ttl is a free data retrieval call binding the contract method 0x16a25cbd.
 //
 // Solidity: function ttl(node bytes32) constant returns(uint64)
 func (_ENS *ENSCaller) Ttl(opts *bind.CallOpts, node [32]byte) (uint64, error) {
@@ -239,98 +239,98 @@ func (_ENS *ENSCaller) Ttl(opts *bind.CallOpts, node [32]byte) (uint64, error) {
 	return *ret0, err
 }
 
-// Ttl is a free data retrieval call binding the contract mlemood 0x16a25cbd.
+// Ttl is a free data retrieval call binding the contract method 0x16a25cbd.
 //
 // Solidity: function ttl(node bytes32) constant returns(uint64)
 func (_ENS *ENSSession) Ttl(node [32]byte) (uint64, error) {
 	return _ENS.Contract.Ttl(&_ENS.CallOpts, node)
 }
 
-// Ttl is a free data retrieval call binding the contract mlemood 0x16a25cbd.
+// Ttl is a free data retrieval call binding the contract method 0x16a25cbd.
 //
 // Solidity: function ttl(node bytes32) constant returns(uint64)
 func (_ENS *ENSCallerSession) Ttl(node [32]byte) (uint64, error) {
 	return _ENS.Contract.Ttl(&_ENS.CallOpts, node)
 }
 
-// SetOwner is a paid mutator transaction binding the contract mlemood 0x5b0fc9c3.
+// SetOwner is a paid mutator transaction binding the contract method 0x5b0fc9c3.
 //
 // Solidity: function setOwner(node bytes32, owner address) returns()
 func (_ENS *ENSTransactor) SetOwner(opts *bind.TransactOpts, node [32]byte, owner common.Address) (*types.Transaction, error) {
 	return _ENS.contract.Transact(opts, "setOwner", node, owner)
 }
 
-// SetOwner is a paid mutator transaction binding the contract mlemood 0x5b0fc9c3.
+// SetOwner is a paid mutator transaction binding the contract method 0x5b0fc9c3.
 //
 // Solidity: function setOwner(node bytes32, owner address) returns()
 func (_ENS *ENSSession) SetOwner(node [32]byte, owner common.Address) (*types.Transaction, error) {
 	return _ENS.Contract.SetOwner(&_ENS.TransactOpts, node, owner)
 }
 
-// SetOwner is a paid mutator transaction binding the contract mlemood 0x5b0fc9c3.
+// SetOwner is a paid mutator transaction binding the contract method 0x5b0fc9c3.
 //
 // Solidity: function setOwner(node bytes32, owner address) returns()
 func (_ENS *ENSTransactorSession) SetOwner(node [32]byte, owner common.Address) (*types.Transaction, error) {
 	return _ENS.Contract.SetOwner(&_ENS.TransactOpts, node, owner)
 }
 
-// SetResolver is a paid mutator transaction binding the contract mlemood 0x1896f70a.
+// SetResolver is a paid mutator transaction binding the contract method 0x1896f70a.
 //
 // Solidity: function setResolver(node bytes32, resolver address) returns()
 func (_ENS *ENSTransactor) SetResolver(opts *bind.TransactOpts, node [32]byte, resolver common.Address) (*types.Transaction, error) {
 	return _ENS.contract.Transact(opts, "setResolver", node, resolver)
 }
 
-// SetResolver is a paid mutator transaction binding the contract mlemood 0x1896f70a.
+// SetResolver is a paid mutator transaction binding the contract method 0x1896f70a.
 //
 // Solidity: function setResolver(node bytes32, resolver address) returns()
 func (_ENS *ENSSession) SetResolver(node [32]byte, resolver common.Address) (*types.Transaction, error) {
 	return _ENS.Contract.SetResolver(&_ENS.TransactOpts, node, resolver)
 }
 
-// SetResolver is a paid mutator transaction binding the contract mlemood 0x1896f70a.
+// SetResolver is a paid mutator transaction binding the contract method 0x1896f70a.
 //
 // Solidity: function setResolver(node bytes32, resolver address) returns()
 func (_ENS *ENSTransactorSession) SetResolver(node [32]byte, resolver common.Address) (*types.Transaction, error) {
 	return _ENS.Contract.SetResolver(&_ENS.TransactOpts, node, resolver)
 }
 
-// SetSubnodeOwner is a paid mutator transaction binding the contract mlemood 0x06ab5923.
+// SetSubnodeOwner is a paid mutator transaction binding the contract method 0x06ab5923.
 //
 // Solidity: function setSubnodeOwner(node bytes32, label bytes32, owner address) returns()
 func (_ENS *ENSTransactor) SetSubnodeOwner(opts *bind.TransactOpts, node [32]byte, label [32]byte, owner common.Address) (*types.Transaction, error) {
 	return _ENS.contract.Transact(opts, "setSubnodeOwner", node, label, owner)
 }
 
-// SetSubnodeOwner is a paid mutator transaction binding the contract mlemood 0x06ab5923.
+// SetSubnodeOwner is a paid mutator transaction binding the contract method 0x06ab5923.
 //
 // Solidity: function setSubnodeOwner(node bytes32, label bytes32, owner address) returns()
 func (_ENS *ENSSession) SetSubnodeOwner(node [32]byte, label [32]byte, owner common.Address) (*types.Transaction, error) {
 	return _ENS.Contract.SetSubnodeOwner(&_ENS.TransactOpts, node, label, owner)
 }
 
-// SetSubnodeOwner is a paid mutator transaction binding the contract mlemood 0x06ab5923.
+// SetSubnodeOwner is a paid mutator transaction binding the contract method 0x06ab5923.
 //
 // Solidity: function setSubnodeOwner(node bytes32, label bytes32, owner address) returns()
 func (_ENS *ENSTransactorSession) SetSubnodeOwner(node [32]byte, label [32]byte, owner common.Address) (*types.Transaction, error) {
 	return _ENS.Contract.SetSubnodeOwner(&_ENS.TransactOpts, node, label, owner)
 }
 
-// SetTTL is a paid mutator transaction binding the contract mlemood 0x14ab9038.
+// SetTTL is a paid mutator transaction binding the contract method 0x14ab9038.
 //
 // Solidity: function setTTL(node bytes32, ttl uint64) returns()
 func (_ENS *ENSTransactor) SetTTL(opts *bind.TransactOpts, node [32]byte, ttl uint64) (*types.Transaction, error) {
 	return _ENS.contract.Transact(opts, "setTTL", node, ttl)
 }
 
-// SetTTL is a paid mutator transaction binding the contract mlemood 0x14ab9038.
+// SetTTL is a paid mutator transaction binding the contract method 0x14ab9038.
 //
 // Solidity: function setTTL(node bytes32, ttl uint64) returns()
 func (_ENS *ENSSession) SetTTL(node [32]byte, ttl uint64) (*types.Transaction, error) {
 	return _ENS.Contract.SetTTL(&_ENS.TransactOpts, node, ttl)
 }
 
-// SetTTL is a paid mutator transaction binding the contract mlemood 0x14ab9038.
+// SetTTL is a paid mutator transaction binding the contract method 0x14ab9038.
 //
 // Solidity: function setTTL(node bytes32, ttl uint64) returns()
 func (_ENS *ENSTransactorSession) SetTTL(node [32]byte, ttl uint64) (*types.Transaction, error) {
@@ -350,7 +350,7 @@ type ENSNewOwnerIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *ENSNewOwnerIterator) Next() bool {
@@ -492,7 +492,7 @@ type ENSNewResolverIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *ENSNewResolverIterator) Next() bool {
@@ -625,7 +625,7 @@ type ENSNewTTLIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *ENSNewTTLIterator) Next() bool {
@@ -758,7 +758,7 @@ type ENSTransferIterator struct {
 	fail error                 // Occurred error to stop iteration
 }
 
-// Next advances the iterator to the subsequent event, returning whlemoer there
+// Next advances the iterator to the subsequent event, returning whether there
 // are any more events found. In case of a retrieval or parsing error, false is
 // returned and Error() can be queried for the exact failure.
 func (it *ENSTransferIterator) Next() bool {

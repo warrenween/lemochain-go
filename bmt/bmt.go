@@ -104,8 +104,8 @@ func New(p *TreePool) *Hasher {
 type Node struct {
 	level, index int   // position of node for information/logging only
 	initial      bool  // first and last node
-	root         bool  // whlemoer the node is root to a smaller BMT
-	isLeft       bool  // whlemoer it is left side of the parent double segment
+	root         bool  // whether the node is root to a smaller BMT
+	isLeft       bool  // whether it is left side of the parent double segment
 	unbalanced   bool  // indicates if a node has only the left segment
 	parent       *Node // BMT connections
 	state        int32 // atomic increment impl concurrent boolean toggle
@@ -274,7 +274,7 @@ func NewTree(hasher BaseHasher, segmentSize, segmentCount int) *Tree {
 	}
 }
 
-// mlemoods needed by hash.Hash
+// methods needed by hash.Hash
 
 // Size returns the size
 func (self *Hasher) Size() int {
@@ -287,7 +287,7 @@ func (self *Hasher) BlockSize() int {
 }
 
 // Sum returns the hash of the buffer
-// hash.Hash interface Sum mlemood appends the byte slice to the underlying
+// hash.Hash interface Sum method appends the byte slice to the underlying
 // data before it calculates and returns the hash of the chunk
 func (self *Hasher) Sum(b []byte) (r []byte) {
 	t := self.bmt

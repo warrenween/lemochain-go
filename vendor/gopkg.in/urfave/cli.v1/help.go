@@ -151,7 +151,7 @@ func ShowAppHelp(c *Context) (err error) {
 	return nil
 }
 
-// DefaultAppComplete prints the list of subcommands as the default app completion mlemood
+// DefaultAppComplete prints the list of subcommands as the default app completion method
 func DefaultAppComplete(c *Context) {
 	for _, command := range c.App.Commands {
 		if command.Hidden {

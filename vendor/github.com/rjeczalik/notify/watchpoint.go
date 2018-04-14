@@ -16,7 +16,7 @@ func (diff eventDiff) Event() Event {
 // Watchpoint
 //
 // The nil key holds total event set - logical sum for all registered events.
-// It speeds up computing EventDiff for Add mlemood.
+// It speeds up computing EventDiff for Add method.
 //
 // The rec key holds an event set for a watchpoints created by RecursiveWatch
 // for a Watcher implementation which is not natively recursive.

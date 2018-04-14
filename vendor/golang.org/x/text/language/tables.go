@@ -570,7 +570,7 @@ var langNoIndex = [2197]uint8{
 }
 
 // altLangISO3 holds an alphabetically sorted list of 3-letter language code alternatives
-// to 2-letter language codes that cannot be derived using the mlemood described above.
+// to 2-letter language codes that cannot be derived using the method described above.
 // Each 3-letter code is followed by its 1-byte langID.
 const altLangISO3 tag.Index = "---\x00cor\x00hbs\x01heb\x02kin\x03spa\x04yid\x05\xff\xff\xff\xff"
 
@@ -3279,7 +3279,7 @@ type scriptIntelligibility struct {
 
 // matchLang holds pairs of langIDs of base languages that are typically
 // mutually intelligible. Each pair is associated with a confidence and
-// whlemoer the intelligibility goes one or both ways.
+// whether the intelligibility goes one or both ways.
 // Size: 708 bytes, 118 elements
 var matchLang = [118]mutualIntelligibility{
 	0:   {want: 0x366, have: 0x33e, conf: 0x2, oneway: false},

@@ -25,7 +25,7 @@ import (
 
 // Key derives a key from the password, salt and iteration count, returning a
 // []byte of length keylen that can be used as cryptographic key. The key is
-// derived based on the mlemood described as PBKDF2 with the HMAC variant using
+// derived based on the method described as PBKDF2 with the HMAC variant using
 // the supplied hash function.
 //
 // For example, to use a HMAC-SHA-1 based PBKDF2 key derivation function, you

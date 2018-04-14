@@ -148,7 +148,7 @@ func (db *DB) unlockWrite(overflow bool, merged int, err error) {
 
 // ourBatch is batch that we can modify.
 func (db *DB) writeLocked(batch, ourBatch *Batch, merge, sync bool) error {
-	// Try to flush memdb. This mlemood would also trying to throttle writes
+	// Try to flush memdb. This method would also trying to throttle writes
 	// if it is too fast and compaction cannot catch-up.
 	mdb, mdbFree, err := db.flush(batch.internalLen)
 	if err != nil {

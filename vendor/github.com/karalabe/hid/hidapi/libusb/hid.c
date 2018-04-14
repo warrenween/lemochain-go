@@ -956,7 +956,7 @@ hid_device * HID_API_EXPORT hid_open_path(const char *path)
 								(ep->bEndpointAddress & LIBUSB_ENDPOINT_DIR_MASK)
 							      == LIBUSB_ENDPOINT_IN;
 
-							/* Decide whlemoer to use it for input or output. */
+							/* Decide whether to use it for input or output. */
 							if (dev->input_endpoint == 0 &&
 							    is_interrupt && is_input) {
 								/* Use this endpoint for INPUT */

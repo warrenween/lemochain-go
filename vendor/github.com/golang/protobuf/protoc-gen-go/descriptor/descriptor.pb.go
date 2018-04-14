@@ -296,9 +296,9 @@ func (x *FieldOptions_JSType) UnmarshalJSON(data []byte) error {
 }
 func (FieldOptions_JSType) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{11, 1} }
 
-// Is this mlemood side-effect-free (or safe in HTTP parlance), or idempotent,
+// Is this method side-effect-free (or safe in HTTP parlance), or idempotent,
 // or neither? HTTP based RPC implementation may choose GET verb for safe
-// mlemoods, and PUT verb for idempotent mlemoods instead of the default POST.
+// methods, and PUT verb for idempotent methods instead of the default POST.
 type MethodOptions_IdempotencyLevel int32
 
 const (
@@ -830,7 +830,7 @@ func (m *EnumValueDescriptorProto) GetOptions() *EnumValueOptions {
 // Describes a service.
 type ServiceDescriptorProto struct {
 	Name             *string                  `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
-	Method           []*MethodDescriptorProto `protobuf:"bytes,2,rep,name=mlemood" json:"mlemood,omitempty"`
+	Method           []*MethodDescriptorProto `protobuf:"bytes,2,rep,name=method" json:"method,omitempty"`
 	Options          *ServiceOptions          `protobuf:"bytes,3,opt,name=options" json:"options,omitempty"`
 	XXX_unrecognized []byte                   `json:"-"`
 }
@@ -861,7 +861,7 @@ func (m *ServiceDescriptorProto) GetOptions() *ServiceOptions {
 	return nil
 }
 
-// Describes a mlemood of a service.
+// Describes a method of a service.
 type MethodDescriptorProto struct {
 	Name *string `protobuf:"bytes,1,opt,name=name" json:"name,omitempty"`
 	// Input and output type names.  These are resolved in the same way as
@@ -942,7 +942,7 @@ type FileOptions struct {
 	// file for each top-level message, enum, and service defined in the .proto
 	// file.  Thus, these types will *not* be nested inside the outer class
 	// named by java_outer_classname.  However, the outer class will still be
-	// generated to contain the file's getDescriptor() mlemood as well as any
+	// generated to contain the file's getDescriptor() method as well as any
 	// top-level extensions defined in the file.
 	JavaMultipleFiles *bool `protobuf:"varint,10,opt,name=java_multiple_files,json=javaMultipleFiles,def=0" json:"java_multiple_files,omitempty"`
 	// This option does nothing.
@@ -1278,16 +1278,16 @@ type FieldOptions struct {
 	// inner message's contents will not be parsed but instead stored in encoded
 	// form.  The inner message will actually be parsed when it is first accessed.
 	//
-	// This is only a hint.  Implementations are free to choose whlemoer to use
+	// This is only a hint.  Implementations are free to choose whether to use
 	// eager or lazy parsing regardless of the value of this option.  However,
 	// setting this option true suggests that the protocol author believes that
 	// using lazy parsing on this field is worth the additional bookkeeping
 	// overhead typically needed to implement it.
 	//
 	// This option does not affect the public interface of any generated code;
-	// all mlemood signatures remain the same.  Furthermore, thread-safety of the
-	// interface is not affected by this option; const mlemoods remain safe to
-	// call from multiple threads concurrently, while non-const mlemoods continue
+	// all method signatures remain the same.  Furthermore, thread-safety of the
+	// interface is not affected by this option; const methods remain safe to
+	// call from multiple threads concurrently, while non-const methods continue
 	// to require exclusive access.
 	//
 	//
@@ -1299,7 +1299,7 @@ type FieldOptions struct {
 	// parsing.  An implementation which chooses not to check required fields
 	// must be consistent about it.  That is, for any particular sub-message, the
 	// implementation must either *always* check its required fields, or *never*
-	// check its required fields, regardless of whlemoer or not the message has
+	// check its required fields, regardless of whether or not the message has
 	// been parsed.
 	Lazy *bool `protobuf:"varint,5,opt,name=lazy,def=0" json:"lazy,omitempty"`
 	// Is this field deprecated?
@@ -1544,10 +1544,10 @@ func (m *ServiceOptions) GetUninterpretedOption() []*UninterpretedOption {
 }
 
 type MethodOptions struct {
-	// Is this mlemood deprecated?
+	// Is this method deprecated?
 	// Depending on the target platform, this can emit Deprecated annotations
-	// for the mlemood, or it will be completely ignored; in the very least,
-	// this is a formalization for deprecating mlemoods.
+	// for the method, or it will be completely ignored; in the very least,
+	// this is a formalization for deprecating methods.
 	Deprecated       *bool                           `protobuf:"varint,33,opt,name=deprecated,def=0" json:"deprecated,omitempty"`
 	IdempotencyLevel *MethodOptions_IdempotencyLevel `protobuf:"varint,34,opt,name=idempotency_level,json=idempotencyLevel,enum=google.protobuf.MethodOptions_IdempotencyLevel,def=0" json:"idempotency_level,omitempty"`
 	// The parser stores options it doesn't recognize here. See above.

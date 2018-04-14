@@ -26,7 +26,7 @@ type SCPD struct {
 
 // Clean attempts to remove stray whitespace etc. in the structure. It seems
 // unfortunately common for stray whitespace to be present in SCPD documents,
-// this mlemood attempts to make it easy to clean them out.
+// this method attempts to make it easy to clean them out.
 func (scpd *SCPD) Clean() {
 	cleanWhitespace(&scpd.ConfigId)
 	for i := range scpd.Actions {

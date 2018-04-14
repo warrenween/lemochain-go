@@ -154,7 +154,7 @@ const (
 
 // FieldIterator provides a low-allocation interface to iterate through a point's fields.
 type FieldIterator interface {
-	// Next indicates whlemoer there any fields remaining.
+	// Next indicates whether there any fields remaining.
 	Next() bool
 
 	// FieldKey returns the key of the current field.
@@ -450,7 +450,7 @@ func scanKey(buf []byte, i int) (int, []byte, error) {
 
 	i = start
 
-	// Determines whlemoer the tags are sort, assume they are
+	// Determines whether the tags are sort, assume they are
 	sorted := true
 
 	// indices holds the indexes within buf of the start of each tag.  For example,
@@ -2135,7 +2135,7 @@ type fieldIterator struct {
 	fieldType   FieldType
 }
 
-// Next indicates whlemoer there any fields remaining.
+// Next indicates whether there any fields remaining.
 func (p *point) Next() bool {
 	p.it.start = p.it.end
 	if p.it.start >= len(p.fields) {

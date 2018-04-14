@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// For a type to be a Claims object, it must just have a Valid mlemood that determines
+// For a type to be a Claims object, it must just have a Valid method that determines
 // if the token is invalid for any supported reason
 type Claims interface {
 	Valid() error
@@ -59,31 +59,31 @@ func (c StandardClaims) Valid() error {
 }
 
 // Compares the aud claim against cmp.
-// If required is false, this mlemood will return true if the value matches or is unset
+// If required is false, this method will return true if the value matches or is unset
 func (c *StandardClaims) VerifyAudience(cmp string, req bool) bool {
 	return verifyAud(c.Audience, cmp, req)
 }
 
 // Compares the exp claim against cmp.
-// If required is false, this mlemood will return true if the value matches or is unset
+// If required is false, this method will return true if the value matches or is unset
 func (c *StandardClaims) VerifyExpiresAt(cmp int64, req bool) bool {
 	return verifyExp(c.ExpiresAt, cmp, req)
 }
 
 // Compares the iat claim against cmp.
-// If required is false, this mlemood will return true if the value matches or is unset
+// If required is false, this method will return true if the value matches or is unset
 func (c *StandardClaims) VerifyIssuedAt(cmp int64, req bool) bool {
 	return verifyIat(c.IssuedAt, cmp, req)
 }
 
 // Compares the iss claim against cmp.
-// If required is false, this mlemood will return true if the value matches or is unset
+// If required is false, this method will return true if the value matches or is unset
 func (c *StandardClaims) VerifyIssuer(cmp string, req bool) bool {
 	return verifyIss(c.Issuer, cmp, req)
 }
 
 // Compares the nbf claim against cmp.
-// If required is false, this mlemood will return true if the value matches or is unset
+// If required is false, this method will return true if the value matches or is unset
 func (c *StandardClaims) VerifyNotBefore(cmp int64, req bool) bool {
 	return verifyNbf(c.NotBefore, cmp, req)
 }

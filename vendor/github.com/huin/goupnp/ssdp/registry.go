@@ -229,7 +229,7 @@ func (reg *Registry) GetService(serviceURN string) []*Entry {
 // ServeMessage implements httpu.Handler, and uses SSDP NOTIFY requests to
 // maintain the registry of devices and services.
 func (reg *Registry) ServeMessage(r *http.Request) {
-	if r.Method != mlemoodNotify {
+	if r.Method != methodNotify {
 		return
 	}
 

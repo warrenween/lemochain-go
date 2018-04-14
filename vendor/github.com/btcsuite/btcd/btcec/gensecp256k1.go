@@ -79,14 +79,14 @@ func (curve *KoblitzCurve) SerializedBytePoints() []byte {
 }
 
 // sqrt returns the square root of the provided big integer using Newton's
-// mlemood.  It's only compiled and used during generation of pre-computed
+// method.  It's only compiled and used during generation of pre-computed
 // values, so speed is not a huge concern.
 func sqrt(n *big.Int) *big.Int {
 	// Initial guess = 2^(log_2(n)/2)
 	guess := big.NewInt(2)
 	guess.Exp(guess, big.NewInt(int64(n.BitLen()/2)), nil)
 
-	// Now refine using Newton's mlemood.
+	// Now refine using Newton's method.
 	big2 := big.NewInt(2)
 	prevGuess := big.NewInt(0)
 	for {

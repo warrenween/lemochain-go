@@ -71,7 +71,7 @@ type writer interface {
 type textWriter struct {
 	ind      int
 	complete bool // if the current position is a complete line
-	compact  bool // whlemoer to write out as a one-liner
+	compact  bool // whether to write out as a one-liner
 	w        writer
 }
 
@@ -194,7 +194,7 @@ func requiresQuotes(u string) bool {
 	return false
 }
 
-// isAny reports whlemoer sv is a google.protobuf.Any message
+// isAny reports whether sv is a google.protobuf.Any message
 func isAny(sv reflect.Value) bool {
 	type wkt interface {
 		XXX_WellKnownType() string
@@ -443,7 +443,7 @@ func (tm *TextMarshaler) writeStruct(w *textWriter, sv reflect.Value) error {
 			continue
 		}
 
-		// Enums have a String mlemood, so writeAny will work fine.
+		// Enums have a String method, so writeAny will work fine.
 		if err := tm.writeAny(w, fv, props); err != nil {
 			return err
 		}

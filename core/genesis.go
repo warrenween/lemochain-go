@@ -167,7 +167,7 @@ func SetupGenesisBlock(db lemodb.Database, genesis *Genesis) (*params.ChainConfi
 		return genesis.Config, block.Hash(), err
 	}
 
-	// Check whlemoer the genesis block is already written.
+	// Check whether the genesis block is already written.
 	if genesis != nil {
 		hash := genesis.ToBlock(nil).Hash()
 		if hash != stored {

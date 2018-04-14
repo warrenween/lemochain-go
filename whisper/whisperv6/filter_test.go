@@ -372,10 +372,10 @@ func TestMatchEnvelope(t *testing.T) {
 		t.Fatalf("failed Wrap() with seed %d: %s.", seed, err)
 	}
 
-	// encryption mlemood mismatch
+	// encryption method mismatch
 	match = fsym.MatchEnvelope(env)
 	if match {
-		t.Fatalf("failed MatchEnvelope(encryption mlemood mismatch) with seed %d.", seed)
+		t.Fatalf("failed MatchEnvelope(encryption method mismatch) with seed %d.", seed)
 	}
 
 	// asymmetric + mismatching topic: mismatch
@@ -509,14 +509,14 @@ func TestMatchMessageSym(t *testing.T) {
 		t.Fatalf("failed MatchEnvelope(key hash match) with seed %d.", seed)
 	}
 
-	// encryption mlemood mismatch
+	// encryption method mismatch
 	f.KeySym = nil
 	f.KeyAsym, err = crypto.GenerateKey()
 	if err != nil {
 		t.Fatalf("failed GenerateKey with seed %d: %s.", seed, err)
 	}
 	if f.MatchMessage(msg) {
-		t.Fatalf("failed MatchEnvelope(encryption mlemood mismatch) with seed %d.", seed)
+		t.Fatalf("failed MatchEnvelope(encryption method mismatch) with seed %d.", seed)
 	}
 }
 
@@ -594,11 +594,11 @@ func TestMatchMessageAsym(t *testing.T) {
 		t.Fatalf("failed MatchEnvelope(src absent) with seed %d.", seed)
 	}
 
-	// encryption mlemood mismatch
+	// encryption method mismatch
 	f.KeySym = keySymOrig
 	f.KeyAsym = nil
 	if f.MatchMessage(msg) {
-		t.Fatalf("failed MatchEnvelope(encryption mlemood mismatch) with seed %d.", seed)
+		t.Fatalf("failed MatchEnvelope(encryption method mismatch) with seed %d.", seed)
 	}
 }
 

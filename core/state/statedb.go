@@ -173,13 +173,13 @@ func (self *StateDB) AddRefund(gas uint64) {
 	self.refund += gas
 }
 
-// Exist reports whlemoer the given account address exists in the state.
+// Exist reports whether the given account address exists in the state.
 // Notably this also returns true for suicided accounts.
 func (self *StateDB) Exist(addr common.Address) bool {
 	return self.getStateObject(addr) != nil
 }
 
-// Empty returns whlemoer the state object is either non-existent
+// Empty returns whether the state object is either non-existent
 // or empty according to the EIP161 specification (balance = nonce = code = 0)
 func (self *StateDB) Empty(addr common.Address) bool {
 	so := self.getStateObject(addr)
@@ -337,7 +337,7 @@ func (self *StateDB) Suicide(addr common.Address) bool {
 }
 
 //
-// Setting, updating & deleting state object mlemoods
+// Setting, updating & deleting state object methods
 //
 
 // updateStateObject writes the given object to the trie.
@@ -560,7 +560,7 @@ func (self *StateDB) Prepare(thash, bhash common.Hash, ti int) {
 // DeleteSuicides should not be used for consensus related updates
 // under any circumstances.
 func (s *StateDB) DeleteSuicides() {
-	// Reset refund so that any used-gas calculations can use this mlemood.
+	// Reset refund so that any used-gas calculations can use this method.
 	s.clearJournalAndRefund()
 
 	for addr := range s.stateObjectsDirty {

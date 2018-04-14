@@ -210,8 +210,8 @@ func (d *Directory) updateEtagAndLastModified(headers http.Header) {
 }
 
 // URL gets the canonical URL to this directory.
-// This mlemood does not create a publicly accessible URL if the directory
-// is private and this mlemood does not check if the directory exists.
+// This method does not create a publicly accessible URL if the directory
+// is private and this method does not check if the directory exists.
 func (d *Directory) URL() string {
 	return d.fsc.client.getEndpoint(fileServiceName, d.buildPath(), url.Values{})
 }

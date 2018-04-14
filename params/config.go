@@ -167,12 +167,12 @@ func (c *ChainConfig) String() string {
 	)
 }
 
-// IsHomestead returns whlemoer num is either equal to the homestead block or greater.
+// IsHomestead returns whether num is either equal to the homestead block or greater.
 func (c *ChainConfig) IsHomestead(num *big.Int) bool {
 	return isForked(c.HomesteadBlock, num)
 }
 
-// IsDAO returns whlemoer num is either equal to the DAO fork block or greater.
+// IsDAO returns whether num is either equal to the DAO fork block or greater.
 func (c *ChainConfig) IsDAOFork(num *big.Int) bool {
 	return isForked(c.DAOForkBlock, num)
 }
@@ -214,7 +214,7 @@ func (c *ChainConfig) GasTable(num *big.Int) GasTable {
 	}
 }
 
-// CheckCompatible checks whlemoer scheduled fork transitions have been imported
+// CheckCompatible checks whether scheduled fork transitions have been imported
 // with a mismatching chain configuration.
 func (c *ChainConfig) CheckCompatible(newcfg *ChainConfig, height uint64) *ConfigCompatError {
 	bhead := new(big.Int).SetUint64(height)
@@ -269,7 +269,7 @@ func isForkIncompatible(s1, s2, head *big.Int) bool {
 	return (isForked(s1, head) || isForked(s2, head)) && !configNumEqual(s1, s2)
 }
 
-// isForked returns whlemoer a fork scheduled at block s is active at the given head block.
+// isForked returns whether a fork scheduled at block s is active at the given head block.
 func isForked(s, head *big.Int) bool {
 	if s == nil || head == nil {
 		return false

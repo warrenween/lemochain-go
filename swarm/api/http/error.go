@@ -95,7 +95,7 @@ func initErrHandling() {
 		}}
 }
 
-//ValidateCaseErrors is a mlemood that process the request object through certain validators
+//ValidateCaseErrors is a method that process the request object through certain validators
 //that assert if certain conditions are met for further information to log as an error
 func ValidateCaseErrors(r *Request) string {
 	for _, err := range caseErrors {

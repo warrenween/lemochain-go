@@ -64,7 +64,7 @@ func (lemohash *Lemohash) Author(header *types.Header) (common.Address, error) {
 	return header.Coinbase, nil
 }
 
-// VerifyHeader checks whlemoer a header conforms to the consensus rules of the
+// VerifyHeader checks whether a header conforms to the consensus rules of the
 // stock Lemochain lemohash engine.
 func (lemohash *Lemohash) VerifyHeader(chain consensus.ChainReader, header *types.Header, seal bool) error {
 	// If we're running a full engine faking, accept any input as valid
@@ -85,7 +85,7 @@ func (lemohash *Lemohash) VerifyHeader(chain consensus.ChainReader, header *type
 }
 
 // VerifyHeaders is similar to VerifyHeader, but verifies a batch of headers
-// concurrently. The mlemood returns a quit channel to abort the operations and
+// concurrently. The method returns a quit channel to abort the operations and
 // a results channel to retrieve the async verifications.
 func (lemohash *Lemohash) VerifyHeaders(chain consensus.ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
 	// If we're running a full engine faking, accept any input as valid
@@ -217,7 +217,7 @@ func (lemohash *Lemohash) VerifyUncles(chain consensus.ChainReader, block *types
 	return nil
 }
 
-// verifyHeader checks whlemoer a header conforms to the consensus rules of the
+// verifyHeader checks whether a header conforms to the consensus rules of the
 // stock Lemochain lemohash engine.
 // See YP section 4.3.4. "Block Header Validity"
 func (lemohash *Lemohash) verifyHeader(chain consensus.ChainReader, header, parent *types.Header, uncle bool, seal bool) error {
@@ -458,7 +458,7 @@ func calcDifficultyFrontier(time uint64, parent *types.Header) *big.Int {
 	return diff
 }
 
-// VerifySeal implements consensus.Engine, checking whlemoer the given block satisfies
+// VerifySeal implements consensus.Engine, checking whether the given block satisfies
 // the PoW difficulty requirements.
 func (lemohash *Lemohash) VerifySeal(chain consensus.ChainReader, header *types.Header) error {
 	// If we're running a fake PoW, accept any seal as valid

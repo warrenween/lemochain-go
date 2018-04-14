@@ -1044,7 +1044,7 @@
 /* DUK_COLD */
 
 #if defined(DUK_F_DLL_BUILD) && defined(DUK_F_WINDOWS)
-/* MSVC dllexport/dllimport: appropriate __declspec depends on whlemoer we're
+/* MSVC dllexport/dllimport: appropriate __declspec depends on whether we're
  * compiling Duktape or the application.
  */
 #if defined(DUK_COMPILING_DUKTAPE)
@@ -1160,7 +1160,7 @@
 #endif
 
 #if defined(DUK_F_DLL_BUILD) && defined(DUK_F_WINDOWS)
-/* MSVC dllexport/dllimport: appropriate __declspec depends on whlemoer we're
+/* MSVC dllexport/dllimport: appropriate __declspec depends on whether we're
  * compiling Duktape or the application.
  */
 #if defined(DUK_COMPILING_DUKTAPE)
@@ -1258,7 +1258,7 @@
 /* XXX: DUK_NOINLINE, DUK_INLINE, DUK_ALWAYS_INLINE for msvc? */
 
 #if defined(DUK_F_DLL_BUILD) && defined(DUK_F_WINDOWS)
-/* MSVC dllexport/dllimport: appropriate __declspec depends on whlemoer we're
+/* MSVC dllexport/dllimport: appropriate __declspec depends on whether we're
  * compiling Duktape or the application.
  */
 #if defined(DUK_COMPILING_DUKTAPE)
@@ -2081,7 +2081,7 @@ typedef double duk_double_t;
  */
 typedef struct duk_hthread duk_context;
 
-/* Check whlemoer we should use 64-bit integers or not.
+/* Check whether we should use 64-bit integers or not.
  *
  * Quite incomplete now.  Use 64-bit types if detected (C99 or other detection)
  * unless they are known to be unreliable.  For instance, 64-bit types are
@@ -2745,7 +2745,7 @@ typedef struct duk_hthread duk_context;
 #endif
 
 /*
- *  Check whlemoer or not a packed duk_tval representation is possible.
+ *  Check whether or not a packed duk_tval representation is possible.
  *  What's basically required is that pointers are 32-bit values
  *  (sizeof(void *) == 4).  Best effort check, not always accurate.
  *  If guess goes wrong, crashes may result; self tests also verify
@@ -2786,7 +2786,7 @@ typedef struct duk_hthread duk_context;
 #endif  /* DUK_F_PACKED_TVAL_PROVIDED */
 /* Object property allocation layout has implications for memory and code
  * footprint and generated code size/speed.  The best layout also depends
- * on whlemoer the platform has alignment requirements or benefits from
+ * on whether the platform has alignment requirements or benefits from
  * having mostly aligned accesses.
  */
 #undef DUK_USE_HOBJECT_LAYOUT_1

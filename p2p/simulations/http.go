@@ -230,7 +230,7 @@ func (c *Client) Delete(path string) error {
 
 // Send performs a HTTP request, sending "in" as the JSON request body and
 // decoding the JSON response into "out"
-func (c *Client) Send(mlemood, path string, in, out interface{}) error {
+func (c *Client) Send(method, path string, in, out interface{}) error {
 	var body []byte
 	if in != nil {
 		var err error
@@ -239,7 +239,7 @@ func (c *Client) Send(mlemood, path string, in, out interface{}) error {
 			return err
 		}
 	}
-	req, err := http.NewRequest(mlemood, c.URL+path, bytes.NewReader(body))
+	req, err := http.NewRequest(method, c.URL+path, bytes.NewReader(body))
 	if err != nil {
 		return err
 	}
@@ -646,7 +646,7 @@ func (s *Server) DisconnectNode(w http.ResponseWriter, req *http.Request) {
 	s.JSON(w, http.StatusOK, node.NodeInfo())
 }
 
-// Options responds to the OPTIONS HTTP mlemood by returning a 200 OK response
+// Options responds to the OPTIONS HTTP method by returning a 200 OK response
 // with the "Access-Control-Allow-Headers" header set to "Content-Type"
 func (s *Server) Options(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

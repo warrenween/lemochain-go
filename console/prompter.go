@@ -27,7 +27,7 @@ import (
 // Only this reader may be used for input because it keeps an internal buffer.
 var Stdin = newTerminalPrompter()
 
-// UserPrompter defines the mlemoods needed by the console to promt the user for
+// UserPrompter defines the methods needed by the console to promt the user for
 // various types of inputs.
 type UserPrompter interface {
 	// PromptInput displays the given prompt to the user and requests some textual
@@ -36,7 +36,7 @@ type UserPrompter interface {
 
 	// PromptPassword displays the given prompt to the user and requests some textual
 	// data to be entered, but one which must not be echoed out into the terminal.
-	// The mlemood returns the input provided by the user.
+	// The method returns the input provided by the user.
 	PromptPassword(prompt string) (string, error)
 
 	// PromptConfirm displays the given prompt to the user and requests a boolean
@@ -121,7 +121,7 @@ func (p *terminalPrompter) PromptInput(prompt string) (string, error) {
 
 // PromptPassword displays the given prompt to the user and requests some textual
 // data to be entered, but one which must not be echoed out into the terminal.
-// The mlemood returns the input provided by the user.
+// The method returns the input provided by the user.
 func (p *terminalPrompter) PromptPassword(prompt string) (passwd string, err error) {
 	if p.supported {
 		p.rawMode.ApplyMode()

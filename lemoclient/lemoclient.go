@@ -76,9 +76,9 @@ type rpcBlock struct {
 	UncleHashes  []common.Hash    `json:"uncles"`
 }
 
-func (ec *Client) getBlock(ctx context.Context, mlemood string, args ...interface{}) (*types.Block, error) {
+func (ec *Client) getBlock(ctx context.Context, method string, args ...interface{}) (*types.Block, error) {
 	var raw json.RawMessage
-	err := ec.c.CallContext(ctx, &raw, mlemood, args...)
+	err := ec.c.CallContext(ctx, &raw, method, args...)
 	if err != nil {
 		return nil, err
 	} else if len(raw) == 0 {
@@ -466,7 +466,7 @@ func (ec *Client) EstimateGas(ctx context.Context, msg lemochain.CallMsg) (uint6
 
 // SendTransaction injects a signed transaction into the pending pool for execution.
 //
-// If the transaction was a contract creation use the TransactionReceipt mlemood to get the
+// If the transaction was a contract creation use the TransactionReceipt method to get the
 // contract address after the transaction has been mined.
 func (ec *Client) SendTransaction(ctx context.Context, tx *types.Transaction) error {
 	data, err := rlp.EncodeToBytes(tx)

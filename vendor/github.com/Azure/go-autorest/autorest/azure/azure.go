@@ -70,10 +70,10 @@ func IsAzureError(e error) bool {
 }
 
 // NewErrorWithError creates a new Error conforming object from the
-// passed packageType, mlemood, statusCode of the given resp (UndefinedStatusCode
+// passed packageType, method, statusCode of the given resp (UndefinedStatusCode
 // if resp is nil), message, and original error. message is treated as a format
 // string to which the optional args apply.
-func NewErrorWithError(original error, packageType string, mlemood string, resp *http.Response, message string, args ...interface{}) RequestError {
+func NewErrorWithError(original error, packageType string, method string, resp *http.Response, message string, args ...interface{}) RequestError {
 	if v, ok := original.(*RequestError); ok {
 		return *v
 	}
@@ -86,7 +86,7 @@ func NewErrorWithError(original error, packageType string, mlemood string, resp 
 		DetailedError: autorest.DetailedError{
 			Original:    original,
 			PackageType: packageType,
-			Method:      mlemood,
+			Method:      method,
 			StatusCode:  statusCode,
 			Message:     fmt.Sprintf(message, args...),
 		},

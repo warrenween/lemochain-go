@@ -99,7 +99,7 @@ func (api *PublicFilterAPI) timeoutLoop() {
 // as transactions enter the pending state.
 //
 // It is part of the filter package because this filter can be used throug the
-// `lemo_getFilterChanges` polling mlemood that is also used for log filters.
+// `lemo_getFilterChanges` polling method that is also used for log filters.
 //
 // https://github.com/lemochain/wiki/wiki/JSON-RPC#lemo_newpendingtransactionfilter
 func (api *PublicFilterAPI) NewPendingTransactionFilter() rpc.ID {
@@ -278,7 +278,7 @@ type FilterCriteria struct {
 }
 
 // NewFilter creates a new filter and returns the filter id. It can be
-// used to retrieve logs when the state changes. This mlemood cannot be
+// used to retrieve logs when the state changes. This method cannot be
 // used to fetch logs that are already stored in the state.
 //
 // Default criteria for the from and to block are "latest".

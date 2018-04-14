@@ -44,8 +44,8 @@ type Options struct {
 	// as argument and returns true if allowed or false otherwise. If this option is
 	// set, the content of AllowedOrigins is ignored.
 	AllowOriginFunc func(origin string) bool
-	// AllowedMethods is a list of mlemoods the client is allowed to use with
-	// cross-domain requests. Default value is simple mlemoods (GET and POST)
+	// AllowedMethods is a list of methods the client is allowed to use with
+	// cross-domain requests. Default value is simple methods (GET and POST)
 	AllowedMethods []string
 	// AllowedHeaders is list of non simple headers the client is allowed to use with
 	// cross-domain requests.
@@ -55,14 +55,14 @@ type Options struct {
 	// ExposedHeaders indicates which headers are safe to expose to the API of a CORS
 	// API specification
 	ExposedHeaders []string
-	// AllowCredentials indicates whlemoer the request can include user credentials like
+	// AllowCredentials indicates whether the request can include user credentials like
 	// cookies, HTTP authentication or client side SSL certificates.
 	AllowCredentials bool
 	// MaxAge indicates how long (in seconds) the results of a preflight request
 	// can be cached
 	MaxAge int
 	// OptionsPassthrough instructs preflight to let other potential next handlers to
-	// process the OPTIONS mlemood. Turn this on if your application handles OPTIONS.
+	// process the OPTIONS method. Turn this on if your application handles OPTIONS.
 	OptionsPassthrough bool
 	// Debugging flag adds additional output to debug server side CORS issues
 	Debug bool
@@ -84,7 +84,7 @@ type Cors struct {
 	allowedHeadersAll bool
 	// Normalized list of allowed headers
 	allowedHeaders []string
-	// Normalized list of allowed mlemoods
+	// Normalized list of allowed methods
 	allowedMethods []string
 	// Normalized list of exposed headers
 	exposedHeaders    []string
@@ -107,7 +107,7 @@ func New(options Options) *Cors {
 	}
 
 	// Normalize options
-	// Note: for origins and mlemoods matching, the spec requires a case-sensitive matching.
+	// Note: for origins and methods matching, the spec requires a case-sensitive matching.
 	// As it may error prone, we chose to ignore the spec here.
 
 	// Allowed Origins
@@ -154,7 +154,7 @@ func New(options Options) *Cors {
 
 	// Allowed Methods
 	if len(options.AllowedMethods) == 0 {
-		// Default is spec's "simple" mlemoods
+		// Default is spec's "simple" methods
 		c.allowedMethods = []string{"GET", "POST"}
 	} else {
 		c.allowedMethods = convert(options.AllowedMethods, strings.ToUpper)
@@ -274,7 +274,7 @@ func (c *Cors) handlePreflight(w http.ResponseWriter, r *http.Request) {
 
 	reqMethod := r.Header.Get("Access-Control-Request-Method")
 	if !c.isMethodAllowed(reqMethod) {
-		c.logf("  Preflight aborted: mlemood '%s' not allowed", reqMethod)
+		c.logf("  Preflight aborted: method '%s' not allowed", reqMethod)
 		return
 	}
 	reqHeaders := parseHeaderList(r.Header.Get("Access-Control-Request-Headers"))
@@ -283,7 +283,7 @@ func (c *Cors) handlePreflight(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	headers.Set("Access-Control-Allow-Origin", origin)
-	// Spec says: Since the list of mlemoods can be unbounded, simply returning the mlemood indicated
+	// Spec says: Since the list of methods can be unbounded, simply returning the method indicated
 	// by Access-Control-Request-Method (if supported) can be enough
 	headers.Set("Access-Control-Allow-Methods", strings.ToUpper(reqMethod))
 	if len(reqHeaders) > 0 {
@@ -307,7 +307,7 @@ func (c *Cors) handleActualRequest(w http.ResponseWriter, r *http.Request) {
 	origin := r.Header.Get("Origin")
 
 	if r.Method == "OPTIONS" {
-		c.logf("  Actual request no headers added: mlemood == %s", r.Method)
+		c.logf("  Actual request no headers added: method == %s", r.Method)
 		return
 	}
 	// Always set Vary, see https://github.com/rs/cors/issues/10
@@ -321,12 +321,12 @@ func (c *Cors) handleActualRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Note that spec does define a way to specifically disallow a simple mlemood like GET or
+	// Note that spec does define a way to specifically disallow a simple method like GET or
 	// POST. Access-Control-Allow-Methods is only used for pre-flight requests and the
-	// spec doesn't instruct to check the allowed mlemoods for simple cross-origin requests.
-	// We think it's a nice feature to be able to have control on those mlemoods though.
+	// spec doesn't instruct to check the allowed methods for simple cross-origin requests.
+	// We think it's a nice feature to be able to have control on those methods though.
 	if !c.isMethodAllowed(r.Method) {
-		c.logf("  Actual request no headers added: mlemood '%s' not allowed", r.Method)
+		c.logf("  Actual request no headers added: method '%s' not allowed", r.Method)
 
 		return
 	}
@@ -340,7 +340,7 @@ func (c *Cors) handleActualRequest(w http.ResponseWriter, r *http.Request) {
 	c.logf("  Actual response added headers: %v", headers)
 }
 
-// convenience mlemood. checks if debugging is turned on before printing
+// convenience method. checks if debugging is turned on before printing
 func (c *Cors) logf(format string, a ...interface{}) {
 	if c.Log != nil {
 		c.Log.Printf(format, a...)
@@ -370,20 +370,20 @@ func (c *Cors) isOriginAllowed(origin string) bool {
 	return false
 }
 
-// isMethodAllowed checks if a given mlemood can be used as part of a cross-domain request
+// isMethodAllowed checks if a given method can be used as part of a cross-domain request
 // on the endpoing
-func (c *Cors) isMethodAllowed(mlemood string) bool {
+func (c *Cors) isMethodAllowed(method string) bool {
 	if len(c.allowedMethods) == 0 {
-		// If no mlemood allowed, always return false, even for preflight request
+		// If no method allowed, always return false, even for preflight request
 		return false
 	}
-	mlemood = strings.ToUpper(mlemood)
-	if mlemood == "OPTIONS" {
+	method = strings.ToUpper(method)
+	if method == "OPTIONS" {
 		// Always allow preflight requests
 		return true
 	}
 	for _, m := range c.allowedMethods {
-		if m == mlemood {
+		if m == method {
 			return true
 		}
 	}

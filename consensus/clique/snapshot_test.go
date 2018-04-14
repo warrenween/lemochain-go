@@ -69,7 +69,7 @@ func (ap *testerAccountPool) address(account string) common.Address {
 }
 
 // testerChainReader implements consensus.ChainReader to access the genesis
-// block. All other mlemoods and requests will panic.
+// block. All other methods and requests will panic.
 type testerChainReader struct {
 	db lemodb.Database
 }

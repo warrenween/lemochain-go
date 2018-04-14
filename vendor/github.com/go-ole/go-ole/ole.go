@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// DISPPARAMS are the arguments that passed to mlemoods or property.
+// DISPPARAMS are the arguments that passed to methods or property.
 type DISPPARAMS struct {
 	rgvarg            uintptr
 	rgdispidNamedArgs uintptr
@@ -88,7 +88,7 @@ type PARAMDATA struct {
 	Vt   uint16
 }
 
-// METHODDATA defines mlemood info.
+// METHODDATA defines method info.
 type METHODDATA struct {
 	Name     *uint16
 	Data     *PARAMDATA

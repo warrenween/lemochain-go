@@ -262,7 +262,7 @@ func (d *Downloader) Progress() lemochain.SyncProgress {
 	}
 }
 
-// Synchronising returns whlemoer the downloader is currently retrieving blocks.
+// Synchronising returns whether the downloader is currently retrieving blocks.
 func (d *Downloader) Synchronising() bool {
 	return atomic.LoadInt32(&d.synchronising) > 0
 }
@@ -323,7 +323,7 @@ func (d *Downloader) Synchronise(id string, head common.Hash, td *big.Int, mode 
 		errInvalidAncestor, errInvalidChain:
 		log.Warn("Synchronisation failed, dropping peer", "peer", id, "err", err)
 		if d.dropPeer == nil {
-			// The dropPeer mlemood is nil when `--copydb` is used for a local copy.
+			// The dropPeer method is nil when `--copydb` is used for a local copy.
 			// Timeouts can occur if e.g. compaction hits at the wrong time, and can be ignored
 			log.Warn("Downloader wants to drop peer, but peerdrop-function is not set", "peer", id)
 		} else {
@@ -337,7 +337,7 @@ func (d *Downloader) Synchronise(id string, head common.Hash, td *big.Int, mode 
 
 // synchronise will select the peer and use it for synchronising. If an empty string is given
 // it will use the best peer possible and synchronize if its TD is higher than our own. If any of the
-// checks fail an error will be returned. This mlemood is synchronous
+// checks fail an error will be returned. This method is synchronous
 func (d *Downloader) synchronise(id string, hash common.Hash, td *big.Int, mode SyncMode) error {
 	// Mock out the synchronisation if testing
 	if d.synchroniseMock != nil {
@@ -851,7 +851,7 @@ func (d *Downloader) fetchHeaders(p *peerConnection, from uint64, pivot uint64) 
 
 		case <-timeout.C:
 			if d.dropPeer == nil {
-				// The dropPeer mlemood is nil when `--copydb` is used for a local copy.
+				// The dropPeer method is nil when `--copydb` is used for a local copy.
 				// Timeouts can occur if e.g. compaction hits at the wrong time, and can be ignored
 				p.log.Warn("Downloader wants to drop peer, but peerdrop-function is not set", "peer", p.id)
 				break
@@ -884,7 +884,7 @@ func (d *Downloader) fetchHeaders(p *peerConnection, from uint64, pivot uint64) 
 // immediately to the header processor to keep the rest of the pipeline full even
 // in the case of header stalls.
 //
-// The mlemood returs the entire filled skeleton and also the number of headers
+// The method returs the entire filled skeleton and also the number of headers
 // already forwarded for processing.
 func (d *Downloader) fillHeaderSkeleton(from uint64, skeleton []*types.Header) ([]*types.Header, int, error) {
 	log.Debug("Filling up skeleton", "from", from)
@@ -967,7 +967,7 @@ func (d *Downloader) fetchReceipts(from uint64) error {
 // also periodically checking for timeouts.
 //
 // As the scheduling/timeout logic mostly is the same for all downloaded data
-// types, this mlemood is used by each for data gathering and is instrumented with
+// types, this method is used by each for data gathering and is instrumented with
 // various callbacks to handle the slight differences between processing them.
 //
 // The instrumentation parameters:
@@ -975,7 +975,7 @@ func (d *Downloader) fetchReceipts(from uint64) error {
 //  - deliveryCh:  channel from which to retrieve downloaded data packets (merged from all concurrent peers)
 //  - deliver:     processing callback to deliver data packets into type specific download queues (usually within `queue`)
 //  - wakeCh:      notification channel for waking the fetcher when new tasks are available (or sync completed)
-//  - expire:      task callback mlemood to abort requests that took too long and return the faulty peers (traffic shaping)
+//  - expire:      task callback method to abort requests that took too long and return the faulty peers (traffic shaping)
 //  - pending:     task callback for the number of requests still needing download (detect completion/non-completability)
 //  - inFlight:    task callback for the number of in-progress requests (wait for all active downloads to finish)
 //  - throttle:    task callback to check if the processing queue is full and activate throttling (bound memory use)
@@ -1075,7 +1075,7 @@ func (d *Downloader) fetchParts(errCancel error, deliveryCh chan dataPack, deliv
 					} else {
 						peer.log.Debug("Stalling delivery, dropping", "type", kind)
 						if d.dropPeer == nil {
-							// The dropPeer mlemood is nil when `--copydb` is used for a local copy.
+							// The dropPeer method is nil when `--copydb` is used for a local copy.
 							// Timeouts can occur if e.g. compaction hits at the wrong time, and can be ignored
 							peer.log.Warn("Downloader wants to drop peer, but peerdrop-function is not set", "peer", pid)
 						} else {

@@ -220,7 +220,7 @@ func (f *formatState) format(v reflect.Value) {
 	}
 	f.ignoreNextType = false
 
-	// Call Stringer/error interfaces if they exist and the handle mlemoods
+	// Call Stringer/error interfaces if they exist and the handle methods
 	// flag is enabled.
 	if !f.cs.DisableMethods {
 		if (kind != reflect.Invalid) && (kind != reflect.Interface) {
@@ -390,7 +390,7 @@ func (f *formatState) Format(fs fmt.State, verb rune) {
 }
 
 // newFormatter is a helper function to consolidate the logic from the various
-// public mlemoods which take varying config states.
+// public methods which take varying config states.
 func newFormatter(cs *ConfigState, v interface{}) fmt.Formatter {
 	fs := &formatState{value: v, cs: cs}
 	fs.pointers = make(map[uintptr]int)

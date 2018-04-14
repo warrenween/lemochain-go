@@ -27,21 +27,21 @@ import (
 	"gopkg.in/fatih/set.v0"
 )
 
-// API describes the set of mlemoods offered over the RPC interface
+// API describes the set of methods offered over the RPC interface
 type API struct {
-	Namespace string      // namespace under which the rpc mlemoods of Service are exposed
+	Namespace string      // namespace under which the rpc methods of Service are exposed
 	Version   string      // api version for DApp's
-	Service   interface{} // receiver instance which holds the mlemoods
-	Public    bool        // indication if the mlemoods must be considered safe for public use
+	Service   interface{} // receiver instance which holds the methods
+	Public    bool        // indication if the methods must be considered safe for public use
 }
 
-// callback is a mlemood callback which was registered in the server
+// callback is a method callback which was registered in the server
 type callback struct {
-	rcvr        reflect.Value  // receiver of mlemood
-	mlemood      reflect.Method // callback
+	rcvr        reflect.Value  // receiver of method
+	method      reflect.Method // callback
 	argTypes    []reflect.Type // input argument types
-	hasCtx      bool           // mlemood's first argument is a context (not included in argTypes)
-	errPos      int            // err return idx, of -1 when mlemood cannot return error
+	hasCtx      bool           // method's first argument is a context (not included in argTypes)
+	errPos      int            // err return idx, of -1 when method cannot return error
 	isSubscribe bool           // indication if the callback is a subscription
 }
 
@@ -79,7 +79,7 @@ type Server struct {
 // rpcRequest represents a raw incoming RPC request
 type rpcRequest struct {
 	service  string
-	mlemood   string
+	method   string
 	id       interface{}
 	isPubSub bool
 	params   interface{}

@@ -40,7 +40,7 @@ type stateReq struct {
 	timer    *time.Timer                // Timer to fire when the RTT timeout expires
 	peer     *peerConnection            // Peer that we're requesting from
 	response [][]byte                   // Response data of the peer (nil for timeouts)
-	dropped  bool                       // Flag whlemoer the peer dropped off early
+	dropped  bool                       // Flag whether the peer dropped off early
 }
 
 // timedOut returns if this request timed out.
@@ -234,7 +234,7 @@ type stateTask struct {
 	attempts map[string]struct{}
 }
 
-// newStateSync creates a new state trie download scheduler. This mlemood does not
+// newStateSync creates a new state trie download scheduler. This method does not
 // yet start the sync. The user needs to call run to initiate.
 func newStateSync(d *Downloader, root common.Hash) *stateSync {
 	return &stateSync{
@@ -442,7 +442,7 @@ func (s *stateSync) process(req *stateReq) error {
 }
 
 // processNodeData tries to inject a trie node data blob delivered from a remote
-// peer into the state trie, returning whlemoer anything useful was written or any
+// peer into the state trie, returning whether anything useful was written or any
 // error occurred.
 func (s *stateSync) processNodeData(blob []byte) (bool, common.Hash, error) {
 	res := trie.SyncResult{Data: blob}

@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	// UnsafeDisabled is a build-time constant which specifies whlemoer or
+	// UnsafeDisabled is a build-time constant which specifies whether or
 	// not access to the unsafe package is available.
 	UnsafeDisabled = false
 
@@ -48,10 +48,10 @@ var (
 	// flagKindWidth and flagKindShift indicate various bits that the
 	// reflect package uses internally to track kind information.
 	//
-	// flagRO indicates whlemoer or not the value field of a reflect.Value is
+	// flagRO indicates whether or not the value field of a reflect.Value is
 	// read-only.
 	//
-	// flagIndir indicates whlemoer the value field of a reflect.Value is
+	// flagIndir indicates whether the value field of a reflect.Value is
 	// the actual data or a pointer to the data.
 	//
 	// These values are valid before golang commit 90a7c3c86944 which
@@ -94,7 +94,7 @@ func init() {
 		flagIndir = 1 << 6
 
 		// Commit adf9b30e5594 modified the flags to separate the
-		// flagRO flag into two bits which specifies whlemoer or not the
+		// flagRO flag into two bits which specifies whether or not the
 		// field is embedded.  This causes flagIndir to move over a bit
 		// and means that flagRO is the combination of either of the
 		// original flagRO bit and the new bit.

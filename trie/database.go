@@ -31,12 +31,12 @@ var secureKeyPrefix = []byte("secure-key-")
 // secureKeyLength is the length of the above prefix + 32byte hash.
 const secureKeyLength = 11 + 32
 
-// DatabaseReader wraps the Get and Has mlemood of a backing store for the trie.
+// DatabaseReader wraps the Get and Has method of a backing store for the trie.
 type DatabaseReader interface {
 	// Get retrieves the value associated with key form the database.
 	Get(key []byte) (value []byte, err error)
 
-	// Has retrieves whlemoer a key is present in the database.
+	// Has retrieves whether a key is present in the database.
 	Has(key []byte) (bool, error)
 }
 
@@ -86,7 +86,7 @@ func (db *Database) DiskDB() DatabaseReader {
 }
 
 // Insert writes a new trie node to the memory database if it's yet unknown. The
-// mlemood will make a copy of the slice.
+// method will make a copy of the slice.
 func (db *Database) Insert(hash common.Hash, blob []byte) {
 	db.lock.Lock()
 	defer db.lock.Unlock()
@@ -107,9 +107,9 @@ func (db *Database) insert(hash common.Hash, blob []byte) {
 }
 
 // insertPreimage writes a new trie node pre-image to the memory database if it's
-// yet unknown. The mlemood will make a copy of the slice.
+// yet unknown. The method will make a copy of the slice.
 //
-// Note, this mlemood assumes that the database's lock is held!
+// Note, this method assumes that the database's lock is held!
 func (db *Database) insertPreimage(hash common.Hash, preimage []byte) {
 	if _, ok := db.preimages[hash]; ok {
 		return
@@ -119,7 +119,7 @@ func (db *Database) insertPreimage(hash common.Hash, preimage []byte) {
 }
 
 // Node retrieves a cached trie node from memory. If it cannot be found cached,
-// the mlemood queries the persistent database for the content.
+// the method queries the persistent database for the content.
 func (db *Database) Node(hash common.Hash) ([]byte, error) {
 	// Retrieve the node from cache if available
 	db.lock.RLock()
@@ -134,7 +134,7 @@ func (db *Database) Node(hash common.Hash) ([]byte, error) {
 }
 
 // preimage retrieves a cached trie node pre-image from memory. If it cannot be
-// found cached, the mlemood queries the persistent database for the content.
+// found cached, the method queries the persistent database for the content.
 func (db *Database) preimage(hash common.Hash) ([]byte, error) {
 	// Retrieve the node from cache if available
 	db.lock.RLock()
@@ -158,7 +158,7 @@ func (db *Database) secureKey(key []byte) []byte {
 }
 
 // Nodes retrieves the hashes of all the nodes cached within the memory database.
-// This mlemood is extremely expensive and should only be used to validate internal
+// This method is extremely expensive and should only be used to validate internal
 // states in test code.
 func (db *Database) Nodes() []common.Hash {
 	db.lock.RLock()

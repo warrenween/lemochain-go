@@ -19,15 +19,15 @@ package rpc
 import "fmt"
 
 // request is for an unknown service
-type mlemoodNotFoundError struct {
+type methodNotFoundError struct {
 	service string
-	mlemood  string
+	method  string
 }
 
-func (e *mlemoodNotFoundError) ErrorCode() int { return -32601 }
+func (e *methodNotFoundError) ErrorCode() int { return -32601 }
 
-func (e *mlemoodNotFoundError) Error() string {
-	return fmt.Sprintf("The mlemood %s%s%s does not exist/is not available", e.service, serviceMethodSeparator, e.mlemood)
+func (e *methodNotFoundError) Error() string {
+	return fmt.Sprintf("The method %s%s%s does not exist/is not available", e.service, serviceMethodSeparator, e.method)
 }
 
 // received message isn't a valid request

@@ -57,7 +57,7 @@ type Interpreter struct {
 
 // NewInterpreter returns a new instance of the Interpreter.
 func NewInterpreter(evm *EVM, cfg Config) *Interpreter {
-	// We use the STOP instruction whlemoer to see
+	// We use the STOP instruction whether to see
 	// the jump table was initialised. If it was not
 	// we'll set the default jump table.
 	if !cfg.JumpTable[STOP].valid {
@@ -184,7 +184,7 @@ func (in *Interpreter) Run(contract *Contract, input []byte) (ret []byte, err er
 			}
 		}
 		// consume the gas and return an error if not enough gas is available.
-		// cost is explicitly set so that the capture state defer mlemood cas get the proper cost
+		// cost is explicitly set so that the capture state defer method cas get the proper cost
 		cost, err = operation.gasCost(in.gasTable, in.evm, contract, stack, mem, memorySize)
 		if err != nil || !contract.UseGas(cost) {
 			return nil, ErrOutOfGas

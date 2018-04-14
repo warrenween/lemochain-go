@@ -36,7 +36,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/tests"
 )
 
-// To generate a new callTracer test, copy paste the makeTest mlemood below into
+// To generate a new callTracer test, copy paste the makeTest method below into
 // a Glemo console and call it with a transaction hash you which to export.
 
 /*

@@ -427,7 +427,7 @@ func (PinMatrixRequestType) EnumDescriptor() ([]byte, []int) { return fileDescri
 // *
 // Type of recovery procedure. These should be used as bitmask, e.g.,
 // `RecoveryDeviceType_ScrambledWords | RecoveryDeviceType_Matrix`
-// listing every mlemood supported by the host computer.
+// listing every method supported by the host computer.
 //
 // Note that ScrambledWords must be supported by every implementation
 // for backward compatibility; there is no way to not support it.

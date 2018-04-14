@@ -17,11 +17,11 @@ const (
 )
 
 const (
-	mlemoodDelete = "DELETE"
-	mlemoodPatch  = "PATCH"
-	mlemoodPost   = "POST"
-	mlemoodPut    = "PUT"
-	mlemoodGet    = "GET"
+	methodDelete = "DELETE"
+	methodPatch  = "PATCH"
+	methodPost   = "POST"
+	methodPut    = "PUT"
+	methodGet    = "GET"
 
 	operationInProgress string = "InProgress"
 	operationCanceled   string = "Canceled"
@@ -226,7 +226,7 @@ func updatePollingState(resp *http.Response, ps *pollingState) error {
 		// Lastly, requests against an existing resource, use the last request URI
 		if ps.uri == "" {
 			m := strings.ToUpper(req.Method)
-			if m == mlemoodPatch || m == mlemoodPut || m == mlemoodGet {
+			if m == methodPatch || m == methodPut || m == methodGet {
 				ps.uri = req.URL.String()
 			}
 		}

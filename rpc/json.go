@@ -38,7 +38,7 @@ const (
 )
 
 type jsonRequest struct {
-	Method  string          `json:"mlemood"`
+	Method  string          `json:"method"`
 	Version string          `json:"jsonrpc"`
 	Id      json.RawMessage `json:"id,omitempty"`
 	Payload json.RawMessage `json:"params,omitempty"`
@@ -69,7 +69,7 @@ type jsonSubscription struct {
 
 type jsonNotification struct {
 	Version string           `json:"jsonrpc"`
-	Method  string           `json:"mlemood"`
+	Method  string           `json:"method"`
 	Params  jsonSubscription `json:"params"`
 }
 
@@ -97,7 +97,7 @@ func (err *jsonError) ErrorCode() int {
 }
 
 // NewCodec creates a new RPC server codec with support for JSON-RPC 2.0 based
-// on explicitly given encoding and decoding mlemoods.
+// on explicitly given encoding and decoding methods.
 func NewCodec(rwc io.ReadWriteCloser, encode, decode func(v interface{}) error) ServerCodec {
 	return &jsonCodec{
 		closed: make(chan interface{}),
@@ -150,7 +150,7 @@ func (c *jsonCodec) ReadRequestHeaders() ([]rpcRequest, bool, Error) {
 	return parseRequest(incomingMsg)
 }
 
-// checkReqId returns an error when the given reqId isn't valid for RPC mlemood calls.
+// checkReqId returns an error when the given reqId isn't valid for RPC method calls.
 // valid id's are strings, numbers or null
 func checkReqId(reqId json.RawMessage) error {
 	if len(reqId) == 0 {
@@ -186,11 +186,11 @@ func parseRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) {
 			// first param must be subscription name
 			var subscribeMethod [1]string
 			if err := json.Unmarshal(in.Payload, &subscribeMethod); err != nil {
-				log.Debug(fmt.Sprintf("Unable to parse subscription mlemood: %v\n", err))
+				log.Debug(fmt.Sprintf("Unable to parse subscription method: %v\n", err))
 				return nil, false, &invalidRequestError{"Unable to parse subscription request"}
 			}
 
-			reqs[0].service, reqs[0].mlemood = strings.TrimSuffix(in.Method, subscribeMethodSuffix), subscribeMethod[0]
+			reqs[0].service, reqs[0].method = strings.TrimSuffix(in.Method, subscribeMethodSuffix), subscribeMethod[0]
 			reqs[0].params = in.Payload
 			return reqs, false, nil
 		}
@@ -199,20 +199,20 @@ func parseRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) {
 
 	if strings.HasSuffix(in.Method, unsubscribeMethodSuffix) {
 		return []rpcRequest{{id: &in.Id, isPubSub: true,
-			mlemood: in.Method, params: in.Payload}}, false, nil
+			method: in.Method, params: in.Payload}}, false, nil
 	}
 
 	elems := strings.Split(in.Method, serviceMethodSeparator)
 	if len(elems) != 2 {
-		return nil, false, &mlemoodNotFoundError{in.Method, ""}
+		return nil, false, &methodNotFoundError{in.Method, ""}
 	}
 
 	// regular RPC call
 	if len(in.Payload) == 0 {
-		return []rpcRequest{{service: elems[0], mlemood: elems[1], id: &in.Id}}, false, nil
+		return []rpcRequest{{service: elems[0], method: elems[1], id: &in.Id}}, false, nil
 	}
 
-	return []rpcRequest{{service: elems[0], mlemood: elems[1], id: &in.Id, params: in.Payload}}, false, nil
+	return []rpcRequest{{service: elems[0], method: elems[1], id: &in.Id, params: in.Payload}}, false, nil
 }
 
 // parseBatchRequest will parse a batch request into a collection of requests from the given RawMessage, an indication
@@ -238,11 +238,11 @@ func parseBatchRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) 
 				// first param must be subscription name
 				var subscribeMethod [1]string
 				if err := json.Unmarshal(r.Payload, &subscribeMethod); err != nil {
-					log.Debug(fmt.Sprintf("Unable to parse subscription mlemood: %v\n", err))
+					log.Debug(fmt.Sprintf("Unable to parse subscription method: %v\n", err))
 					return nil, false, &invalidRequestError{"Unable to parse subscription request"}
 				}
 
-				requests[i].service, requests[i].mlemood = strings.TrimSuffix(r.Method, subscribeMethodSuffix), subscribeMethod[0]
+				requests[i].service, requests[i].method = strings.TrimSuffix(r.Method, subscribeMethodSuffix), subscribeMethod[0]
 				requests[i].params = r.Payload
 				continue
 			}
@@ -251,7 +251,7 @@ func parseBatchRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) 
 		}
 
 		if strings.HasSuffix(r.Method, unsubscribeMethodSuffix) {
-			requests[i] = rpcRequest{id: id, isPubSub: true, mlemood: r.Method, params: r.Payload}
+			requests[i] = rpcRequest{id: id, isPubSub: true, method: r.Method, params: r.Payload}
 			continue
 		}
 
@@ -261,9 +261,9 @@ func parseBatchRequest(incomingMsg json.RawMessage) ([]rpcRequest, bool, Error) 
 			requests[i] = rpcRequest{id: id, params: r.Payload}
 		}
 		if elem := strings.Split(r.Method, serviceMethodSeparator); len(elem) == 2 {
-			requests[i].service, requests[i].mlemood = elem[0], elem[1]
+			requests[i].service, requests[i].method = elem[0], elem[1]
 		} else {
-			requests[i].err = &mlemoodNotFoundError{r.Method, ""}
+			requests[i].err = &methodNotFoundError{r.Method, ""}
 		}
 	}
 

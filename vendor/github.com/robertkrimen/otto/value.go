@@ -380,7 +380,7 @@ func toValue(value interface{}) Value {
 
 // String will return the value as a string.
 //
-// This mlemood will make return the empty string if there is an error.
+// This method will make return the empty string if there is an error.
 func (value Value) String() string {
 	result := ""
 	catchPanic(func() {
@@ -470,7 +470,7 @@ func (value Value) _object() *_object {
 
 // Object will return the object of the value, or nil if value is not an object.
 //
-// This mlemood will not do any implicit conversion. For example, calling this mlemood on a string primitive value will not return a String object.
+// This method will not do any implicit conversion. For example, calling this method on a string primitive value will not return a String object.
 func (value Value) Object() *Object {
 	switch object := value.value.(type) {
 	case *_object:

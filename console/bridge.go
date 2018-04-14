@@ -29,8 +29,8 @@ import (
 	"github.com/robertkrimen/otto"
 )
 
-// bridge is a collection of JavaScript utility mlemoods to bride the .js runtime
-// environment and the Go RPC connection backing the remote mlemood calls.
+// bridge is a collection of JavaScript utility methods to bride the .js runtime
+// environment and the Go RPC connection backing the remote method calls.
 type bridge struct {
 	client   *rpc.Client  // RPC client to execute Lemochain requests through
 	prompter UserPrompter // Input prompter to allow interactive user feedback
@@ -46,9 +46,9 @@ func newBridge(client *rpc.Client, prompter UserPrompter, printer io.Writer) *br
 	}
 }
 
-// NewAccount is a wrapper around the personal.newAccount RPC mlemood that uses a
+// NewAccount is a wrapper around the personal.newAccount RPC method that uses a
 // non-echoing password prompt to acquire the passphrase and executes the original
-// RPC mlemood (saved in jlemo.newAccount) with it to actually execute the RPC call.
+// RPC method (saved in jlemo.newAccount) with it to actually execute the RPC call.
 func (b *bridge) NewAccount(call otto.FunctionCall) (response otto.Value) {
 	var (
 		password string
@@ -127,9 +127,9 @@ func (b *bridge) OpenWallet(call otto.FunctionCall) (response otto.Value) {
 	return val
 }
 
-// UnlockAccount is a wrapper around the personal.unlockAccount RPC mlemood that
+// UnlockAccount is a wrapper around the personal.unlockAccount RPC method that
 // uses a non-echoing password prompt to acquire the passphrase and executes the
-// original RPC mlemood (saved in jlemo.unlockAccount) with it to actually execute
+// original RPC method (saved in jlemo.unlockAccount) with it to actually execute
 // the RPC call.
 func (b *bridge) UnlockAccount(call otto.FunctionCall) (response otto.Value) {
 	// Make sure we have an account specified to unlock
@@ -170,8 +170,8 @@ func (b *bridge) UnlockAccount(call otto.FunctionCall) (response otto.Value) {
 	return val
 }
 
-// Sign is a wrapper around the personal.sign RPC mlemood that uses a non-echoing password
-// prompt to acquire the passphrase and executes the original RPC mlemood (saved in
+// Sign is a wrapper around the personal.sign RPC method that uses a non-echoing password
+// prompt to acquire the passphrase and executes the original RPC method (saved in
 // jlemo.sign) with it to actually execute the RPC call.
 func (b *bridge) Sign(call otto.FunctionCall) (response otto.Value) {
 	var (
@@ -276,7 +276,7 @@ type jsonrpcCall struct {
 	Params []interface{}
 }
 
-// Send implements the web3 provider "send" mlemood.
+// Send implements the web3 provider "send" method.
 func (b *bridge) Send(call otto.FunctionCall) (response otto.Value) {
 	// Remarshal the request into a Go value.
 	JSON, _ := call.Otto.Object("JSON")

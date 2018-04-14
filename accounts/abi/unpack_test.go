@@ -314,7 +314,7 @@ var unpackTests = []unpackTest{
 func TestUnpack(t *testing.T) {
 	for i, test := range unpackTests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			def := fmt.Sprintf(`[{ "name" : "mlemood", "outputs": %s}]`, test.def)
+			def := fmt.Sprintf(`[{ "name" : "method", "outputs": %s}]`, test.def)
 			abi, err := JSON(strings.NewReader(def))
 			if err != nil {
 				t.Fatalf("invalid ABI definition %s: %v", def, err)
@@ -324,7 +324,7 @@ func TestUnpack(t *testing.T) {
 				t.Fatalf("invalid hex: %s" + test.enc)
 			}
 			outptr := reflect.New(reflect.TypeOf(test.want))
-			err = abi.Unpack(outptr.Interface(), "mlemood", encb)
+			err = abi.Unpack(outptr.Interface(), "method", encb)
 			if err := test.checkError(err); err != nil {
 				t.Errorf("test %d (%v) failed: %v", i, test.def, err)
 				return
@@ -337,15 +337,15 @@ func TestUnpack(t *testing.T) {
 	}
 }
 
-type mlemoodMultiOutput struct {
+type methodMultiOutput struct {
 	Int    *big.Int
 	String string
 }
 
-func mlemoodMultiReturn(require *require.Assertions) (ABI, []byte, mlemoodMultiOutput) {
+func methodMultiReturn(require *require.Assertions) (ABI, []byte, methodMultiOutput) {
 	const definition = `[
 	{ "name" : "multi", "constant" : false, "outputs": [ { "name": "Int", "type": "uint256" }, { "name": "String", "type": "string" } ] }]`
-	var expected = mlemoodMultiOutput{big.NewInt(1), "hello"}
+	var expected = methodMultiOutput{big.NewInt(1), "hello"}
 
 	abi, err := JSON(strings.NewReader(definition))
 	require.NoError(err)
@@ -364,7 +364,7 @@ func TestMethodMultiReturn(t *testing.T) {
 		Int    *big.Int
 	}
 
-	abi, data, expected := mlemoodMultiReturn(require.New(t))
+	abi, data, expected := methodMultiReturn(require.New(t))
 	bigint := new(big.Int)
 	var testCases = []struct {
 		dest     interface{}
@@ -372,7 +372,7 @@ func TestMethodMultiReturn(t *testing.T) {
 		error    string
 		name     string
 	}{{
-		&mlemoodMultiOutput{},
+		&methodMultiOutput{},
 		&expected,
 		"",
 		"Can unpack into structure",
@@ -408,7 +408,7 @@ func TestMethodMultiReturn(t *testing.T) {
 			require := require.New(t)
 			err := abi.Unpack(tc.dest, "multi", data)
 			if tc.error == "" {
-				require.Nil(err, "Should be able to unpack mlemood outputs.")
+				require.Nil(err, "Should be able to unpack method outputs.")
 				require.Equal(tc.expected, tc.dest)
 			} else {
 				require.EqualError(err, tc.error)
@@ -783,7 +783,7 @@ func TestOOMMaliciousInput(t *testing.T) {
 		},
 	}
 	for i, test := range oomTests {
-		def := fmt.Sprintf(`[{ "name" : "mlemood", "outputs": %s}]`, test.def)
+		def := fmt.Sprintf(`[{ "name" : "method", "outputs": %s}]`, test.def)
 		abi, err := JSON(strings.NewReader(def))
 		if err != nil {
 			t.Fatalf("invalid ABI definition %s: %v", def, err)
@@ -792,7 +792,7 @@ func TestOOMMaliciousInput(t *testing.T) {
 		if err != nil {
 			t.Fatalf("invalid hex: %s" + test.enc)
 		}
-		_, err = abi.Methods["mlemood"].Outputs.UnpackValues(encb)
+		_, err = abi.Methods["method"].Outputs.UnpackValues(encb)
 		if err == nil {
 			t.Fatalf("Expected error on malicious input, test %d", i)
 		}

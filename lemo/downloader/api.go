@@ -26,7 +26,7 @@ import (
 )
 
 // PublicDownloaderAPI provides an API which gives information about the current synchronisation status.
-// It offers only mlemoods that operates on data that can be available to anyone without security risks.
+// It offers only methods that operates on data that can be available to anyone without security risks.
 type PublicDownloaderAPI struct {
 	d                         *Downloader
 	mux                       *event.TypeMux
@@ -140,7 +140,7 @@ type SyncStatusSubscription struct {
 
 // Unsubscribe uninstalls the subscription from the DownloadAPI event loop.
 // The status channel that was passed to subscribeSyncStatus isn't used anymore
-// after this mlemood returns.
+// after this method returns.
 func (s *SyncStatusSubscription) Unsubscribe() {
 	s.unsubOnce.Do(func() {
 		req := uninstallSyncSubscriptionRequest{s.c, make(chan interface{})}

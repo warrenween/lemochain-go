@@ -18,8 +18,8 @@ const (
 	ntsUpdate      = `ssdp:update`
 	ssdpUDP4Addr   = "239.255.255.250:1900"
 	ssdpSearchPort = 1900
-	mlemoodSearch   = "M-SEARCH"
-	mlemoodNotify   = "NOTIFY"
+	methodSearch   = "M-SEARCH"
+	methodNotify   = "NOTIFY"
 )
 
 // SSDPRawSearch performs a fairly raw SSDP search request, and returns the
@@ -37,7 +37,7 @@ func SSDPRawSearch(httpu *httpu.HTTPUClient, searchTarget string, maxWaitSeconds
 	seenUsns := make(map[string]bool)
 	var responses []*http.Response
 	req := http.Request{
-		Method: mlemoodSearch,
+		Method: methodSearch,
 		// TODO: Support both IPv4 and IPv6.
 		Host: ssdpUDP4Addr,
 		URL:  &url.URL{Opaque: "*"},

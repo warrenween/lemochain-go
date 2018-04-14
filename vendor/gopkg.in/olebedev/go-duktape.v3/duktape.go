@@ -76,7 +76,7 @@ type Flags struct {
 }
 
 // FlagConsoleProxyWrapper is a Console flag.
-// Use a proxy wrapper to make undefined mlemoods (console.foo()) no-ops.
+// Use a proxy wrapper to make undefined methods (console.foo()) no-ops.
 const FlagConsoleProxyWrapper = 1 << 0
 
 // FlagConsoleFlush is a Console flag.

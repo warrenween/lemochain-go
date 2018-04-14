@@ -1339,7 +1339,7 @@ type errorState struct {
 	err error
 }
 
-// shouldContinue reports whlemoer encoding should continue upon encountering the
+// shouldContinue reports whether encoding should continue upon encountering the
 // given error. If the error is RequiredNotSetError, shouldContinue returns true
 // and, if this is the first appearance of that error, remembers it for future
 // reporting.

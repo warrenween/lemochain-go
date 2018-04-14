@@ -68,7 +68,7 @@
 // byte checksum, a 2 byte little-endian uint16 length, and a 1 byte chunk type)
 // followed by a payload. The checksum is over the chunk type and the payload.
 //
-// There are four chunk types: whlemoer the chunk is the full journal, or the
+// There are four chunk types: whether the chunk is the full journal, or the
 // first, middle or last chunk of a multi-chunk journal. A multi-chunk journal
 // has one first chunk, zero or more middle chunks, and one last chunk.
 //
@@ -114,8 +114,8 @@ func (e *ErrCorrupted) Error() string {
 	return fmt.Sprintf("leveldb/journal: block/chunk corrupted: %s (%d bytes)", e.Reason, e.Size)
 }
 
-// Dropper is the interface that wrap simple Drop mlemood. The Drop
-// mlemood will be called when the journal reader dropping a block or chunk.
+// Dropper is the interface that wrap simple Drop method. The Drop
+// method will be called when the journal reader dropping a block or chunk.
 type Dropper interface {
 	Drop(err error)
 }
@@ -138,7 +138,7 @@ type Reader struct {
 	// n is the number of bytes of buf that are valid. Once reading has started,
 	// only the final block can have n < blockSize.
 	n int
-	// last is whlemoer the current chunk is the last chunk of the journal.
+	// last is whether the current chunk is the last chunk of the journal.
 	last bool
 	// err is any accumulated error.
 	err error
@@ -354,9 +354,9 @@ type Writer struct {
 	// buf[:written] has already been written to w.
 	// written is zero unless Flush has been called.
 	written int
-	// first is whlemoer the current chunk is the first chunk of the journal.
+	// first is whether the current chunk is the first chunk of the journal.
 	first bool
-	// pending is whlemoer a chunk is buffered but not yet written.
+	// pending is whether a chunk is buffered but not yet written.
 	pending bool
 	// err is any accumulated error.
 	err error

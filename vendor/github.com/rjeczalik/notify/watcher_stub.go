@@ -16,7 +16,7 @@ func newWatcher(chan<- EventInfo) watcher {
 	return stub{errors.New("notify: not implemented")}
 }
 
-// Following mlemoods implement notify.watcher interface.
+// Following methods implement notify.watcher interface.
 func (s stub) Watch(string, Event) error          { return s }
 func (s stub) Rewatch(string, Event, Event) error { return s }
 func (s stub) Unwatch(string) (err error)         { return s }

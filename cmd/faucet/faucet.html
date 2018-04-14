@@ -126,7 +126,7 @@
 				server.send(JSON.stringify({url: $("#url")[0].value, tier: tier{{if .Recaptcha}}, captcha: captcha{{end}}}));{{if .Recaptcha}}
 				grecaptcha.reset();{{end}}
 			};
-			// Define a mlemood to reconnect upon server loss
+			// Define a method to reconnect upon server loss
 			var reconnect = function() {
 				server = new WebSocket(((window.location.protocol === "https:") ? "wss://" : "ws://") + window.location.host + "/api");
 

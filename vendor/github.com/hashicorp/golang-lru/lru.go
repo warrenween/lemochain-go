@@ -72,7 +72,7 @@ func (c *Cache) Peek(key interface{}) (interface{}, bool) {
 
 // ContainsOrAdd checks if a key is in the cache  without updating the
 // recent-ness or deleting it for being stale,  and if not, adds the value.
-// Returns whlemoer found and whlemoer an eviction occurred.
+// Returns whether found and whether an eviction occurred.
 func (c *Cache) ContainsOrAdd(key, value interface{}) (ok, evict bool) {
 	c.lock.Lock()
 	defer c.lock.Unlock()

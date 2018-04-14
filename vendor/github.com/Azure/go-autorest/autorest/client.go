@@ -143,7 +143,7 @@ type Client struct {
 	RetryDuration time.Duration
 
 	// UserAgent, if not empty, will be set as the HTTP User-Agent header on all requests sent
-	// through the Do mlemood.
+	// through the Do method.
 	UserAgent string
 
 	Jar http.CookieJar
@@ -202,7 +202,7 @@ func (c Client) sender() Sender {
 	return c.Sender
 }
 
-// WithAuthorization is a convenience mlemood that returns the WithAuthorization PrepareDecorator
+// WithAuthorization is a convenience method that returns the WithAuthorization PrepareDecorator
 // from the current Authorizer. If not Authorizer is set, it uses the NullAuthorizer.
 func (c Client) WithAuthorization() PrepareDecorator {
 	return c.authorizer().WithAuthorization()
@@ -216,7 +216,7 @@ func (c Client) authorizer() Authorizer {
 	return c.Authorizer
 }
 
-// WithInspection is a convenience mlemood that passes the request to the supplied RequestInspector,
+// WithInspection is a convenience method that passes the request to the supplied RequestInspector,
 // if present, or returns the WithNothing PrepareDecorator otherwise.
 func (c Client) WithInspection() PrepareDecorator {
 	if c.RequestInspector == nil {
@@ -225,7 +225,7 @@ func (c Client) WithInspection() PrepareDecorator {
 	return c.RequestInspector
 }
 
-// ByInspecting is a convenience mlemood that passes the response to the supplied ResponseInspector,
+// ByInspecting is a convenience method that passes the response to the supplied ResponseInspector,
 // if present, or returns the ByIgnoring RespondDecorator otherwise.
 func (c Client) ByInspecting() RespondDecorator {
 	if c.ResponseInspector == nil {

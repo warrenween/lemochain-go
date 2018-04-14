@@ -34,7 +34,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 )
 
-// Backend wraps all mlemoods required for mining.
+// Backend wraps all methods required for mining.
 type Backend interface {
 	AccountManager() *accounts.Manager
 	BlockChain() *core.BlockChain
@@ -53,8 +53,8 @@ type Miner struct {
 	lemo      Backend
 	engine   consensus.Engine
 
-	canStart    int32 // can start indicates whlemoer we can start the mining operation
-	shouldStart int32 // should start indicates whlemoer we should start after sync
+	canStart    int32 // can start indicates whether we can start the mining operation
+	shouldStart int32 // should start indicates whether we should start after sync
 }
 
 func New(lemo Backend, config *params.ChainConfig, mux *event.TypeMux, engine consensus.Engine) *Miner {
@@ -171,7 +171,7 @@ func (self *Miner) Pending() (*types.Block, *state.StateDB) {
 //
 // Note, to access both the pending block and the pending state
 // simultaneously, please use Pending(), as the pending state can
-// change between multiple mlemood calls
+// change between multiple method calls
 func (self *Miner) PendingBlock() *types.Block {
 	return self.worker.pendingBlock()
 }

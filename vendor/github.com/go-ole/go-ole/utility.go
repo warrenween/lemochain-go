@@ -5,7 +5,7 @@ import (
 	"unsafe"
 )
 
-// ClassIDFrom retrieves class ID whlemoer given is program ID or application string.
+// ClassIDFrom retrieves class ID whether given is program ID or application string.
 //
 // Helper that provides check against both Class ID from Program ID and Class ID from string. It is
 // faster, if you know which you are using, to use the individual functions, but this will check

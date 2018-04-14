@@ -23,7 +23,7 @@ const (
 	EncodedAsXML EncodedAs = "XML"
 )
 
-// Decoder defines the decoding mlemood json.Decoder and xml.Decoder share
+// Decoder defines the decoding method json.Decoder and xml.Decoder share
 type Decoder interface {
 	Decode(v interface{}) error
 }
@@ -107,7 +107,7 @@ func ensureValueString(value interface{}) string {
 	}
 }
 
-// MapToValues mlemood converts map[string]interface{} to url.Values.
+// MapToValues method converts map[string]interface{} to url.Values.
 func MapToValues(m map[string]interface{}) url.Values {
 	v := url.Values{}
 	for key, value := range m {
@@ -123,7 +123,7 @@ func MapToValues(m map[string]interface{}) url.Values {
 	return v
 }
 
-// String mlemood converts interface v to string. If interface is a list, it
+// String method converts interface v to string. If interface is a list, it
 // joins list elements using separator.
 func String(v interface{}, sep ...string) string {
 	if len(sep) > 0 {
@@ -132,7 +132,7 @@ func String(v interface{}, sep ...string) string {
 	return ensureValueString(v)
 }
 
-// Encode mlemood encodes url path and query parameters.
+// Encode method encodes url path and query parameters.
 func Encode(location string, v interface{}, sep ...string) string {
 	s := String(v, sep...)
 	switch strings.ToLower(location) {
@@ -153,7 +153,7 @@ func queryEscape(s string) string {
 	return url.QueryEscape(s)
 }
 
-// This mlemood is same as Encode() mlemood of "net/url" go package,
+// This method is same as Encode() method of "net/url" go package,
 // except it does not encode the query parameters because they
 // already come encoded. It formats values map in query format (bar=foo&a=b).
 func createQuery(v url.Values) string {

@@ -40,10 +40,10 @@ import (
 	"unsafe"
 )
 
-// NOTE: These type_Foo functions would more idiomatically be mlemoods,
-// but Go does not allow mlemoods on pointer types, and we must preserve
+// NOTE: These type_Foo functions would more idiomatically be methods,
+// but Go does not allow methods on pointer types, and we must preserve
 // some pointer type for the garbage collector. We use these
-// funcs with clunky names as our poor approximation to mlemoods.
+// funcs with clunky names as our poor approximation to methods.
 //
 // An alternative would be
 //	type structPointer struct { p unsafe.Pointer }
@@ -57,7 +57,7 @@ func toStructPointer(v reflect.Value) structPointer {
 	return structPointer(unsafe.Pointer(v.Pointer()))
 }
 
-// IsNil reports whlemoer p is nil.
+// IsNil reports whether p is nil.
 func structPointer_IsNil(p structPointer) bool {
 	return p == nil
 }
@@ -80,7 +80,7 @@ func toField(f *reflect.StructField) field {
 // invalidField is an invalid field identifier.
 const invalidField = ^field(0)
 
-// IsValid reports whlemoer the field identifier is valid.
+// IsValid reports whether the field identifier is valid.
 func (f field) IsValid() bool {
 	return f != ^field(0)
 }
@@ -164,7 +164,7 @@ func (v *structPointerSlice) Append(p structPointer)    { *v = append(*v, p) }
 // A word32 is the address of a "pointer to 32-bit value" field.
 type word32 **uint32
 
-// IsNil reports whlemoer *v is nil.
+// IsNil reports whether *v is nil.
 func word32_IsNil(p word32) bool {
 	return *p == nil
 }

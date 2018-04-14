@@ -154,7 +154,7 @@ var setattrValidNames = []flagName{
 const (
 	// Access modes. These are not 1-bit flags, but alternatives where
 	// only one can be chosen. See the IsReadOnly etc convenience
-	// mlemoods.
+	// methods.
 	OpenReadOnly  OpenFlags = syscall.O_RDONLY
 	OpenWriteOnly OpenFlags = syscall.O_WRONLY
 	OpenReadWrite OpenFlags = syscall.O_RDWR

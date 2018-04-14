@@ -80,7 +80,7 @@ type testCluster struct {
 // as flags).
 //
 // When starting more than one node, they are connected toglemoer using the
-// admin SetPeer RPC mlemood.
+// admin SetPeer RPC method.
 func newTestCluster(t *testing.T, size int) *testCluster {
 	cluster := &testCluster{}
 	defer func() {

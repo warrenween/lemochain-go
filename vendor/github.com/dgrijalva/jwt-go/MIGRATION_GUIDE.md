@@ -41,7 +41,7 @@ is now directly mapped to...
 
 ### `ParseFromRequest` has been moved
 
-To keep this library focused on the tokens without becoming overburdened with complex request processing logic, `ParseFromRequest` and its new companion `ParseFromRequestWithClaims` have been moved to a subpackage, `request`.  The mlemood signatues have also been augmented to receive a new argument: `Extractor`.
+To keep this library focused on the tokens without becoming overburdened with complex request processing logic, `ParseFromRequest` and its new companion `ParseFromRequestWithClaims` have been moved to a subpackage, `request`.  The method signatues have also been augmented to receive a new argument: `Extractor`.
 
 `Extractors` do the work of picking the token string out of a request.  The interface is simple and composable.
 
@@ -72,17 +72,17 @@ There are several concrete `Extractor` types provided for your convenience:
 * `PostExtractionFilter` wraps an `Extractor`, allowing you to process the content before it's parsed.  A simple example is stripping the `Bearer ` text from a header
 
 
-### RSA signing mlemoods no longer accept `[]byte` keys
+### RSA signing methods no longer accept `[]byte` keys
 
 Due to a [critical vulnerability](https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/), we've decided the convenience of accepting `[]byte` instead of `rsa.PublicKey` or `rsa.PrivateKey` isn't worth the risk of misuse.
 
-To replace this behavior, we've added two helper mlemoods: `ParseRSAPrivateKeyFromPEM(key []byte) (*rsa.PrivateKey, error)` and `ParseRSAPublicKeyFromPEM(key []byte) (*rsa.PublicKey, error)`.  These are just simple helpers for unpacking PEM encoded PKCS1 and PKCS8 keys. If your keys are encoded any other way, all you need to do is convert them to the `crypto/rsa` package's types.
+To replace this behavior, we've added two helper methods: `ParseRSAPrivateKeyFromPEM(key []byte) (*rsa.PrivateKey, error)` and `ParseRSAPublicKeyFromPEM(key []byte) (*rsa.PublicKey, error)`.  These are just simple helpers for unpacking PEM encoded PKCS1 and PKCS8 keys. If your keys are encoded any other way, all you need to do is convert them to the `crypto/rsa` package's types.
 
 ```go 
 	func keyLookupFunc(*Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("Unexpected signing mlemood: %v", token.Header["alg"])
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 		
 		// Look up key 

@@ -223,9 +223,9 @@ func (db *nodeDB) deleteNode(id NodeID) error {
 	return nil
 }
 
-// ensureExpirer is a small helper mlemood ensuring that the data expiration
+// ensureExpirer is a small helper method ensuring that the data expiration
 // mechanism is running. If the expiration goroutine is already running, this
-// mlemood simply returns.
+// method simply returns.
 //
 // The goal is to start the data evacuation only after the network successfully
 // bootstrapped itself (to prevent dumping potentially useful seed nodes). Since

@@ -30,13 +30,13 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 )
 
-// PrivateAdminAPI is the collection of administrative API mlemoods exposed only
+// PrivateAdminAPI is the collection of administrative API methods exposed only
 // over a secure RPC channel.
 type PrivateAdminAPI struct {
 	node *Node // Node interfaced by this API
 }
 
-// NewPrivateAdminAPI creates a new API definition for the private admin mlemoods
+// NewPrivateAdminAPI creates a new API definition for the private admin methods
 // of the node itself.
 func NewPrivateAdminAPI(node *Node) *PrivateAdminAPI {
 	return &PrivateAdminAPI{node: node}
@@ -229,13 +229,13 @@ func (api *PrivateAdminAPI) StopWS() (bool, error) {
 	return true, nil
 }
 
-// PublicAdminAPI is the collection of administrative API mlemoods exposed over
+// PublicAdminAPI is the collection of administrative API methods exposed over
 // both secure and unsecure RPC channels.
 type PublicAdminAPI struct {
 	node *Node // Node interfaced by this API
 }
 
-// NewPublicAdminAPI creates a new API definition for the public admin mlemoods
+// NewPublicAdminAPI creates a new API definition for the public admin methods
 // of the node itself.
 func NewPublicAdminAPI(node *Node) *PublicAdminAPI {
 	return &PublicAdminAPI{node: node}
@@ -266,13 +266,13 @@ func (api *PublicAdminAPI) Datadir() string {
 	return api.node.DataDir()
 }
 
-// PublicDebugAPI is the collection of debugging related API mlemoods exposed over
+// PublicDebugAPI is the collection of debugging related API methods exposed over
 // both secure and unsecure RPC channels.
 type PublicDebugAPI struct {
 	node *Node // Node interfaced by this API
 }
 
-// NewPublicDebugAPI creates a new API definition for the public debug mlemoods
+// NewPublicDebugAPI creates a new API definition for the public debug methods
 // of the node itself.
 func NewPublicDebugAPI(node *Node) *PublicDebugAPI {
 	return &PublicDebugAPI{node: node}

@@ -57,7 +57,7 @@ type Snapshot struct {
 }
 
 // newSnapshot creates a new snapshot with the specified startup parameters. This
-// mlemood does not initialize the set of recent signers, so only ever use if for
+// method does not initialize the set of recent signers, so only ever use if for
 // the genesis block.
 func newSnapshot(config *params.CliqueConfig, sigcache *lru.ARCCache, number uint64, hash common.Hash, signers []common.Address) *Snapshot {
 	snap := &Snapshot{
@@ -126,7 +126,7 @@ func (s *Snapshot) copy() *Snapshot {
 	return cpy
 }
 
-// validVote returns whlemoer it makes sense to cast the specified vote in the
+// validVote returns whether it makes sense to cast the specified vote in the
 // given snapshot context (e.g. don't try to add an already authorized signer).
 func (s *Snapshot) validVote(address common.Address, authorize bool) bool {
 	_, signer := s.Signers[address]

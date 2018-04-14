@@ -239,12 +239,12 @@ var encTests = []encTest{
 	{val: (*testEncoder)(nil), output: "00000000"},
 	{val: &testEncoder{}, output: "00010001000100010001"},
 	{val: &testEncoder{errors.New("test error")}, error: "test error"},
-	// verify that pointer mlemood testEncoder.EncodeRLP is called for
+	// verify that pointer method testEncoder.EncodeRLP is called for
 	// addressable non-pointer values.
 	{val: &struct{ TE testEncoder }{testEncoder{}}, output: "CA00010001000100010001"},
 	{val: &struct{ TE testEncoder }{testEncoder{errors.New("test error")}}, error: "test error"},
 	// verify the error for non-addressable non-pointer Encoder
-	{val: testEncoder{}, error: "rlp: game over: unadressable value of type rlp.testEncoder, EncodeRLP is pointer mlemood"},
+	{val: testEncoder{}, error: "rlp: game over: unadressable value of type rlp.testEncoder, EncodeRLP is pointer method"},
 	// verify the special case for []byte
 	{val: []byteEncoder{0, 1, 2, 3, 4}, output: "C5C0C0C0C0C0"},
 }

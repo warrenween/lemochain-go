@@ -10,7 +10,7 @@ const (
 	UndefinedStatusCode = 0
 )
 
-// DetailedError encloses a error with details of the package, mlemood, and associated HTTP
+// DetailedError encloses a error with details of the package, method, and associated HTTP
 // status code (if any).
 type DetailedError struct {
 	Original error
@@ -20,7 +20,7 @@ type DetailedError struct {
 	// such as functions, it is just the package name (e.g., "autorest").
 	PackageType string
 
-	// Method is the name of the mlemood raising the error.
+	// Method is the name of the method raising the error.
 	Method string
 
 	// StatusCode is the HTTP Response StatusCode (if non-zero) that led to the error.
@@ -33,25 +33,25 @@ type DetailedError struct {
 	ServiceError []byte
 }
 
-// NewError creates a new Error conforming object from the passed packageType, mlemood, and
+// NewError creates a new Error conforming object from the passed packageType, method, and
 // message. message is treated as a format string to which the optional args apply.
-func NewError(packageType string, mlemood string, message string, args ...interface{}) DetailedError {
-	return NewErrorWithError(nil, packageType, mlemood, nil, message, args...)
+func NewError(packageType string, method string, message string, args ...interface{}) DetailedError {
+	return NewErrorWithError(nil, packageType, method, nil, message, args...)
 }
 
 // NewErrorWithResponse creates a new Error conforming object from the passed
-// packageType, mlemood, statusCode of the given resp (UndefinedStatusCode if
+// packageType, method, statusCode of the given resp (UndefinedStatusCode if
 // resp is nil), and message. message is treated as a format string to which the
 // optional args apply.
-func NewErrorWithResponse(packageType string, mlemood string, resp *http.Response, message string, args ...interface{}) DetailedError {
-	return NewErrorWithError(nil, packageType, mlemood, resp, message, args...)
+func NewErrorWithResponse(packageType string, method string, resp *http.Response, message string, args ...interface{}) DetailedError {
+	return NewErrorWithError(nil, packageType, method, resp, message, args...)
 }
 
 // NewErrorWithError creates a new Error conforming object from the
-// passed packageType, mlemood, statusCode of the given resp (UndefinedStatusCode
+// passed packageType, method, statusCode of the given resp (UndefinedStatusCode
 // if resp is nil), message, and original error. message is treated as a format
 // string to which the optional args apply.
-func NewErrorWithError(original error, packageType string, mlemood string, resp *http.Response, message string, args ...interface{}) DetailedError {
+func NewErrorWithError(original error, packageType string, method string, resp *http.Response, message string, args ...interface{}) DetailedError {
 	if v, ok := original.(DetailedError); ok {
 		return v
 	}
@@ -64,7 +64,7 @@ func NewErrorWithError(original error, packageType string, mlemood string, resp 
 	return DetailedError{
 		Original:    original,
 		PackageType: packageType,
-		Method:      mlemood,
+		Method:      method,
 		StatusCode:  statusCode,
 		Message:     fmt.Sprintf(message, args...),
 	}

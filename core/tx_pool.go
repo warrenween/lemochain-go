@@ -340,7 +340,7 @@ func (pool *TxPool) loop() {
 }
 
 // lockedReset is a wrapper around reset to allow calling it in a thread safe
-// manner. This mlemood is only ever used in the tester!
+// manner. This method is only ever used in the tester!
 func (pool *TxPool) lockedReset(oldHead, newHead *types.Header) {
 	pool.mu.Lock()
 	defer pool.mu.Unlock()
@@ -551,7 +551,7 @@ func (pool *TxPool) local() map[common.Address]types.Transactions {
 	return txs
 }
 
-// validateTx checks whlemoer a transaction is valid according to the consensus
+// validateTx checks whether a transaction is valid according to the consensus
 // rules and adheres to some heuristic limits of the local node (price and size).
 func (pool *TxPool) validateTx(tx *types.Transaction, local bool) error {
 	// Heuristic limit, reject transactions over 32KB to prevent DOS attacks
@@ -676,7 +676,7 @@ func (pool *TxPool) add(tx *types.Transaction, local bool) (bool, error) {
 
 // enqueueTx inserts a new transaction into the non-executable transaction queue.
 //
-// Note, this mlemood assumes the pool lock is held!
+// Note, this method assumes the pool lock is held!
 func (pool *TxPool) enqueueTx(hash common.Hash, tx *types.Transaction) (bool, error) {
 	// Try to insert the transaction into the future queue
 	from, _ := types.Sender(pool.signer, tx) // already validated
@@ -714,7 +714,7 @@ func (pool *TxPool) journalTx(from common.Address, tx *types.Transaction) {
 
 // promoteTx adds a transaction to the pending (processable) list of transactions.
 //
-// Note, this mlemood assumes the pool lock is held!
+// Note, this method assumes the pool lock is held!
 func (pool *TxPool) promoteTx(addr common.Address, hash common.Hash, tx *types.Transaction) {
 	// Try to insert the transaction into the pending queue
 	if pool.pending[addr] == nil {
@@ -1149,7 +1149,7 @@ func (as *accountSet) contains(addr common.Address) bool {
 }
 
 // containsTx checks if the sender of a given tx is within the set. If the sender
-// cannot be derived, this mlemood returns false.
+// cannot be derived, this method returns false.
 func (as *accountSet) containsTx(tx *types.Transaction) bool {
 	if addr, err := types.Sender(as.signer, tx); err == nil {
 		return as.contains(addr)

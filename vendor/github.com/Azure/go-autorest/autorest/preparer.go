@@ -21,7 +21,7 @@ const (
 	headerUserAgent     = "User-Agent"
 )
 
-// Preparer is the interface that wraps the Prepare mlemood.
+// Preparer is the interface that wraps the Prepare method.
 //
 // Prepare accepts and possibly modifies an http.Request (e.g., adding Headers). Implementations
 // must ensure to not share or hold per-invocation state since Preparers may be shared and re-used.
@@ -29,7 +29,7 @@ type Preparer interface {
 	Prepare(*http.Request) (*http.Request, error)
 }
 
-// PreparerFunc is a mlemood that implements the Preparer interface.
+// PreparerFunc is a method that implements the Preparer interface.
 type PreparerFunc func(*http.Request) (*http.Request, error)
 
 // Prepare implements the Preparer interface on PreparerFunc.
@@ -52,7 +52,7 @@ func CreatePreparer(decorators ...PrepareDecorator) Preparer {
 
 // DecoratePreparer accepts a Preparer and a, possibly empty, set of PrepareDecorators, which it
 // applies to the Preparer. Decorators are applied in the order received, but their affect upon the
-// request depends on whlemoer they are a pre-decorator (change the http.Request and then pass it
+// request depends on whether they are a pre-decorator (change the http.Request and then pass it
 // along) or a post-decorator (pass the http.Request along and alter it on return).
 func DecoratePreparer(p Preparer, decorators ...PrepareDecorator) Preparer {
 	for _, decorate := range decorators {
@@ -128,36 +128,36 @@ func AsJSON() PrepareDecorator {
 	return AsContentType(mimeTypeJSON)
 }
 
-// WithMethod returns a PrepareDecorator that sets the HTTP mlemood of the passed request. The
-// decorator does not validate that the passed mlemood string is a known HTTP mlemood.
-func WithMethod(mlemood string) PrepareDecorator {
+// WithMethod returns a PrepareDecorator that sets the HTTP method of the passed request. The
+// decorator does not validate that the passed method string is a known HTTP method.
+func WithMethod(method string) PrepareDecorator {
 	return func(p Preparer) Preparer {
 		return PreparerFunc(func(r *http.Request) (*http.Request, error) {
-			r.Method = mlemood
+			r.Method = method
 			return p.Prepare(r)
 		})
 	}
 }
 
-// AsDelete returns a PrepareDecorator that sets the HTTP mlemood to DELETE.
+// AsDelete returns a PrepareDecorator that sets the HTTP method to DELETE.
 func AsDelete() PrepareDecorator { return WithMethod("DELETE") }
 
-// AsGet returns a PrepareDecorator that sets the HTTP mlemood to GET.
+// AsGet returns a PrepareDecorator that sets the HTTP method to GET.
 func AsGet() PrepareDecorator { return WithMethod("GET") }
 
-// AsHead returns a PrepareDecorator that sets the HTTP mlemood to HEAD.
+// AsHead returns a PrepareDecorator that sets the HTTP method to HEAD.
 func AsHead() PrepareDecorator { return WithMethod("HEAD") }
 
-// AsOptions returns a PrepareDecorator that sets the HTTP mlemood to OPTIONS.
+// AsOptions returns a PrepareDecorator that sets the HTTP method to OPTIONS.
 func AsOptions() PrepareDecorator { return WithMethod("OPTIONS") }
 
-// AsPatch returns a PrepareDecorator that sets the HTTP mlemood to PATCH.
+// AsPatch returns a PrepareDecorator that sets the HTTP method to PATCH.
 func AsPatch() PrepareDecorator { return WithMethod("PATCH") }
 
-// AsPost returns a PrepareDecorator that sets the HTTP mlemood to POST.
+// AsPost returns a PrepareDecorator that sets the HTTP method to POST.
 func AsPost() PrepareDecorator { return WithMethod("POST") }
 
-// AsPut returns a PrepareDecorator that sets the HTTP mlemood to PUT.
+// AsPut returns a PrepareDecorator that sets the HTTP method to PUT.
 func AsPut() PrepareDecorator { return WithMethod("PUT") }
 
 // WithBaseURL returns a PrepareDecorator that populates the http.Request with a url.URL constructed

@@ -198,7 +198,7 @@ func (bc *BlockChain) getProcInterrupt() bool {
 	return atomic.LoadInt32(&bc.procInterrupt) == 1
 }
 
-// loadLastState loads the last known chain state from the database. This mlemood
+// loadLastState loads the last known chain state from the database. This method
 // assumes that the chain manager mutex is held.
 func (bc *BlockChain) loadLastState() error {
 	// Restore the last known head block
@@ -423,7 +423,7 @@ func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {
 // until one with associated state is found. This is needed to fix incomplete db
 // writes caused either by crashes/power outages, or simply non-committed tries.
 //
-// This mlemood only rolls back the current block. The current header and current
+// This method only rolls back the current block. The current header and current
 // fast block are left intact.
 func (bc *BlockChain) repair(head **types.Block) error {
 	for {
@@ -466,7 +466,7 @@ func (bc *BlockChain) ExportN(w io.Writer, first uint64, last uint64) error {
 	return nil
 }
 
-// insert injects a new head block into the current block chain. This mlemood
+// insert injects a new head block into the current block chain. This method
 // assumes that the block is indeed a true head. It will also reset the head
 // header and the head fast sync block to this very same block if they are older
 // or if they are on a different side chain.
@@ -1009,7 +1009,7 @@ func (bc *BlockChain) InsertChain(chain types.Blocks) (int, error) {
 }
 
 // insertChain will execute the actual chain insertion and event aggregation. The
-// only reason this mlemood exists as a separate one is to make locking cleaner
+// only reason this method exists as a separate one is to make locking cleaner
 // with deferred statements.
 func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*types.Log, error) {
 	// Do a sanity check that the provided chain is actually ordered and linked
@@ -1436,7 +1436,7 @@ Error: %v
 // chain, possibly creating a reorg. If an error is returned, it will return the
 // index number of the failing header as well an error describing what went wrong.
 //
-// The verify parameter can be used to fine tune whlemoer nonce verification
+// The verify parameter can be used to fine tune whether nonce verification
 // should be done or not. The reason behind the optional check is because some
 // of the header retrieval mechanisms already need to verify nonces, as well as
 // because nonces can be verified sparsely, not needing to check each.
@@ -1468,7 +1468,7 @@ func (bc *BlockChain) InsertHeaderChain(chain []*types.Header, checkFreq int) (i
 // already known. If the total difficulty of the newly inserted header becomes
 // greater than the current known TD, the canonical chain is re-routed.
 //
-// Note: This mlemood is not concurrent-safe with inserting blocks simultaneously
+// Note: This method is not concurrent-safe with inserting blocks simultaneously
 // into the chain, as side effects caused by reorganisations cannot be emulated
 // without the real blocks. Hence, writing headers directly should only be done
 // in two scenarios: pure-header mode of operation (light clients), or properly

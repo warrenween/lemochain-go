@@ -8,7 +8,7 @@ import (
 )
 
 type Parser struct {
-	ValidMethods         []string // If populated, only these mlemoods will be considered valid
+	ValidMethods         []string // If populated, only these methods will be considered valid
 	UseJSONNumber        bool     // Use JSON Number format in JSON decoder
 	SkipClaimsValidation bool     // Skip claims validation during token parsing
 }
@@ -63,16 +63,16 @@ func (p *Parser) ParseWithClaims(tokenString string, claims Claims, keyFunc Keyf
 		return token, &ValidationError{Inner: err, Errors: ValidationErrorMalformed}
 	}
 
-	// Lookup signature mlemood
-	if mlemood, ok := token.Header["alg"].(string); ok {
-		if token.Method = GetSigningMethod(mlemood); token.Method == nil {
-			return token, NewValidationError("signing mlemood (alg) is unavailable.", ValidationErrorUnverifiable)
+	// Lookup signature method
+	if method, ok := token.Header["alg"].(string); ok {
+		if token.Method = GetSigningMethod(method); token.Method == nil {
+			return token, NewValidationError("signing method (alg) is unavailable.", ValidationErrorUnverifiable)
 		}
 	} else {
-		return token, NewValidationError("signing mlemood (alg) is unspecified.", ValidationErrorUnverifiable)
+		return token, NewValidationError("signing method (alg) is unspecified.", ValidationErrorUnverifiable)
 	}
 
-	// Verify signing mlemood is in the required set
+	// Verify signing method is in the required set
 	if p.ValidMethods != nil {
 		var signingMethodValid = false
 		var alg = token.Method.Alg()
@@ -83,8 +83,8 @@ func (p *Parser) ParseWithClaims(tokenString string, claims Claims, keyFunc Keyf
 			}
 		}
 		if !signingMethodValid {
-			// signing mlemood is not in the listed set
-			return token, NewValidationError(fmt.Sprintf("signing mlemood %v is invalid", alg), ValidationErrorSignatureInvalid)
+			// signing method is not in the listed set
+			return token, NewValidationError(fmt.Sprintf("signing method %v is invalid", alg), ValidationErrorSignatureInvalid)
 		}
 	}
 

@@ -70,7 +70,7 @@ type pair struct {
 	v rlp.RawValue
 }
 
-// Signed reports whlemoer the record has a valid signature.
+// Signed reports whether the record has a valid signature.
 func (r *Record) Signed() bool {
 	return r.signature != nil
 }

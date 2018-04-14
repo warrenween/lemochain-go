@@ -147,7 +147,7 @@ func (m *txSortedMap) Cap(threshold int) types.Transactions {
 	return drops
 }
 
-// Remove deletes a transaction from the maintained map, returning whlemoer the
+// Remove deletes a transaction from the maintained map, returning whether the
 // transaction was found.
 func (m *txSortedMap) Remove(nonce uint64) bool {
 	// Short circuit if no transaction is present
@@ -237,13 +237,13 @@ func newTxList(strict bool) *txList {
 	}
 }
 
-// Overlaps returns whlemoer the transaction specified has the same nonce as one
+// Overlaps returns whether the transaction specified has the same nonce as one
 // already contained within the list.
 func (l *txList) Overlaps(tx *types.Transaction) bool {
 	return l.txs.Get(tx.Nonce()) != nil
 }
 
-// Add tries to insert a new transaction into the list, returning whlemoer the
+// Add tries to insert a new transaction into the list, returning whether the
 // transaction was accepted, and if yes, any previous transaction it replaced.
 //
 // If the new transaction is accepted into the list, the lists' cost and gas
@@ -283,7 +283,7 @@ func (l *txList) Forward(threshold uint64) types.Transactions {
 // post-removal maintenance. Strict-mode invalidated transactions are also
 // returned.
 //
-// This mlemood uses the cached costcap and gascap to quickly decide if there's even
+// This method uses the cached costcap and gascap to quickly decide if there's even
 // a point in calculating all the costs or if the balance covers all. If the threshold
 // is lower than the costgas cap, the caps will be reset to a new high after removing
 // the newly invalidated transactions.
@@ -319,7 +319,7 @@ func (l *txList) Cap(threshold int) types.Transactions {
 	return l.txs.Cap(threshold)
 }
 
-// Remove deletes a transaction from the maintained list, returning whlemoer the
+// Remove deletes a transaction from the maintained list, returning whether the
 // transaction was found, and also returning any transaction invalidated due to
 // the deletion (strict mode only).
 func (l *txList) Remove(tx *types.Transaction) (bool, types.Transactions) {
@@ -351,7 +351,7 @@ func (l *txList) Len() int {
 	return l.txs.Len()
 }
 
-// Empty returns whlemoer the list of transactions is empty or not.
+// Empty returns whether the list of transactions is empty or not.
 func (l *txList) Empty() bool {
 	return l.Len() == 0
 }
@@ -454,7 +454,7 @@ func (l *txPricedList) Cap(threshold *big.Int, local *accountSet) types.Transact
 	return drop
 }
 
-// Underpriced checks whlemoer a transaction is cheaper than (or as cheap as) the
+// Underpriced checks whether a transaction is cheaper than (or as cheap as) the
 // lowest priced transaction currently being tracked.
 func (l *txPricedList) Underpriced(tx *types.Transaction, local *accountSet) bool {
 	// Local transactions cannot be underpriced

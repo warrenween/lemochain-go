@@ -14,7 +14,7 @@ func (c *C) TestName() string {
 // -----------------------------------------------------------------------
 // Basic succeeding/failing logic.
 
-// Failed returns whlemoer the currently running test has already failed.
+// Failed returns whether the currently running test has already failed.
 func (c *C) Failed() bool {
 	return c.status() == failedSt
 }
@@ -52,7 +52,7 @@ func (c *C) SucceedNow() {
 
 // ExpectFailure informs that the running test is knowingly broken for
 // the provided reason. If the test does not fail, an error will be reported
-// to raise attention to this fact. This mlemood is useful to temporarily
+// to raise attention to this fact. This method is useful to temporarily
 // disable tests which cover well known problems until a better time to
 // fix the problem is found, without forgetting about the fact that a
 // failure still exists.

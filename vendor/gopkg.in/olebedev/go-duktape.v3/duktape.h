@@ -752,7 +752,7 @@ DUK_EXTERNAL_DECL void duk_pop_3(duk_context *ctx);
 /*
  *  Type checks
  *
- *  duk_is_none(), which would indicate whlemoer index it outside of stack,
+ *  duk_is_none(), which would indicate whether index it outside of stack,
  *  is not needed; duk_is_valid_index() gives the same information.
  */
 
@@ -1108,14 +1108,14 @@ DUK_EXTERNAL_DECL duk_bool_t duk_samevalue(duk_context *ctx, duk_idx_t idx1, duk
 DUK_EXTERNAL_DECL duk_bool_t duk_instanceof(duk_context *ctx, duk_idx_t idx1, duk_idx_t idx2);
 
 /*
- *  Function (mlemood) calls
+ *  Function (method) calls
  */
 
 DUK_EXTERNAL_DECL void duk_call(duk_context *ctx, duk_idx_t nargs);
-DUK_EXTERNAL_DECL void duk_call_mlemood(duk_context *ctx, duk_idx_t nargs);
+DUK_EXTERNAL_DECL void duk_call_method(duk_context *ctx, duk_idx_t nargs);
 DUK_EXTERNAL_DECL void duk_call_prop(duk_context *ctx, duk_idx_t obj_idx, duk_idx_t nargs);
 DUK_EXTERNAL_DECL duk_int_t duk_pcall(duk_context *ctx, duk_idx_t nargs);
-DUK_EXTERNAL_DECL duk_int_t duk_pcall_mlemood(duk_context *ctx, duk_idx_t nargs);
+DUK_EXTERNAL_DECL duk_int_t duk_pcall_method(duk_context *ctx, duk_idx_t nargs);
 DUK_EXTERNAL_DECL duk_int_t duk_pcall_prop(duk_context *ctx, duk_idx_t obj_idx, duk_idx_t nargs);
 DUK_EXTERNAL_DECL void duk_new(duk_context *ctx, duk_idx_t nargs);
 DUK_EXTERNAL_DECL duk_int_t duk_pnew(duk_context *ctx, duk_idx_t nargs);

@@ -124,7 +124,7 @@ func seedHash(block uint64) []byte {
 // memory, then performing two passes of Sergio Demian Lerner's RandMemoHash
 // algorithm from Strict Memory Hard Hashing Functions (2014). The output is a
 // set of 524288 64-byte values.
-// This mlemood places the result into dest in machine byte order.
+// This method places the result into dest in machine byte order.
 func generateCache(dest []uint32, epoch uint64, seed []byte) {
 	// Print some debug logs to allow analysis on low end devices
 	logger := log.New("epoch", epoch)
@@ -204,7 +204,7 @@ func swap(buffer []byte) {
 }
 
 // prepare converts an lemohash cache or dataset from a byte stream into the internal
-// int representation. All lemohash mlemoods work with ints to avoid constant byte to
+// int representation. All lemohash methods work with ints to avoid constant byte to
 // int conversions as well as to handle both little and big endian systems.
 func prepare(dest []uint32, src []byte) {
 	for i := 0; i < len(dest); i++ {
@@ -220,7 +220,7 @@ func fnv(a, b uint32) uint32 {
 	return a*0x01000193 ^ b
 }
 
-// fnvHash mixes in data into mix using the lemohash fnv mlemood.
+// fnvHash mixes in data into mix using the lemohash fnv method.
 func fnvHash(mix []uint32, data []uint32) {
 	for i := 0; i < len(mix); i++ {
 		mix[i] = mix[i]*0x01000193 ^ data[i]
@@ -261,7 +261,7 @@ func generateDatasetItem(cache []uint32, index uint32, keccak512 hasher) []byte 
 }
 
 // generateDataset generates the entire lemohash dataset for mining.
-// This mlemood places the result into dest in machine byte order.
+// This method places the result into dest in machine byte order.
 func generateDataset(dest []uint32, epoch uint64, cache []uint32) {
 	// Print some debug logs to allow analysis on low end devices
 	logger := log.New("epoch", epoch)
@@ -277,7 +277,7 @@ func generateDataset(dest []uint32, epoch uint64, cache []uint32) {
 		logFn("Generated lemohash verification cache", "elapsed", common.PrettyDuration(elapsed))
 	}()
 
-	// Figure out whlemoer the bytes need to be swapped for the machine
+	// Figure out whether the bytes need to be swapped for the machine
 	swapped := !isLittleEndian()
 
 	// Convert our destination slice to a byte buffer

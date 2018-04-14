@@ -172,7 +172,7 @@ func RandomNodeConfig() *NodeConfig {
 	}
 }
 
-// ServiceContext is a collection of options and mlemoods which can be utilised
+// ServiceContext is a collection of options and methods which can be utilised
 // when starting services
 type ServiceContext struct {
 	RPCDialer

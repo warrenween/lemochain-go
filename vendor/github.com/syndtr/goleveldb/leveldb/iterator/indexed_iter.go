@@ -12,7 +12,7 @@ import (
 )
 
 // IteratorIndexer is the interface that wraps CommonIterator and basic Get
-// mlemood. IteratorIndexer provides index for indexed iterator.
+// method. IteratorIndexer provides index for indexed iterator.
 type IteratorIndexer interface {
 	CommonIterator
 

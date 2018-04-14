@@ -173,7 +173,7 @@ func readProtocolHandshake(rw MsgReader, our *protoHandshake) (*protoHandshake, 
 
 // doEncHandshake runs the protocol handshake using authenticated
 // messages. the protocol handshake is the first authenticated message
-// and also verifies whlemoer the encryption handshake 'worked' and the
+// and also verifies whether the encryption handshake 'worked' and the
 // remote side actually provided the right public key.
 func (t *rlpx) doEncHandshake(prv *ecdsa.PrivateKey, dial *discover.Node) (discover.NodeID, error) {
 	var (
@@ -216,7 +216,7 @@ type secrets struct {
 
 // RLPx v4 handshake auth (defined in EIP-8).
 type authMsgV4 struct {
-	gotPlain bool // whlemoer read packet had plain format.
+	gotPlain bool // whether read packet had plain format.
 
 	Signature       [sigLen]byte
 	InitiatorPubkey [pubLen]byte

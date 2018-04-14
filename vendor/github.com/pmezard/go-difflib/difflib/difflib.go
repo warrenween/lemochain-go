@@ -73,11 +73,11 @@ type OpCode struct {
 // longest *contiguous* & junk-free matching subsequence.  That's what
 // catches peoples' eyes.  The Windows(tm) windiff has another interesting
 // notion, pairing up elements that appear uniquely in each sequence.
-// That, and the mlemood here, appear to yield more intuitive difference
-// reports than does diff.  This mlemood appears to be the least vulnerable
+// That, and the method here, appear to yield more intuitive difference
+// reports than does diff.  This method appears to be the least vulnerable
 // to synching up on blocks of "junk lines", though (like blank lines in
 // ordinary text files, or maybe "<P>" lines in HTML files).  That may be
-// because this is the only mlemood of the 3 that has a *concept* of
+// because this is the only method of the 3 that has a *concept* of
 // "junk" <wink>.
 //
 // Timing:  Basic R-O is cubic time worst case and quadratic time expected

@@ -20,7 +20,7 @@ package bitutil
 
 import "bytes"
 
-// Fuzz implements a go-fuzz fuzzer mlemood to test various encoding mlemood
+// Fuzz implements a go-fuzz fuzzer method to test various encoding method
 // invocations.
 func Fuzz(data []byte) int {
 	if len(data) == 0 {
@@ -32,7 +32,7 @@ func Fuzz(data []byte) int {
 	return fuzzDecode(data[1:])
 }
 
-// fuzzEncode implements a go-fuzz fuzzer mlemood to test the bitset encoding and
+// fuzzEncode implements a go-fuzz fuzzer method to test the bitset encoding and
 // decoding algorithm.
 func fuzzEncode(data []byte) int {
 	proc, _ := bitsetDecodeBytes(bitsetEncodeBytes(data), len(data))
@@ -42,7 +42,7 @@ func fuzzEncode(data []byte) int {
 	return 0
 }
 
-// fuzzDecode implements a go-fuzz fuzzer mlemood to test the bit decoding and
+// fuzzDecode implements a go-fuzz fuzzer method to test the bit decoding and
 // reencoding algorithm.
 func fuzzDecode(data []byte) int {
 	blob, err := bitsetDecodeBytes(data, 1024)

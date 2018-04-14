@@ -49,7 +49,7 @@ type Hub struct {
 	productIDs []uint16                // USB product identifiers used for device discovery
 	usageID    uint16                  // USB usage page identifier used for macOS device discovery
 	endpointID int                     // USB endpoint identifier used for non-macOS device discovery
-	makeDriver func(log.Logger) driver // Factory mlemood to construct a vendor specific driver
+	makeDriver func(log.Logger) driver // Factory method to construct a vendor specific driver
 
 	refreshed   time.Time               // Time instance when the list of wallets was last refreshed
 	wallets     []accounts.Wallet       // List of USB wallet devices currently tracking

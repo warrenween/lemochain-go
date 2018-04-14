@@ -101,7 +101,7 @@ func TestServerRegisterName(t *testing.T) {
 	}
 }
 
-func testServerMethodExecution(t *testing.T, mlemood string) {
+func testServerMethodExecution(t *testing.T, method string) {
 	server := NewServer()
 	service := new(Service)
 
@@ -116,7 +116,7 @@ func testServerMethodExecution(t *testing.T, mlemood string) {
 
 	request := map[string]interface{}{
 		"id":      12345,
-		"mlemood":  "test_" + mlemood,
+		"method":  "test_" + method,
 		"version": "2.0",
 		"params":  params,
 	}

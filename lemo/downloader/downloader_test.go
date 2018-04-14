@@ -534,7 +534,7 @@ func (dlp *downloadTesterPeer) RequestHeadersByNumber(origin uint64, amount int,
 	return nil
 }
 
-// RequestBodies constructs a getBlockBodies mlemood associated with a particular
+// RequestBodies constructs a getBlockBodies method associated with a particular
 // peer in the download tester. The returned function can be used to retrieve
 // batches of block bodies from the particularly requested peer.
 func (dlp *downloadTesterPeer) RequestBodies(hashes []common.Hash) error {
@@ -559,7 +559,7 @@ func (dlp *downloadTesterPeer) RequestBodies(hashes []common.Hash) error {
 	return nil
 }
 
-// RequestReceipts constructs a getReceipts mlemood associated with a particular
+// RequestReceipts constructs a getReceipts method associated with a particular
 // peer in the download tester. The returned function can be used to retrieve
 // batches of block receipts from the particularly requested peer.
 func (dlp *downloadTesterPeer) RequestReceipts(hashes []common.Hash) error {
@@ -581,7 +581,7 @@ func (dlp *downloadTesterPeer) RequestReceipts(hashes []common.Hash) error {
 	return nil
 }
 
-// RequestNodeData constructs a getNodeData mlemood associated with a particular
+// RequestNodeData constructs a getNodeData method associated with a particular
 // peer in the download tester. The returned function can be used to retrieve
 // batches of node state data from the particularly requested peer.
 func (dlp *downloadTesterPeer) RequestNodeData(hashes []common.Hash) error {

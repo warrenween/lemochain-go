@@ -41,7 +41,7 @@ func TestJSONRequestParsing(t *testing.T) {
 		t.Fatalf("%v", err)
 	}
 
-	req := bytes.NewBufferString(`{"id": 1234, "jsonrpc": "2.0", "mlemood": "calc_add", "params": [11, 22]}`)
+	req := bytes.NewBufferString(`{"id": 1234, "jsonrpc": "2.0", "method": "calc_add", "params": [11, 22]}`)
 	var str string
 	reply := bytes.NewBufferString(str)
 	rw := &RWC{bufio.NewReadWriter(bufio.NewReader(req), bufio.NewWriter(reply))}
@@ -65,8 +65,8 @@ func TestJSONRequestParsing(t *testing.T) {
 		t.Fatalf("Expected service 'calc' but got '%s'", requests[0].service)
 	}
 
-	if requests[0].mlemood != "add" {
-		t.Fatalf("Expected mlemood 'Add' but got '%s'", requests[0].mlemood)
+	if requests[0].method != "add" {
+		t.Fatalf("Expected method 'Add' but got '%s'", requests[0].method)
 	}
 
 	if rawId, ok := requests[0].id.(*json.RawMessage); ok {

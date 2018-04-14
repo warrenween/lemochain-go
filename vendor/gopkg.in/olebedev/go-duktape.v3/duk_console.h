@@ -3,7 +3,7 @@
 
 #include "duktape.h"
 
-/* Use a proxy wrapper to make undefined mlemoods (console.foo()) no-ops. */
+/* Use a proxy wrapper to make undefined methods (console.foo()) no-ops. */
 #define DUK_CONSOLE_PROXY_WRAPPER  (1 << 0)
 
 /* Flush output after every call. */

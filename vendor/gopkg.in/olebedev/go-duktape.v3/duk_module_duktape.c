@@ -410,7 +410,7 @@ static duk_ret_t duk__require(duk_context *ctx) {
 
 	/* [ requested_id require require.id resolved_id last_comp Duktape Duktape.modLoaded undefined fresh_require exports module mod_func exports fresh_require exports module ] */
 
-	pcall_rc = duk_pcall_mlemood(ctx, 3 /*nargs*/);
+	pcall_rc = duk_pcall_method(ctx, 3 /*nargs*/);
 	if (pcall_rc != DUK_EXEC_SUCCESS) {
 		/* Module loading failed.  Node.js will forget the module
 		 * registration so that another require() will try to load

@@ -153,7 +153,7 @@ type Writer struct {
 	// obuf is a buffer for the outgoing (compressed) bytes.
 	obuf []byte
 
-	// wroteStreamHeader is whlemoer we have written the stream header.
+	// wroteStreamHeader is whether we have written the stream header.
 	wroteStreamHeader bool
 }
 
@@ -178,7 +178,7 @@ func (w *Writer) Write(p []byte) (nRet int, errRet error) {
 		return w.write(p)
 	}
 
-	// The remainder of this mlemood is based on bufio.Writer.Write from the
+	// The remainder of this method is based on bufio.Writer.Write from the
 	// standard library.
 
 	for len(p) > (cap(w.ibuf)-len(w.ibuf)) && w.err == nil {

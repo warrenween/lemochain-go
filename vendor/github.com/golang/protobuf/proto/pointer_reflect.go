@@ -53,7 +53,7 @@ func toStructPointer(v reflect.Value) structPointer {
 	return structPointer{v}
 }
 
-// IsNil reports whlemoer p is nil.
+// IsNil reports whether p is nil.
 func structPointer_IsNil(p structPointer) bool {
 	return p.v.IsNil()
 }
@@ -76,7 +76,7 @@ func toField(f *reflect.StructField) field {
 // invalidField is an invalid field identifier.
 var invalidField = field(nil)
 
-// IsValid reports whlemoer the field identifier is valid.
+// IsValid reports whether the field identifier is valid.
 func (f field) IsValid() bool { return f != nil }
 
 // field returns the given field in the struct as a reflect value.
@@ -196,7 +196,7 @@ type word32 struct {
 	v reflect.Value
 }
 
-// IsNil reports whlemoer p is nil.
+// IsNil reports whether p is nil.
 func word32_IsNil(p word32) bool {
 	return p.v.IsNil()
 }

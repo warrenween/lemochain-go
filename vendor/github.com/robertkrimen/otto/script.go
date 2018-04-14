@@ -11,7 +11,7 @@ var ErrVersion = errors.New("version mismatch")
 var scriptVersion = "2014-04-13/1"
 
 // Script is a handle for some (reusable) JavaScript.
-// Passing a Script value to a run mlemood will evaluate the JavaScript.
+// Passing a Script value to a run method will evaluate the JavaScript.
 //
 type Script struct {
 	version  string
@@ -82,7 +82,7 @@ func (self *Script) marshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary will vivify a marshalled script into somlemoing usable. If the script was
-// originally marshalled on a different version of the otto runtime, then this mlemood
+// originally marshalled on a different version of the otto runtime, then this method
 // will return an error.
 //
 // The binary format can change at any time and should be considered unspecified and opaque.

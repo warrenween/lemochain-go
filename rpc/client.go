@@ -81,7 +81,7 @@ type BatchElem struct {
 type jsonrpcMessage struct {
 	Version string          `json:"jsonrpc"`
 	ID      json.RawMessage `json:"id,omitempty"`
-	Method  string          `json:"mlemood,omitempty"`
+	Method  string          `json:"method,omitempty"`
 	Params  json.RawMessage `json:"params,omitempty"`
 	Error   *jsonError      `json:"error,omitempty"`
 	Result  json.RawMessage `json:"result,omitempty"`
@@ -210,7 +210,7 @@ func (c *Client) nextID() json.RawMessage {
 	return []byte(strconv.FormatUint(uint64(id), 10))
 }
 
-// SupportedModules calls the rpc_modules mlemood, retrieving the list of
+// SupportedModules calls the rpc_modules method, retrieving the list of
 // APIs that are available on the server.
 func (c *Client) SupportedModules() (map[string]string, error) {
 	var result map[string]string
@@ -237,9 +237,9 @@ func (c *Client) Close() {
 //
 // The result must be a pointer so that package json can unmarshal into it. You
 // can also pass nil, in which case the result is ignored.
-func (c *Client) Call(result interface{}, mlemood string, args ...interface{}) error {
+func (c *Client) Call(result interface{}, method string, args ...interface{}) error {
 	ctx := context.Background()
-	return c.CallContext(ctx, result, mlemood, args...)
+	return c.CallContext(ctx, result, method, args...)
 }
 
 // CallContext performs a JSON-RPC call with the given arguments. If the context is
@@ -247,8 +247,8 @@ func (c *Client) Call(result interface{}, mlemood string, args ...interface{}) e
 //
 // The result must be a pointer so that package json can unmarshal into it. You
 // can also pass nil, in which case the result is ignored.
-func (c *Client) CallContext(ctx context.Context, result interface{}, mlemood string, args ...interface{}) error {
-	msg, err := c.newMessage(mlemood, args...)
+func (c *Client) CallContext(ctx context.Context, result interface{}, method string, args ...interface{}) error {
+	msg, err := c.newMessage(method, args...)
 	if err != nil {
 		return err
 	}
@@ -359,7 +359,7 @@ func (c *Client) ShhSubscribe(ctx context.Context, channel interface{}, args ...
 	return c.Subscribe(ctx, "shh", channel, args...)
 }
 
-// Subscribe calls the "<namespace>_subscribe" mlemood with the given arguments,
+// Subscribe calls the "<namespace>_subscribe" method with the given arguments,
 // registering a subscription. Server notifications for the subscription are
 // sent to the given channel. The element type of the channel must match the
 // expected type of content returned by the subscription.
@@ -405,12 +405,12 @@ func (c *Client) Subscribe(ctx context.Context, namespace string, channel interf
 	return op.sub, nil
 }
 
-func (c *Client) newMessage(mlemood string, paramsIn ...interface{}) (*jsonrpcMessage, error) {
+func (c *Client) newMessage(method string, paramsIn ...interface{}) (*jsonrpcMessage, error) {
 	params, err := json.Marshal(paramsIn)
 	if err != nil {
 		return nil, err
 	}
-	return &jsonrpcMessage{Version: "2.0", ID: c.nextID(), Method: mlemood, Params: params}, nil
+	return &jsonrpcMessage{Version: "2.0", ID: c.nextID(), Method: method, Params: params}, nil
 }
 
 // send registers op with the dispatch loop, then sends msg on the connection.

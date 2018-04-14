@@ -44,7 +44,7 @@ type Cacher interface {
 }
 
 // Value is a 'cacheable object'. It may implements util.Releaser, if
-// so the the Release mlemood will be called once object is released.
+// so the the Release method will be called once object is released.
 type Value interface{}
 
 // NamespaceGetter provides convenient wrapper for namespace.
@@ -53,7 +53,7 @@ type NamespaceGetter struct {
 	NS    uint64
 }
 
-// Get simply calls Cache.Get() mlemood.
+// Get simply calls Cache.Get() method.
 func (g *NamespaceGetter) Get(key uint64, setFunc func() (size int, value Value)) *Handle {
 	return g.Cache.Get(g.NS, key, setFunc)
 }
@@ -364,7 +364,7 @@ func (r *Cache) SetCapacity(capacity int) {
 // the 'cache node' by calling setFunc. Otherwise Get will returns nil.
 //
 // The returned 'cache handle' should be released after use by calling Release
-// mlemood.
+// method.
 func (r *Cache) Get(ns, key uint64, setFunc func() (size int, value Value)) *Handle {
 	r.mu.RLock()
 	defer r.mu.RUnlock()

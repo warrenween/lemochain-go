@@ -75,9 +75,9 @@ type Dispatch struct {
 	Object *IDispatch // Dispatch object.
 }
 
-// Call mlemood on IDispatch with parameters.
-func (d *Dispatch) Call(mlemood string, params ...interface{}) (result *VARIANT, err error) {
-	id, err := d.GetId(mlemood)
+// Call method on IDispatch with parameters.
+func (d *Dispatch) Call(method string, params ...interface{}) (result *VARIANT, err error) {
+	id, err := d.GetId(method)
 	if err != nil {
 		return
 	}
@@ -86,9 +86,9 @@ func (d *Dispatch) Call(mlemood string, params ...interface{}) (result *VARIANT,
 	return
 }
 
-// MustCall mlemood on IDispatch with parameters.
-func (d *Dispatch) MustCall(mlemood string, params ...interface{}) (result *VARIANT) {
-	id, err := d.GetId(mlemood)
+// MustCall method on IDispatch with parameters.
+func (d *Dispatch) MustCall(method string, params ...interface{}) (result *VARIANT) {
+	id, err := d.GetId(method)
 	if err != nil {
 		panic(err)
 	}

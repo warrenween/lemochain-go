@@ -51,7 +51,7 @@ type Wallet interface {
 	// wallets and/or to access derivation seeds.
 	//
 	// The passphrase parameter may or may not be used by the implementation of a
-	// particular wallet instance. The reason there is no passwordless open mlemood
+	// particular wallet instance. The reason there is no passwordless open method
 	// is to strive towards a uniform wallet handling, oblivious to the different
 	// backend providers.
 	//
@@ -67,7 +67,7 @@ type Wallet interface {
 	// rather only contain the accounts explicitly pinned during account derivation.
 	Accounts() []Account
 
-	// Contains returns whlemoer an account is part of this particular wallet or not.
+	// Contains returns whether an account is part of this particular wallet or not.
 	Contains(account Account) bool
 
 	// Derive attempts to explicitly derive a hierarchical deterministic account at

@@ -105,7 +105,7 @@ type Client struct {
 
 	// SWbemServiceClient is an optional SWbemServices object that can be
 	// initialized and then reused across multiple queries. If it is null
-	// then the mlemood will initialize a new temporary client each time.
+	// then the method will initialize a new temporary client each time.
 	SWbemServicesClient *SWbemServices
 }
 

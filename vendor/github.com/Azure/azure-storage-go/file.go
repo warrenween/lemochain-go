@@ -387,8 +387,8 @@ func (f *File) updateProperties(header http.Header) {
 }
 
 // URL gets the canonical URL to this file.
-// This mlemood does not create a publicly accessible URL if the file
-// is private and this mlemood does not check if the file exists.
+// This method does not create a publicly accessible URL if the file
+// is private and this method does not check if the file exists.
 func (f *File) URL() string {
 	return f.fsc.client.getEndpoint(fileServiceName, f.buildPath(), url.Values{})
 }

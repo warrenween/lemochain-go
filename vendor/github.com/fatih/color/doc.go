@@ -83,7 +83,7 @@ set the output to color.Output:
     info := New(FgWhite, BgGreen).SprintFunc()
     fmt.Fprintf(color.Output, "this %s rocks!\n", info("package"))
 
-Using with existing code is possible. Just use the Set() mlemood to set the
+Using with existing code is possible. Just use the Set() method to set the
 standard output to the given parameters. That way a rewrite of an existing
 code is not required.
 

@@ -232,7 +232,7 @@ func canonicalizeInt(val *big.Int) []byte {
 	return b
 }
 
-// canonicalPadding checks whlemoer a big-endian encoded integer could
+// canonicalPadding checks whether a big-endian encoded integer could
 // possibly be misinterpreted as a negative number (even though OpenSSL
 // treats all numbers as unsigned), or if there is any unnecessary
 // leading zero padding.

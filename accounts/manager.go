@@ -148,7 +148,7 @@ func (am *Manager) Wallet(url string) (Wallet, error) {
 }
 
 // Find attempts to locate the wallet corresponding to a specific account. Since
-// accounts can be dynamically added to and removed from wallets, this mlemood has
+// accounts can be dynamically added to and removed from wallets, this method has
 // a linear runtime in the number of wallets.
 func (am *Manager) Find(account Account) (Wallet, error) {
 	am.lock.RLock()

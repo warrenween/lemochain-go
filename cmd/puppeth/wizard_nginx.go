@@ -22,9 +22,9 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 )
 
-// ensureVirtualHost checks whlemoer a reverse-proxy is running on the specified
+// ensureVirtualHost checks whether a reverse-proxy is running on the specified
 // host machine, and if yes requests a virtual host from the user to host a
-// specific web service on. If no proxy exists, the mlemood will offer to deploy
+// specific web service on. If no proxy exists, the method will offer to deploy
 // one.
 //
 // If the user elects not to use a reverse proxy, an empty hostname is returned!

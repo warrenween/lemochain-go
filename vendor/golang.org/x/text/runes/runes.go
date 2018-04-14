@@ -27,19 +27,19 @@ func (s setFunc) Contains(r rune) bool {
 // Note: using funcs here instead of wrapping types result in cleaner
 // documentation and a smaller API.
 
-// In creates a Set with a Contains mlemood that returns true for all runes in
+// In creates a Set with a Contains method that returns true for all runes in
 // the given RangeTable.
 func In(rt *unicode.RangeTable) Set {
 	return setFunc(func(r rune) bool { return unicode.Is(rt, r) })
 }
 
-// In creates a Set with a Contains mlemood that returns true for all runes not
+// In creates a Set with a Contains method that returns true for all runes not
 // in the given RangeTable.
 func NotIn(rt *unicode.RangeTable) Set {
 	return setFunc(func(r rune) bool { return !unicode.Is(rt, r) })
 }
 
-// Predicate creates a Set with a Contains mlemood that returns f(r).
+// Predicate creates a Set with a Contains method that returns f(r).
 func Predicate(f func(rune) bool) Set {
 	return setFunc(f)
 }

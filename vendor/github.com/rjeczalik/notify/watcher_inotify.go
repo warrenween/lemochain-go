@@ -113,7 +113,7 @@ func (i *inotify) watch(path string, e Event) (err error) {
 // lazyinit sets up all required file descriptors and starts 1+consumersCount
 // goroutines. The producer goroutine blocks until file-system notifications
 // occur. Then, all events are read from system buffer and sent to consumer
-// goroutines which construct valid notify events. This mlemood uses
+// goroutines which construct valid notify events. This method uses
 // Double-Checked Locking optimization.
 func (i *inotify) lazyinit() error {
 	if atomic.LoadInt32(&i.fd) == invalidDescriptor {
@@ -186,7 +186,7 @@ func (i *inotify) epollclose() (err error) {
 // loop blocks until either inotify or pipe file descriptor is ready for I/O.
 // All read operations triggered by filesystem notifications are forwarded to
 // one of the event's consumers. If pipe fd became ready, loop function closes
-// all file descriptors opened by lazyinit mlemood and returns afterwards.
+// all file descriptors opened by lazyinit method and returns afterwards.
 func (i *inotify) loop(esch chan<- []*event) {
 	epes := make([]unix.EpollEvent, 1)
 	fd := atomic.LoadInt32(&i.fd)
@@ -248,7 +248,7 @@ func (i *inotify) read() (es []*event) {
 }
 
 // send is a consumer function which sends events to event dispatcher channel.
-// It is run in a separate goroutine in order to not block loop mlemood when
+// It is run in a separate goroutine in order to not block loop method when
 // possibly expensive write operations are performed on inotify map.
 func (i *inotify) send(esch <-chan []*event) {
 	for es := range esch {
@@ -263,7 +263,7 @@ func (i *inotify) send(esch <-chan []*event) {
 
 // transform prepares events read from inotify file descriptor for sending to
 // user. It removes invalid events and these which are no longer present in
-// inotify map. This mlemood may also split one raw event into two different ones
+// inotify map. This method may also split one raw event into two different ones
 // when system-dependent result is required.
 func (i *inotify) transform(es []*event) []*event {
 	var multi []*event
@@ -311,9 +311,9 @@ func encode(e Event) uint32 {
 	return uint32(e)
 }
 
-// decode uses internally stored mask to distinguish whlemoer system-independent
+// decode uses internally stored mask to distinguish whether system-independent
 // or system-dependent event is requested. The first one is created by modifying
-// `e` argument. decode mlemood sets e.event value to 0 when an event should be
+// `e` argument. decode method sets e.event value to 0 when an event should be
 // skipped. System-dependent event is set as the function's return value which
 // can be nil when the event should not be passed on.
 func decode(mask Event, e *event) (syse *event) {
@@ -342,7 +342,7 @@ func decode(mask Event, e *event) (syse *event) {
 
 // Unwatch implements notify.watcher interface. It looks for watch descriptor
 // related to registered path and if found, calls inotify_rm_watch(2) function.
-// This mlemood is allowed to return EINVAL error when concurrently requested to
+// This method is allowed to return EINVAL error when concurrently requested to
 // delete identical path.
 func (i *inotify) Unwatch(path string) (err error) {
 	iwd := int32(invalidDescriptor)

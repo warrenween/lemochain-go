@@ -277,7 +277,7 @@ func (self *Network) Stop(id discover.NodeID) error {
 }
 
 // Connect connects two nodes toglemoer by calling the "admin_addPeer" RPC
-// mlemood on the "one" node so that it connects to the "other" node
+// method on the "one" node so that it connects to the "other" node
 func (self *Network) Connect(oneID, otherID discover.NodeID) error {
 	log.Debug(fmt.Sprintf("connecting %s to %s", oneID, otherID))
 	conn, err := self.InitConn(oneID, otherID)
@@ -293,7 +293,7 @@ func (self *Network) Connect(oneID, otherID discover.NodeID) error {
 }
 
 // Disconnect disconnects two nodes by calling the "admin_removePeer" RPC
-// mlemood on the "one" node so that it disconnects from the "other" node
+// method on the "one" node so that it disconnects from the "other" node
 func (self *Network) Disconnect(oneID, otherID discover.NodeID) error {
 	conn := self.GetConn(oneID, otherID)
 	if conn == nil {
@@ -463,7 +463,7 @@ func (self *Network) getConn(oneID, otherID discover.NodeID) *Conn {
 // the order of nodes does not matter, i.e., Conn(i,j) == Conn(j, i)
 // it checks if the connection is already up, and if the nodes are running
 // NOTE:
-// it also checks whlemoer there has been recent attempt to connect the peers
+// it also checks whether there has been recent attempt to connect the peers
 // this is cheating as the simulation is used as an oracle and know about
 // remote peers attempt to connect to a node which will then not initiate the connection
 func (self *Network) InitConn(oneID, otherID discover.NodeID) (*Conn, error) {
@@ -523,7 +523,7 @@ type Node struct {
 	// Config if the config used to created the node
 	Config *adapters.NodeConfig `json:"config"`
 
-	// Up tracks whlemoer or not the node is running
+	// Up tracks whether or not the node is running
 	Up bool `json:"up"`
 }
 
@@ -570,7 +570,7 @@ type Conn struct {
 	// Other is the node which the connection was made to
 	Other discover.NodeID `json:"other"`
 
-	// Up tracks whlemoer or not the connection is active
+	// Up tracks whether or not the connection is active
 	Up bool `json:"up"`
 	// Registers when the connection was grabbed to dial
 	initiated time.Time
@@ -579,7 +579,7 @@ type Conn struct {
 	other *Node
 }
 
-// nodesUp returns whlemoer both nodes are currently up
+// nodesUp returns whether both nodes are currently up
 func (self *Conn) nodesUp() error {
 	if !self.one.Up {
 		return fmt.Errorf("one %v is not up", self.One)

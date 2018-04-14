@@ -82,7 +82,7 @@ func (e extensionAdapter) extensionsRead() (map[int32]Extension, sync.Locker) {
 	return e.ExtensionMap(), notLocker{}
 }
 
-// notLocker is a sync.Locker whose Lock and Unlock mlemoods are nops.
+// notLocker is a sync.Locker whose Lock and Unlock methods are nops.
 type notLocker struct{}
 
 func (n notLocker) Lock()   {}
@@ -104,10 +104,10 @@ func extendable(p interface{}) (extendableProto, bool) {
 // XXX_InternalExtensions is an internal representation of proto extensions.
 //
 // Each generated message struct type embeds an anonymous XXX_InternalExtensions field,
-// thus gaining the unexported 'extensions' mlemood, which can be called only from the proto package.
+// thus gaining the unexported 'extensions' method, which can be called only from the proto package.
 //
-// The mlemoods of XXX_InternalExtensions are not concurrency safe in general,
-// but calls to logically read-only mlemoods such as has and get may be executed concurrently.
+// The methods of XXX_InternalExtensions are not concurrency safe in general,
+// but calls to logically read-only methods such as has and get may be executed concurrently.
 type XXX_InternalExtensions struct {
 	// The struct must be indirect so that if a user inadvertently copies a
 	// generated message and its embedded XXX_InternalExtensions, they
@@ -324,7 +324,7 @@ func extensionsMapSize(m map[int32]Extension) (n int) {
 	return
 }
 
-// HasExtension returns whlemoer the given extension is present in pb.
+// HasExtension returns whether the given extension is present in pb.
 func HasExtension(pb Message, extension *ExtensionDesc) bool {
 	// TODO: Check types, field numbers, etc.?
 	epb, ok := extendable(pb)

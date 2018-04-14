@@ -38,7 +38,7 @@ type (
 	}
 	suicideChange struct {
 		account     *common.Address
-		prev        bool // whlemoer account had already suicided
+		prev        bool // whether account had already suicided
 		prevbalance *big.Int
 	}
 

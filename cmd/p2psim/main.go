@@ -167,13 +167,13 @@ func main() {
 				},
 				{
 					Name:      "rpc",
-					ArgsUsage: "<node> <mlemood> [<args>]",
-					Usage:     "call a node RPC mlemood",
+					ArgsUsage: "<node> <method> [<args>]",
+					Usage:     "call a node RPC method",
 					Action:    rpcNode,
 					Flags: []cli.Flag{
 						cli.BoolFlag{
 							Name:  "subscribe",
-							Usage: "mlemood is a subscription",
+							Usage: "method is a subscription",
 						},
 					},
 				},
@@ -382,32 +382,32 @@ func rpcNode(ctx *cli.Context) error {
 		return cli.ShowCommandHelp(ctx, ctx.Command.Name)
 	}
 	nodeName := args[0]
-	mlemood := args[1]
+	method := args[1]
 	rpcClient, err := client.RPCClient(context.Background(), nodeName)
 	if err != nil {
 		return err
 	}
 	if ctx.Bool("subscribe") {
-		return rpcSubscribe(rpcClient, ctx.App.Writer, mlemood, args[3:]...)
+		return rpcSubscribe(rpcClient, ctx.App.Writer, method, args[3:]...)
 	}
 	var result interface{}
 	params := make([]interface{}, len(args[3:]))
 	for i, v := range args[3:] {
 		params[i] = v
 	}
-	if err := rpcClient.Call(&result, mlemood, params...); err != nil {
+	if err := rpcClient.Call(&result, method, params...); err != nil {
 		return err
 	}
 	return json.NewEncoder(ctx.App.Writer).Encode(result)
 }
 
-func rpcSubscribe(client *rpc.Client, out io.Writer, mlemood string, args ...string) error {
-	parts := strings.SplitN(mlemood, "_", 2)
+func rpcSubscribe(client *rpc.Client, out io.Writer, method string, args ...string) error {
+	parts := strings.SplitN(method, "_", 2)
 	namespace := parts[0]
-	mlemood = parts[1]
+	method = parts[1]
 	ch := make(chan interface{})
 	subArgs := make([]interface{}, len(args)+1)
-	subArgs[0] = mlemood
+	subArgs[0] = method
 	for i, v := range args {
 		subArgs[i+1] = v
 	}

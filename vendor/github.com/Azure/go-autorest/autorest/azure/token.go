@@ -88,7 +88,7 @@ func (t *Token) WithAuthorization() autorest.PrepareDecorator {
 type ServicePrincipalNoSecret struct {
 }
 
-// SetAuthenticationValues is a mlemood of the interface ServicePrincipalSecret
+// SetAuthenticationValues is a method of the interface ServicePrincipalSecret
 // It only returns an error for the ServicePrincipalNoSecret type
 func (noSecret *ServicePrincipalNoSecret) SetAuthenticationValues(spt *ServicePrincipalToken, v *url.Values) error {
 	return fmt.Errorf("Manually created ServicePrincipalToken does not contain secret material to retrieve a new access token")
@@ -105,7 +105,7 @@ type ServicePrincipalTokenSecret struct {
 	ClientSecret string
 }
 
-// SetAuthenticationValues is a mlemood of the interface ServicePrincipalSecret.
+// SetAuthenticationValues is a method of the interface ServicePrincipalSecret.
 // It will populate the form submitted during oAuth Token Acquisition using the client_secret.
 func (tokenSecret *ServicePrincipalTokenSecret) SetAuthenticationValues(spt *ServicePrincipalToken, v *url.Values) error {
 	v.Set("client_secret", tokenSecret.ClientSecret)
@@ -150,7 +150,7 @@ func (secret *ServicePrincipalCertificateSecret) SignJwt(spt *ServicePrincipalTo
 	return signedString, err
 }
 
-// SetAuthenticationValues is a mlemood of the interface ServicePrincipalSecret.
+// SetAuthenticationValues is a method of the interface ServicePrincipalSecret.
 // It will populate the form submitted during oAuth Token Acquisition using a JWT signed with a certificate.
 func (secret *ServicePrincipalCertificateSecret) SetAuthenticationValues(spt *ServicePrincipalToken, v *url.Values) error {
 	jwt, err := secret.SignJwt(spt)
@@ -344,7 +344,7 @@ func (spt *ServicePrincipalToken) SetSender(s autorest.Sender) {
 // value is "Bearer " followed by the AccessToken of the ServicePrincipalToken.
 //
 // By default, the token will automatically refresh if nearly expired (as determined by the
-// RefreshWithin interval). Use the AutoRefresh mlemood to enable or disable automatically refreshing
+// RefreshWithin interval). Use the AutoRefresh method to enable or disable automatically refreshing
 // tokens.
 func (spt *ServicePrincipalToken) WithAuthorization() autorest.PrepareDecorator {
 	return func(p autorest.Preparer) autorest.Preparer {

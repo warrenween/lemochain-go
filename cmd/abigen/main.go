@@ -30,7 +30,7 @@ import (
 
 var (
 	abiFlag = flag.String("abi", "", "Path to the Lemochain contract ABI json to bind")
-	binFlag = flag.String("bin", "", "Path to the Lemochain contract bytecode (generate deploy mlemood)")
+	binFlag = flag.String("bin", "", "Path to the Lemochain contract bytecode (generate deploy method)")
 	typFlag = flag.String("type", "", "Struct name for the binding (default = package name)")
 
 	solFlag  = flag.String("sol", "", "Path to the Lemochain contract Solidity source to build and bind")

@@ -75,7 +75,7 @@ type NodeIterator interface {
 
 	// Leaf returns true iff the current node is a leaf node.
 	// LeafBlob, LeafKey return the contents and key of the leaf node. These
-	// mlemood panic if the iterator is not positioned at a leaf.
+	// method panic if the iterator is not positioned at a leaf.
 	// Callers must not retain references to their return value after calling Next
 	Leaf() bool
 	LeafBlob() []byte
@@ -171,8 +171,8 @@ func (it *nodeIterator) Error() error {
 	return it.err
 }
 
-// Next moves the iterator to the next node, returning whlemoer there are any
-// further nodes. In case of an internal error this mlemood returns false and
+// Next moves the iterator to the next node, returning whether there are any
+// further nodes. In case of an internal error this method returns false and
 // sets the Error field to the encountered failure. If `descend` is false,
 // skips iterating over any subnodes of the current node.
 func (it *nodeIterator) Next(descend bool) bool {

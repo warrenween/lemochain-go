@@ -61,9 +61,9 @@ func (c *Compressed) parse(r io.Reader) error {
 }
 
 // compressedWriterCloser represents the serialized compression stream
-// header and the compressor. Its Close() mlemood ensures that both the
+// header and the compressor. Its Close() method ensures that both the
 // compressor and serialized stream header are closed. Its Write()
-// mlemood writes to the compressor.
+// method writes to the compressor.
 type compressedWriteCloser struct {
 	sh io.Closer      // Stream Header
 	c  io.WriteCloser // Compressor

@@ -25,8 +25,8 @@ func Bytes(in []byte) []byte {
 
 const escapeChars = `," =`
 
-// IsEscaped returns whlemoer b has any escaped characters,
-// i.e. whlemoer b seems to have been processed by Bytes.
+// IsEscaped returns whether b has any escaped characters,
+// i.e. whether b seems to have been processed by Bytes.
 func IsEscaped(b []byte) bool {
 	for len(b) > 0 {
 		i := bytes.IndexByte(b, '\\')

@@ -18,7 +18,7 @@
 Package rlp implements the RLP serialization format.
 
 The purpose of RLP (Recursive Linear Prefix) is to encode arbitrarily
-nested arrays of binary data, and RLP is the main encoding mlemood used
+nested arrays of binary data, and RLP is the main encoding method used
 to serialize objects in Lemochain. The only purpose of RLP is to encode
 structure; encoding specific atomic data types (eg. strings, ints,
 floats) is left up to higher-order protocols; in Lemochain integers

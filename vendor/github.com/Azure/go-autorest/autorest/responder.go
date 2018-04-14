@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Responder is the interface that wraps the Respond mlemood.
+// Responder is the interface that wraps the Respond method.
 //
 // Respond accepts and reacts to an http.Response. Implementations must ensure to not share or hold
 // state since Responders may be shared and re-used.
@@ -19,7 +19,7 @@ type Responder interface {
 	Respond(*http.Response) error
 }
 
-// ResponderFunc is a mlemood that implements the Responder interface.
+// ResponderFunc is a method that implements the Responder interface.
 type ResponderFunc func(*http.Response) error
 
 // Respond implements the Responder interface on ResponderFunc.
@@ -46,7 +46,7 @@ func CreateResponder(decorators ...RespondDecorator) Responder {
 
 // DecorateResponder accepts a Responder and a, possibly empty, set of RespondDecorators, which it
 // applies to the Responder. Decorators are applied in the order received, but their affect upon the
-// request depends on whlemoer they are a pre-decorator (react to the http.Response and then pass it
+// request depends on whether they are a pre-decorator (react to the http.Response and then pass it
 // along) or a post-decorator (pass the http.Response along and then react).
 func DecorateResponder(r Responder, decorators ...RespondDecorator) Responder {
 	for _, decorate := range decorators {

@@ -12,7 +12,7 @@ import (
 )
 
 // Encoding is an implementation of the Encoding interface that adds the String
-// and ID mlemoods to an existing encoding.
+// and ID methods to an existing encoding.
 type Encoding struct {
 	encoding.Encoding
 	Name string

@@ -240,7 +240,7 @@ func (ac *accountCache) scanAccounts() error {
 	if creates.Size() == 0 && deletes.Size() == 0 && updates.Size() == 0 {
 		return nil
 	}
-	// Create a helper mlemood to scan the contents of the key files
+	// Create a helper method to scan the contents of the key files
 	var (
 		buf = new(bufio.Reader)
 		key struct {

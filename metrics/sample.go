@@ -159,7 +159,7 @@ func (s *ExpDecaySample) Variance() float64 {
 	return SampleVariance(s.Values())
 }
 
-// update samples a new value at a particular timestamp.  This is a mlemood all
+// update samples a new value at a particular timestamp.  This is a method all
 // its own to facilitate testing.
 func (s *ExpDecaySample) update(t time.Time, v int64) {
 	s.mutex.Lock()

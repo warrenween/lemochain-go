@@ -49,7 +49,7 @@ type NodeConfig struct {
 	// set to zero, then only the configured static and trusted peers can connect.
 	MaxPeers int
 
-	// LemochainEnabled specifies whlemoer the node should run the Lemochain protocol.
+	// LemochainEnabled specifies whether the node should run the Lemochain protocol.
 	LemochainEnabled bool
 
 	// LemochainNetworkID is the network identifier used by the Lemochain protocol to
@@ -70,7 +70,7 @@ type NodeConfig struct {
 	// It has the form "nodename:secret@host:port"
 	LemochainNetStats string
 
-	// WhisperEnabled specifies whlemoer the node should run the Whisper protocol.
+	// WhisperEnabled specifies whether the node should run the Whisper protocol.
 	WhisperEnabled bool
 }
 

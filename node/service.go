@@ -28,7 +28,7 @@ import (
 
 // ServiceContext is a collection of service independent options inherited from
 // the protocol stack, that is passed to all constructors to be optionally used;
-// as well as utility mlemoods to operate on the service environment.
+// as well as utility methods to operate on the service environment.
 type ServiceContext struct {
 	config         *Config
 	services       map[reflect.Type]Service // Index of the already constructed services
@@ -77,7 +77,7 @@ type ServiceConstructor func(ctx *ServiceContext) (Service, error)
 //
 // • Service life-cycle management is delegated to the node. The service is allowed to
 // initialize itself upon creation, but no goroutines should be spun up outside of the
-// Start mlemood.
+// Start method.
 //
 // • Restart logic is not required as the node will create a fresh instance
 // every time a service is started.

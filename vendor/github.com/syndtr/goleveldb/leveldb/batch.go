@@ -126,7 +126,7 @@ func (b *Batch) Delete(key []byte) {
 }
 
 // Dump dumps batch contents. The returned slice can be loaded into the
-// batch using Load mlemood.
+// batch using Load method.
 // The returned slice is not its own copy, so the contents should not be
 // modified.
 func (b *Batch) Dump() []byte {

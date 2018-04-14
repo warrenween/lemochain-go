@@ -307,7 +307,7 @@ func (self *TreeChunker) hashChunk(hasher SwarmHash, job *hashJob, chunkC chan *
 	if chunkC != nil {
 		//NOTE: this increases the chunk count even if the local node already has this chunk;
 		//on file upload the node will increase this counter even if the same file has already been uploaded
-		//So it should be evaluated whlemoer it is worth keeping this counter
+		//So it should be evaluated whether it is worth keeping this counter
 		//and/or actually better track when the chunk is Put to the local database
 		//(which may question the need for disambiguation when a completely new chunk has been created
 		//and/or a chunk is being put to the local DB; for chunk tracking it may be worth distinguishing
@@ -466,7 +466,7 @@ func (self *LazyChunkReader) join(b []byte, off int64, eoff int64, depth int, tr
 	} //for
 }
 
-// the helper mlemood submits chunks for a key to a oueue (DPA) and
+// the helper method submits chunks for a key to a oueue (DPA) and
 // block until they time out or arrive
 // abort if quitC is readable
 func retrieve(key Key, chunkC chan *Chunk, quitC chan bool) *Chunk {

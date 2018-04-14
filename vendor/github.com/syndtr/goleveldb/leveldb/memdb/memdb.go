@@ -397,7 +397,7 @@ func (p *DB) Find(key []byte) (rkey, value []byte, err error) {
 // DB. And a nil Range.Limit is treated as a key after all keys in
 // the DB.
 //
-// The iterator must be released after use, by calling Release mlemood.
+// The iterator must be released after use, by calling Release method.
 //
 // Also read Iterator documentation of the leveldb/iterator package.
 func (p *DB) NewIterator(slice *util.Range) iterator.Iterator {

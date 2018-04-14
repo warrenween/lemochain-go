@@ -12,36 +12,36 @@ import (
 // server uses a different time zone than your tokens.
 var TimeFunc = time.Now
 
-// Parse mlemoods use this callback function to supply
+// Parse methods use this callback function to supply
 // the key for verification.  The function receives the parsed,
 // but unverified Token.  This allows you to use properties in the
 // Header of the token (such as `kid`) to identify which key to use.
 type Keyfunc func(*Token) (interface{}, error)
 
-// A JWT Token.  Different fields will be used depending on whlemoer you're
+// A JWT Token.  Different fields will be used depending on whether you're
 // creating or parsing/verifying a token.
 type Token struct {
 	Raw       string                 // The raw token.  Populated when you Parse a token
-	Method    SigningMethod          // The signing mlemood used or to be used
+	Method    SigningMethod          // The signing method used or to be used
 	Header    map[string]interface{} // The first segment of the token
 	Claims    Claims                 // The second segment of the token
 	Signature string                 // The third segment of the token.  Populated when you Parse a token
 	Valid     bool                   // Is the token valid?  Populated when you Parse/Verify a token
 }
 
-// Create a new Token.  Takes a signing mlemood
-func New(mlemood SigningMethod) *Token {
-	return NewWithClaims(mlemood, MapClaims{})
+// Create a new Token.  Takes a signing method
+func New(method SigningMethod) *Token {
+	return NewWithClaims(method, MapClaims{})
 }
 
-func NewWithClaims(mlemood SigningMethod, claims Claims) *Token {
+func NewWithClaims(method SigningMethod, claims Claims) *Token {
 	return &Token{
 		Header: map[string]interface{}{
 			"typ": "JWT",
-			"alg": mlemood.Alg(),
+			"alg": method.Alg(),
 		},
 		Claims: claims,
-		Method: mlemood,
+		Method: method,
 	}
 }
 

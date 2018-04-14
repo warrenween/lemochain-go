@@ -65,7 +65,7 @@ func (api *PublicLemochainAPI) Hashrate() hexutil.Uint64 {
 }
 
 // PublicMinerAPI provides an API to control the miner.
-// It offers only mlemoods that operate on data that pose no security risk when it is publicly accessible.
+// It offers only methods that operate on data that pose no security risk when it is publicly accessible.
 type PublicMinerAPI struct {
 	e     *Lemochain
 	agent *miner.RemoteAgent
@@ -115,8 +115,8 @@ func (api *PublicMinerAPI) SubmitHashrate(hashrate hexutil.Uint64, id common.Has
 	return true
 }
 
-// PrivateMinerAPI provides private RPC mlemoods to control the miner.
-// These mlemoods can be abused by external users and must be considered insecure for use by untrusted users.
+// PrivateMinerAPI provides private RPC methods to control the miner.
+// These methods can be abused by external users and must be considered insecure for use by untrusted users.
 type PrivateMinerAPI struct {
 	e *Lemochain
 }
@@ -128,7 +128,7 @@ func NewPrivateMinerAPI(e *Lemochain) *PrivateMinerAPI {
 
 // Start the miner with the given number of threads. If threads is nil the number
 // of workers started is equal to the number of logical CPUs that are usable by
-// this process. If mining is already running, this mlemood adjust the number of
+// this process. If mining is already running, this method adjust the number of
 // threads allowed to use.
 func (api *PrivateMinerAPI) Start(threads *int) error {
 	// Set the number of threads if the seal engine supports it
@@ -205,7 +205,7 @@ type PrivateAdminAPI struct {
 }
 
 // NewPrivateAdminAPI creates a new API definition for the full node private
-// admin mlemoods of the Lemochain service.
+// admin methods of the Lemochain service.
 func NewPrivateAdminAPI(lemo *Lemochain) *PrivateAdminAPI {
 	return &PrivateAdminAPI{lemo: lemo}
 }
@@ -298,7 +298,7 @@ type PublicDebugAPI struct {
 }
 
 // NewPublicDebugAPI creates a new API definition for the full node-
-// related public debug mlemoods of the Lemochain service.
+// related public debug methods of the Lemochain service.
 func NewPublicDebugAPI(lemo *Lemochain) *PublicDebugAPI {
 	return &PublicDebugAPI{lemo: lemo}
 }
@@ -336,7 +336,7 @@ type PrivateDebugAPI struct {
 }
 
 // NewPrivateDebugAPI creates a new API definition for the full node-related
-// private debug mlemoods of the Lemochain service.
+// private debug methods of the Lemochain service.
 func NewPrivateDebugAPI(config *params.ChainConfig, lemo *Lemochain) *PrivateDebugAPI {
 	return &PrivateDebugAPI{config: config, lemo: lemo}
 }

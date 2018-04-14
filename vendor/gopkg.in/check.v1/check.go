@@ -26,7 +26,7 @@ import (
 )
 
 // -----------------------------------------------------------------------
-// Internal type which deals with suite mlemood calling.
+// Internal type which deals with suite method calling.
 
 const (
 	fixtureKd = iota
@@ -46,40 +46,40 @@ const (
 
 type funcStatus uint32
 
-// A mlemood value can't reach its own Method structure.
-type mlemoodType struct {
+// A method value can't reach its own Method structure.
+type methodType struct {
 	reflect.Value
 	Info reflect.Method
 }
 
-func newMethod(receiver reflect.Value, i int) *mlemoodType {
-	return &mlemoodType{receiver.Method(i), receiver.Type().Method(i)}
+func newMethod(receiver reflect.Value, i int) *methodType {
+	return &methodType{receiver.Method(i), receiver.Type().Method(i)}
 }
 
-func (mlemood *mlemoodType) PC() uintptr {
-	return mlemood.Info.Func.Pointer()
+func (method *methodType) PC() uintptr {
+	return method.Info.Func.Pointer()
 }
 
-func (mlemood *mlemoodType) suiteName() string {
-	t := mlemood.Info.Type.In(0)
+func (method *methodType) suiteName() string {
+	t := method.Info.Type.In(0)
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
 	return t.Name()
 }
 
-func (mlemood *mlemoodType) String() string {
-	return mlemood.suiteName() + "." + mlemood.Info.Name
+func (method *methodType) String() string {
+	return method.suiteName() + "." + method.Info.Name
 }
 
-func (mlemood *mlemoodType) matches(re *regexp.Regexp) bool {
-	return (re.MatchString(mlemood.Info.Name) ||
-		re.MatchString(mlemood.suiteName()) ||
-		re.MatchString(mlemood.String()))
+func (method *methodType) matches(re *regexp.Regexp) bool {
+	return (re.MatchString(method.Info.Name) ||
+		re.MatchString(method.suiteName()) ||
+		re.MatchString(method.String()))
 }
 
 type C struct {
-	mlemood    *mlemoodType
+	method    *methodType
 	kind      funcKind
 	testName  string
 	_status   funcStatus
@@ -281,7 +281,7 @@ func (c *C) logCaller(skip int) {
 	}
 	var testFile string
 	var testLine int
-	testFunc := runtime.FuncForPC(c.mlemood.PC())
+	testFunc := runtime.FuncForPC(c.method.PC())
 	if runtime.FuncForPC(pc) != testFunc {
 		for {
 			skip++
@@ -349,9 +349,9 @@ func (c *C) logSoftPanic(issue string) {
 	c.log("... Panic: ", issue)
 }
 
-func (c *C) logArgPanic(mlemood *mlemoodType, expectedType string) {
+func (c *C) logArgPanic(method *methodType, expectedType string) {
 	c.logf("... Panic: %s argument should be %s",
-		niceFuncName(mlemood.PC()), expectedType)
+		niceFuncName(method.PC()), expectedType)
 }
 
 // -----------------------------------------------------------------------
@@ -512,9 +512,9 @@ func (tracker *resultTracker) _loopRoutine() {
 
 type suiteRunner struct {
 	suite                     interface{}
-	setUpSuite, tearDownSuite *mlemoodType
-	setUpTest, tearDownTest   *mlemoodType
-	tests                     []*mlemoodType
+	setUpSuite, tearDownSuite *methodType
+	setUpTest, tearDownTest   *methodType
+	tests                     []*methodType
 	tracker                   *resultTracker
 	tempDir                   *tempDir
 	keepDir                   bool
@@ -535,7 +535,7 @@ type RunConf struct {
 	KeepWorkDir   bool
 }
 
-// Create a new suiteRunner able to run all mlemoods in the given suite.
+// Create a new suiteRunner able to run all methods in the given suite.
 func newSuiteRunner(suite interface{}, runConf *RunConf) *suiteRunner {
 	var conf RunConf
 	if runConf != nil {
@@ -560,7 +560,7 @@ func newSuiteRunner(suite interface{}, runConf *RunConf) *suiteRunner {
 		benchMem:  conf.BenchmarkMem,
 		tempDir:   &tempDir{},
 		keepDir:   conf.KeepWorkDir,
-		tests:     make([]*mlemoodType, 0, suiteNumMethods),
+		tests:     make([]*methodType, 0, suiteNumMethods),
 	}
 	if runner.benchTime == 0 {
 		runner.benchTime = 1 * time.Second
@@ -578,33 +578,33 @@ func newSuiteRunner(suite interface{}, runConf *RunConf) *suiteRunner {
 	}
 
 	for i := 0; i != suiteNumMethods; i++ {
-		mlemood := newMethod(suiteValue, i)
-		switch mlemood.Info.Name {
+		method := newMethod(suiteValue, i)
+		switch method.Info.Name {
 		case "SetUpSuite":
-			runner.setUpSuite = mlemood
+			runner.setUpSuite = method
 		case "TearDownSuite":
-			runner.tearDownSuite = mlemood
+			runner.tearDownSuite = method
 		case "SetUpTest":
-			runner.setUpTest = mlemood
+			runner.setUpTest = method
 		case "TearDownTest":
-			runner.tearDownTest = mlemood
+			runner.tearDownTest = method
 		default:
 			prefix := "Test"
 			if conf.Benchmark {
 				prefix = "Benchmark"
 			}
-			if !strings.HasPrefix(mlemood.Info.Name, prefix) {
+			if !strings.HasPrefix(method.Info.Name, prefix) {
 				continue
 			}
-			if filterRegexp == nil || mlemood.matches(filterRegexp) {
-				runner.tests = append(runner.tests, mlemood)
+			if filterRegexp == nil || method.matches(filterRegexp) {
+				runner.tests = append(runner.tests, method)
 			}
 		}
 	}
 	return runner
 }
 
-// Run all mlemoods in the given suite.
+// Run all methods in the given suite.
 func (runner *suiteRunner) run() *Result {
 	if runner.tracker.result.RunError == nil && len(runner.tests) > 0 {
 		runner.tracker.start()
@@ -637,9 +637,9 @@ func (runner *suiteRunner) run() *Result {
 	return &runner.tracker.result
 }
 
-// Create a call object with the given suite mlemood, and fork a
+// Create a call object with the given suite method, and fork a
 // goroutine with the provided dispatcher for running it.
-func (runner *suiteRunner) forkCall(mlemood *mlemoodType, kind funcKind, testName string, logb *logger, dispatcher func(c *C)) *C {
+func (runner *suiteRunner) forkCall(method *methodType, kind funcKind, testName string, logb *logger, dispatcher func(c *C)) *C {
 	var logw io.Writer
 	if runner.output.Stream {
 		logw = runner.output
@@ -648,7 +648,7 @@ func (runner *suiteRunner) forkCall(mlemood *mlemoodType, kind funcKind, testNam
 		logb = new(logger)
 	}
 	c := &C{
-		mlemood:    mlemood,
+		method:    method,
 		kind:      kind,
 		testName:  testName,
 		logb:      logb,
@@ -669,8 +669,8 @@ func (runner *suiteRunner) forkCall(mlemood *mlemoodType, kind funcKind, testNam
 }
 
 // Same as forkCall(), but wait for call to finish before returning.
-func (runner *suiteRunner) runFunc(mlemood *mlemoodType, kind funcKind, testName string, logb *logger, dispatcher func(c *C)) *C {
-	c := runner.forkCall(mlemood, kind, testName, logb, dispatcher)
+func (runner *suiteRunner) runFunc(method *methodType, kind funcKind, testName string, logb *logger, dispatcher func(c *C)) *C {
+	c := runner.forkCall(method, kind, testName, logb, dispatcher)
 	<-c.done
 	return c
 }
@@ -709,78 +709,78 @@ func (runner *suiteRunner) callDone(c *C) {
 }
 
 // Runs a fixture call synchronously.  The fixture will still be run in a
-// goroutine like all suite mlemoods, but this mlemood will not return
+// goroutine like all suite methods, but this method will not return
 // while the fixture goroutine is not done, because the fixture must be
 // run in a desired order.
-func (runner *suiteRunner) runFixture(mlemood *mlemoodType, testName string, logb *logger) *C {
-	if mlemood != nil {
-		c := runner.runFunc(mlemood, fixtureKd, testName, logb, func(c *C) {
+func (runner *suiteRunner) runFixture(method *methodType, testName string, logb *logger) *C {
+	if method != nil {
+		c := runner.runFunc(method, fixtureKd, testName, logb, func(c *C) {
 			c.ResetTimer()
 			c.StartTimer()
 			defer c.StopTimer()
-			c.mlemood.Call([]reflect.Value{reflect.ValueOf(c)})
+			c.method.Call([]reflect.Value{reflect.ValueOf(c)})
 		})
 		return c
 	}
 	return nil
 }
 
-// Run the fixture mlemood with runFixture(), but panic with a fixturePanic{}
-// in case the fixture mlemood panics.  This makes it easier to track the
+// Run the fixture method with runFixture(), but panic with a fixturePanic{}
+// in case the fixture method panics.  This makes it easier to track the
 // fixture panic toglemoer with other call panics within forkTest().
-func (runner *suiteRunner) runFixtureWithPanic(mlemood *mlemoodType, testName string, logb *logger, skipped *bool) *C {
+func (runner *suiteRunner) runFixtureWithPanic(method *methodType, testName string, logb *logger, skipped *bool) *C {
 	if skipped != nil && *skipped {
 		return nil
 	}
-	c := runner.runFixture(mlemood, testName, logb)
+	c := runner.runFixture(method, testName, logb)
 	if c != nil && c.status() != succeededSt {
 		if skipped != nil {
 			*skipped = c.status() == skippedSt
 		}
-		panic(&fixturePanic{c.status(), mlemood})
+		panic(&fixturePanic{c.status(), method})
 	}
 	return c
 }
 
 type fixturePanic struct {
 	status funcStatus
-	mlemood *mlemoodType
+	method *methodType
 }
 
-// Run the suite test mlemood, toglemoer with the test-specific fixture,
+// Run the suite test method, toglemoer with the test-specific fixture,
 // asynchronously.
-func (runner *suiteRunner) forkTest(mlemood *mlemoodType) *C {
-	testName := mlemood.String()
-	return runner.forkCall(mlemood, testKd, testName, nil, func(c *C) {
+func (runner *suiteRunner) forkTest(method *methodType) *C {
+	testName := method.String()
+	return runner.forkCall(method, testKd, testName, nil, func(c *C) {
 		var skipped bool
 		defer runner.runFixtureWithPanic(runner.tearDownTest, testName, nil, &skipped)
 		defer c.StopTimer()
 		benchN := 1
 		for {
 			runner.runFixtureWithPanic(runner.setUpTest, testName, c.logb, &skipped)
-			mt := c.mlemood.Type()
+			mt := c.method.Type()
 			if mt.NumIn() != 1 || mt.In(0) != reflect.TypeOf(c) {
 				// Rather than a plain panic, provide a more helpful message when
 				// the argument type is incorrect.
 				c.setStatus(panickedSt)
-				c.logArgPanic(c.mlemood, "*check.C")
+				c.logArgPanic(c.method, "*check.C")
 				return
 			}
-			if strings.HasPrefix(c.mlemood.Info.Name, "Test") {
+			if strings.HasPrefix(c.method.Info.Name, "Test") {
 				c.ResetTimer()
 				c.StartTimer()
-				c.mlemood.Call([]reflect.Value{reflect.ValueOf(c)})
+				c.method.Call([]reflect.Value{reflect.ValueOf(c)})
 				return
 			}
-			if !strings.HasPrefix(c.mlemood.Info.Name, "Benchmark") {
-				panic("unexpected mlemood prefix: " + c.mlemood.Info.Name)
+			if !strings.HasPrefix(c.method.Info.Name, "Benchmark") {
+				panic("unexpected method prefix: " + c.method.Info.Name)
 			}
 
 			runtime.GC()
 			c.N = benchN
 			c.ResetTimer()
 			c.StartTimer()
-			c.mlemood.Call([]reflect.Value{reflect.ValueOf(c)})
+			c.method.Call([]reflect.Value{reflect.ValueOf(c)})
 			c.StopTimer()
 			if c.status() != succeededSt || c.duration >= c.benchTime || benchN >= 1e9 {
 				return
@@ -805,8 +805,8 @@ func (runner *suiteRunner) forkTest(mlemood *mlemoodType) *C {
 }
 
 // Same as forkTest(), but wait for the test to finish before returning.
-func (runner *suiteRunner) runTest(mlemood *mlemoodType) *C {
-	c := runner.forkTest(mlemood)
+func (runner *suiteRunner) runTest(method *methodType) *C {
+	c := runner.forkTest(method)
 	<-c.done
 	return c
 }
@@ -814,26 +814,26 @@ func (runner *suiteRunner) runTest(mlemood *mlemoodType) *C {
 // Helper to mark tests as skipped or missed.  A bit heavy for what
 // it does, but it enables homogeneous handling of tracking, including
 // nice verbose output.
-func (runner *suiteRunner) skipTests(status funcStatus, mlemoods []*mlemoodType) {
-	for _, mlemood := range mlemoods {
-		runner.runFunc(mlemood, testKd, "", nil, func(c *C) {
+func (runner *suiteRunner) skipTests(status funcStatus, methods []*methodType) {
+	for _, method := range methods {
+		runner.runFunc(method, testKd, "", nil, func(c *C) {
 			c.setStatus(status)
 		})
 	}
 }
 
 // Verify if the fixture arguments are *check.C.  In case of errors,
-// log the error as a panic in the fixture mlemood call, and return false.
+// log the error as a panic in the fixture method call, and return false.
 func (runner *suiteRunner) checkFixtureArgs() bool {
 	succeeded := true
 	argType := reflect.TypeOf(&C{})
-	for _, mlemood := range []*mlemoodType{runner.setUpSuite, runner.tearDownSuite, runner.setUpTest, runner.tearDownTest} {
-		if mlemood != nil {
-			mt := mlemood.Type()
+	for _, method := range []*methodType{runner.setUpSuite, runner.tearDownSuite, runner.setUpTest, runner.tearDownTest} {
+		if method != nil {
+			mt := method.Type()
 			if mt.NumIn() != 1 || mt.In(0) != argType {
 				succeeded = false
-				runner.runFunc(mlemood, fixtureKd, "", nil, func(c *C) {
-					c.logArgPanic(mlemood, "*check.C")
+				runner.runFunc(method, fixtureKd, "", nil, func(c *C) {
+					c.logArgPanic(method, "*check.C")
 					c.setStatus(panickedSt)
 				})
 			}

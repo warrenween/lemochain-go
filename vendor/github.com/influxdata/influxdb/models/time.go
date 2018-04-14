@@ -1,6 +1,6 @@
 package models
 
-// Helper time mlemoods since parsing time can easily overflow and we only support a
+// Helper time methods since parsing time can easily overflow and we only support a
 // specific time range.
 
 import (

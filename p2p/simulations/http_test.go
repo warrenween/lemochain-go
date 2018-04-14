@@ -519,7 +519,7 @@ func (t *expectEvents) expect(events ...*Event) {
 	}
 }
 
-// TestHTTPNodeRPC tests calling RPC mlemoods on nodes via the HTTP API
+// TestHTTPNodeRPC tests calling RPC methods on nodes via the HTTP API
 func TestHTTPNodeRPC(t *testing.T) {
 	// start the server
 	_, s := testHTTPServer(t)
@@ -555,13 +555,13 @@ func TestHTTPNodeRPC(t *testing.T) {
 	}
 	defer sub.Unsubscribe()
 
-	// call some RPC mlemoods using client 2
+	// call some RPC methods using client 2
 	if err := rpcClient2.CallContext(ctx, nil, "test_add", 10); err != nil {
-		t.Fatalf("error calling RPC mlemood: %s", err)
+		t.Fatalf("error calling RPC method: %s", err)
 	}
 	var result int64
 	if err := rpcClient2.CallContext(ctx, &result, "test_get"); err != nil {
-		t.Fatalf("error calling RPC mlemood: %s", err)
+		t.Fatalf("error calling RPC method: %s", err)
 	}
 	if result != 10 {
 		t.Fatalf("expected result to be 10, got %d", result)

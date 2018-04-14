@@ -26,7 +26,7 @@ import (
 	"math/big"
 )
 
-// ChainReader defines a small collection of mlemoods needed to access the local
+// ChainReader defines a small collection of methods needed to access the local
 // blockchain during header and/or uncle verification.
 type ChainReader interface {
 	// Config retrieves the blockchain's chain configuration.
@@ -55,13 +55,13 @@ type Engine interface {
 	// engine is based on signatures.
 	Author(header *types.Header) (common.Address, error)
 
-	// VerifyHeader checks whlemoer a header conforms to the consensus rules of a
+	// VerifyHeader checks whether a header conforms to the consensus rules of a
 	// given engine. Verifying the seal may be done optionally here, or explicitly
-	// via the VerifySeal mlemood.
+	// via the VerifySeal method.
 	VerifyHeader(chain ChainReader, header *types.Header, seal bool) error
 
 	// VerifyHeaders is similar to VerifyHeader, but verifies a batch of headers
-	// concurrently. The mlemood returns a quit channel to abort the operations and
+	// concurrently. The method returns a quit channel to abort the operations and
 	// a results channel to retrieve the async verifications (the order is that of
 	// the input slice).
 	VerifyHeaders(chain ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error)
@@ -70,7 +70,7 @@ type Engine interface {
 	// rules of a given engine.
 	VerifyUncles(chain ChainReader, block *types.Block) error
 
-	// VerifySeal checks whlemoer the crypto seal on a header is valid according to
+	// VerifySeal checks whether the crypto seal on a header is valid according to
 	// the consensus rules of the given engine.
 	VerifySeal(chain ChainReader, header *types.Header) error
 

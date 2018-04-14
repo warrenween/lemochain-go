@@ -18,7 +18,7 @@ var (
 // The watcher implementation is expected to do its own mapping between paths and
 // create watchers if underlying event notification does not support it. For
 // the ease of implementation it is guaranteed that paths provided via Watch and
-// Unwatch mlemoods are absolute and clean.
+// Unwatch methods are absolute and clean.
 type watcher interface {
 	// Watch requests a watcher creation for the given path and given event set.
 	Watch(path string, event Event) error

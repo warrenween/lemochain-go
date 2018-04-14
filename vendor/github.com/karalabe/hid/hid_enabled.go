@@ -49,7 +49,7 @@ import (
 )
 
 // enumerateLock is a mutex serializing access to USB device enumeration needed
-// by the macOS USB HID system calls, which require 2 consecutive mlemood calls
+// by the macOS USB HID system calls, which require 2 consecutive method calls
 // for enumeration, causing crashes if called concurrently.
 //
 // For more details, see:
@@ -62,8 +62,8 @@ func init() {
 	C.hid_init()
 }
 
-// Supported returns whlemoer this platform is supported by the HID library or not.
-// The goal of this mlemood is to allow programatically handling platforms that do
+// Supported returns whether this platform is supported by the HID library or not.
+// The goal of this method is to allow programatically handling platforms that do
 // not support USB HID and not having to fall back to build constraints.
 func Supported() bool {
 	return true

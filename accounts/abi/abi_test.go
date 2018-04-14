@@ -79,20 +79,20 @@ func TestReader(t *testing.T) {
 	for name, expM := range exp.Methods {
 		gotM, exist := abi.Methods[name]
 		if !exist {
-			t.Errorf("Missing expected mlemood %v", name)
+			t.Errorf("Missing expected method %v", name)
 		}
 		if !reflect.DeepEqual(gotM, expM) {
-			t.Errorf("\nGot abi mlemood: \n%v\ndoes not match expected mlemood\n%v", gotM, expM)
+			t.Errorf("\nGot abi method: \n%v\ndoes not match expected method\n%v", gotM, expM)
 		}
 	}
 
 	for name, gotM := range abi.Methods {
 		expM, exist := exp.Methods[name]
 		if !exist {
-			t.Errorf("Found extra mlemood %v", name)
+			t.Errorf("Found extra method %v", name)
 		}
 		if !reflect.DeepEqual(gotM, expM) {
-			t.Errorf("\nGot abi mlemood: \n%v\ndoes not match expected mlemood\n%v", gotM, expM)
+			t.Errorf("\nGot abi method: \n%v\ndoes not match expected method\n%v", gotM, expM)
 		}
 	}
 }
@@ -704,7 +704,7 @@ func TestABI_MethodById(t *testing.T) {
 		a := fmt.Sprintf("%v", m)
 		m2, err := abi.MethodById(m.Id())
 		if err != nil {
-			t.Fatalf("Failed to look up ABI mlemood: %v", err)
+			t.Fatalf("Failed to look up ABI method: %v", err)
 		}
 		b := fmt.Sprintf("%v", m2)
 		if a != b {

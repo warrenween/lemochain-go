@@ -305,7 +305,7 @@ func (ec *LemochainClient) EstimateGas(ctx *Context, msg *CallMsg) (gas int64, _
 
 // SendTransaction injects a signed transaction into the pending pool for execution.
 //
-// If the transaction was a contract creation use the TransactionReceipt mlemood to get the
+// If the transaction was a contract creation use the TransactionReceipt method to get the
 // contract address after the transaction has been mined.
 func (ec *LemochainClient) SendTransaction(ctx *Context, tx *Transaction) error {
 	return ec.client.SendTransaction(ctx.context, tx.tx)

@@ -169,7 +169,7 @@ func (info *explorerInfos) Report() map[string]string {
 }
 
 // checkExplorer does a health-check against an block explorer server to verify
-// whlemoer it's running, and if yes, whlemoer it's responsive.
+// whether it's running, and if yes, whether it's responsive.
 func checkExplorer(client *sshClient, network string) (*explorerInfos, error) {
 	// Inspect a possible block explorer container on the host
 	infos, err := inspectContainer(client, fmt.Sprintf("%s_explorer_1", network))

@@ -18,8 +18,8 @@ static const char duk__log_level_strings[] = {
 	'W', 'R', 'N', 'E', 'R', 'R', 'F', 'T', 'L'
 };
 
-/* Log mlemood names. */
-static const char *duk__log_mlemood_names[] = {
+/* Log method names. */
+static const char *duk__log_method_names[] = {
 	"trace", "debug", "info", "warn", "error", "fatal"
 };
 
@@ -87,7 +87,7 @@ static duk_ret_t duk__logger_prototype_fmt(duk_context *ctx) {
 		/* [ arg toLogString ] */
 
 		duk_dup(ctx, 0);
-		duk_call_mlemood(ctx, 0);
+		duk_call_method(ctx, 0);
 
 		/* [ arg result ] */
 		return 1;
@@ -289,20 +289,20 @@ static duk_ret_t duk__logger_prototype_log_shared(duk_context *ctx) {
 void duk_log_va(duk_context *ctx, duk_int_t level, const char *fmt, va_list ap) {
 	if (level < 0) {
 		level = 0;
-	} else if (level > (int) (sizeof(duk__log_mlemood_names) / sizeof(const char *)) - 1) {
-		level = (int) (sizeof(duk__log_mlemood_names) / sizeof(const char *)) - 1;
+	} else if (level > (int) (sizeof(duk__log_method_names) / sizeof(const char *)) - 1) {
+		level = (int) (sizeof(duk__log_method_names) / sizeof(const char *)) - 1;
 	}
 
 	duk_push_global_stash(ctx);
 	duk_get_prop_string(ctx, -1, "\xff" "logger:constructor");  /* fixed at init time */
 	duk_get_prop_string(ctx, -1, "clog");
-	duk_get_prop_string(ctx, -1, duk__log_mlemood_names[level]);
+	duk_get_prop_string(ctx, -1, duk__log_method_names[level]);
 	duk_dup(ctx, -2);
 	duk_push_vsprintf(ctx, fmt, ap);
 
 	/* [ ... stash Logger clog logfunc clog(=this) msg ] */
 
-	duk_call_mlemood(ctx, 1 /*nargs*/);
+	duk_call_method(ctx, 1 /*nargs*/);
 
 	/* [ ... stash Logger clog res ] */
 

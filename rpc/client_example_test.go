@@ -26,7 +26,7 @@ import (
 )
 
 // In this example, our client whishes to track the latest 'block number'
-// known to the server. The server supports two mlemoods:
+// known to the server. The server supports two methods:
 //
 // lemo_getBlockByNumber("latest", {})
 //    returns the latest block object.

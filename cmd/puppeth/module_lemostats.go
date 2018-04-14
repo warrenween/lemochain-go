@@ -126,7 +126,7 @@ func (info *lemostatsInfos) Report() map[string]string {
 	}
 }
 
-// checkLemostats does a health-check against an lemostats server to verify whlemoer
+// checkLemostats does a health-check against an lemostats server to verify whether
 // it's running, and if yes, gathering a collection of useful infos about it.
 func checkLemostats(client *sshClient, network string) (*lemostatsInfos, error) {
 	// Inspect a possible lemostats container on the host

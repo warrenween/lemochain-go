@@ -52,7 +52,7 @@ func TestAccountManagement(t *testing.T) {
 		t.Fatalf("Failed to create new account: %v", err)
 	}
 	// Export the newly created account with a different passphrase. The returned
-	// data from this mlemood invocation is a JSON encoded, encrypted key-file
+	// data from this method invocation is a JSON encoded, encrypted key-file
 	jsonAcc, err := ks.Export(newAcc, "Creation password", "Export password")
 	if err != nil {
 		t.Fatalf("Failed to export account: %v", err)

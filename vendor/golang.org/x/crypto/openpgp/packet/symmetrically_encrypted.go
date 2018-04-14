@@ -87,7 +87,7 @@ func (se *SymmetricallyEncrypted) Decrypt(c CipherFunction, key []byte) (io.Read
 	return seReader{plaintext}, nil
 }
 
-// seReader wraps an io.Reader with a no-op Close mlemood.
+// seReader wraps an io.Reader with a no-op Close method.
 type seReader struct {
 	in io.Reader
 }

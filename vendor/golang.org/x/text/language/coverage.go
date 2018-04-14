@@ -168,7 +168,7 @@ func (s *coverage) Regions() []Region {
 // coverage. A list may be of type []T or func() []T, where T is either Tag,
 // Base, Script or Region. The returned Coverage derives the value for Bases
 // from Tags if no func or slice for []Base is specified. For other unspecified
-// types the returned Coverage will return nil for the respective mlemoods.
+// types the returned Coverage will return nil for the respective methods.
 func NewCoverage(list ...interface{}) Coverage {
 	s := &coverage{}
 	for _, x := range list {

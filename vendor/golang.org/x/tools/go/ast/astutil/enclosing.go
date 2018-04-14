@@ -540,11 +540,11 @@ func NodeDescription(n ast.Node) string {
 		// struct {x, y int}  -- struct field(s)
 		// struct {T}         -- anon struct field
 		// interface {I}      -- interface embedding
-		// interface {f()}    -- interface mlemood
+		// interface {f()}    -- interface method
 		// func (A) func(B) C -- receiver, param(s), result(s)
-		return "field/mlemood/parameter"
+		return "field/method/parameter"
 	case *ast.FieldList:
-		return "field/mlemood/parameter list"
+		return "field/method/parameter list"
 	case *ast.File:
 		return "source file"
 	case *ast.ForStmt:

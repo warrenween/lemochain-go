@@ -186,7 +186,7 @@ func (self *SimNode) ServeRPC(conn net.Conn) error {
 }
 
 // Snapshots creates snapshots of the services by calling the
-// simulation_snapshot RPC mlemood
+// simulation_snapshot RPC method
 func (self *SimNode) Snapshots() (map[string][]byte, error) {
 	self.lock.RLock()
 	services := make(map[string]node.Service, len(self.running))

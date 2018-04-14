@@ -72,7 +72,7 @@ func testPingReplace(t *testing.T, newNodeIsResponding, lastInBucketIsResponding
 	}
 	if !transport.pinged[last.ID] {
 		// second ping goes to oldest node in bucket
-		// to see whlemoer it is still alive.
+		// to see whether it is still alive.
 		t.Error("table did not ping last node in bucket")
 	}
 

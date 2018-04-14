@@ -322,7 +322,7 @@ func RewriteImport(fset *token.FileSet, f *ast.File, oldPath, newPath string) (r
 	return
 }
 
-// UsesImport reports whlemoer a given import is used.
+// UsesImport reports whether a given import is used.
 func UsesImport(f *ast.File, path string) (used bool) {
 	spec := importSpec(f, path)
 	if spec == nil {
@@ -388,7 +388,7 @@ func importPath(s *ast.ImportSpec) string {
 	return ""
 }
 
-// declImports reports whlemoer gen contains an import of path.
+// declImports reports whether gen contains an import of path.
 func declImports(gen *ast.GenDecl, path string) bool {
 	if gen.Tok != token.IMPORT {
 		return false

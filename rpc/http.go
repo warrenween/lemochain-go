@@ -135,7 +135,7 @@ func (hc *httpConn) doRequest(ctx context.Context, msg interface{}) (io.ReadClos
 	return resp.Body, nil
 }
 
-// httpReadWriteNopCloser wraps a io.Reader and io.Writer with a NOP Close mlemood.
+// httpReadWriteNopCloser wraps a io.Reader and io.Writer with a NOP Close method.
 type httpReadWriteNopCloser struct {
 	io.Reader
 	io.Writer
@@ -181,7 +181,7 @@ func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // request is invalid.
 func validateRequest(r *http.Request) (int, error) {
 	if r.Method == http.MethodPut || r.Method == http.MethodDelete {
-		return http.StatusMethodNotAllowed, errors.New("mlemood not allowed")
+		return http.StatusMethodNotAllowed, errors.New("method not allowed")
 	}
 	if r.ContentLength > maxRequestContentLength {
 		err := fmt.Errorf("content length too large (%d>%d)", r.ContentLength, maxRequestContentLength)

@@ -32,7 +32,7 @@ func StringTo_N_(s string) _N_ { return BytesTo_N_([]byte(s)) }
 func BigTo_N_(b *big.Int) _N_  { return BytesTo_N_(b.Bytes()) }
 func HexTo_N_(s string) _N_    { return BytesTo_N_(FromHex(s)) }
 
-// Don't use the default 'String' mlemood in case we want to overwrite
+// Don't use the default 'String' method in case we want to overwrite
 
 // Get the string representation of the underlying hash
 func (h _N_) Str() string   { return string(h[:]) }

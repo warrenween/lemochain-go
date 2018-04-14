@@ -159,7 +159,7 @@ func (d *dumpState) dumpPtr(v reflect.Value) {
 // dumpSlice handles formatting of arrays and slices.  Byte (uint8 under
 // reflection) arrays and slices are dumped in hexdump -C fashion.
 func (d *dumpState) dumpSlice(v reflect.Value) {
-	// Determine whlemoer this type should be hex dumped or not.  Also,
+	// Determine whether this type should be hex dumped or not.  Also,
 	// for types which should be hexdumped, try to use the underlying data
 	// first, then fall back to trying to convert them to a uint8 slice.
 	var buf []uint8
@@ -299,7 +299,7 @@ func (d *dumpState) dump(v reflect.Value) {
 		d.w.Write(spaceBytes)
 	}
 
-	// Call Stringer/error interfaces if they exist and the handle mlemoods flag
+	// Call Stringer/error interfaces if they exist and the handle methods flag
 	// is enabled
 	if !d.cs.DisableMethods {
 		if (kind != reflect.Invalid) && (kind != reflect.Interface) {
@@ -449,7 +449,7 @@ func (d *dumpState) dump(v reflect.Value) {
 }
 
 // fdump is a helper function to consolidate the logic from the various public
-// mlemoods which take varying writers and config states.
+// methods which take varying writers and config states.
 func fdump(cs *ConfigState, w io.Writer, a ...interface{}) {
 	for _, arg := range a {
 		if arg == nil {

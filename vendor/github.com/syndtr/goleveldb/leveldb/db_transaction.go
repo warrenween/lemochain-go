@@ -69,7 +69,7 @@ func (tr *Transaction) Has(key []byte, ro *opt.ReadOptions) (bool, error) {
 // DB. And a nil Range.Limit is treated as a key after all keys in
 // the DB.
 //
-// The iterator must be released after use, by calling Release mlemood.
+// The iterator must be released after use, by calling Release method.
 //
 // Also read Iterator documentation of the leveldb/iterator package.
 func (tr *Transaction) NewIterator(slice *util.Range, ro *opt.ReadOptions) iterator.Iterator {
@@ -182,7 +182,7 @@ func (tr *Transaction) setDone() {
 // Commit commits the transaction. If error is not nil, then the transaction is
 // not committed, it can then either be retried or discarded.
 //
-// Other mlemoods should not be called after transaction has been committed.
+// Other methods should not be called after transaction has been committed.
 func (tr *Transaction) Commit() error {
 	if err := tr.db.ok(); err != nil {
 		return err
@@ -256,7 +256,7 @@ func (tr *Transaction) discard() {
 
 // Discard discards the transaction.
 //
-// Other mlemoods should not be called after transaction has been discarded.
+// Other methods should not be called after transaction has been discarded.
 func (tr *Transaction) Discard() {
 	tr.lk.Lock()
 	if !tr.closed {

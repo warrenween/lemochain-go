@@ -41,7 +41,7 @@ import "time"
 // A Context carries a deadline, a cancelation signal, and other values across
 // API boundaries.
 //
-// Context's mlemoods may be called by multiple goroutines simultaneously.
+// Context's methods may be called by multiple goroutines simultaneously.
 type Context interface {
 	// Deadline returns the time when work done on behalf of this context
 	// should be canceled. Deadline returns ok==false when no deadline is
@@ -145,7 +145,7 @@ func Background() Context {
 // it's unclear which Context to use or it is not yet available (because the
 // surrounding function has not yet been extended to accept a Context
 // parameter).  TODO is recognized by static analysis tools that determine
-// whlemoer Contexts are propagated correctly in a program.
+// whether Contexts are propagated correctly in a program.
 func TODO() Context {
 	return todo
 }

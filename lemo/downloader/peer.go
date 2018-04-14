@@ -75,14 +75,14 @@ type peerConnection struct {
 	lock    sync.RWMutex
 }
 
-// LightPeer encapsulates the mlemoods required to synchronise with a remote light peer.
+// LightPeer encapsulates the methods required to synchronise with a remote light peer.
 type LightPeer interface {
 	Head() (common.Hash, *big.Int)
 	RequestHeadersByHash(common.Hash, int, int, bool) error
 	RequestHeadersByNumber(uint64, int, int, bool) error
 }
 
-// Peer encapsulates the mlemoods required to synchronise with a remote full peer.
+// Peer encapsulates the methods required to synchronise with a remote full peer.
 type Peer interface {
 	LightPeer
 	RequestBodies([]common.Hash) error
@@ -90,7 +90,7 @@ type Peer interface {
 	RequestNodeData([]common.Hash) error
 }
 
-// lightPeerWrapper wraps a LightPeer struct, stubbing out the Peer-only mlemoods.
+// lightPeerWrapper wraps a LightPeer struct, stubbing out the Peer-only methods.
 type lightPeerWrapper struct {
 	peer LightPeer
 }
@@ -336,8 +336,8 @@ func (p *peerConnection) MarkLacking(hash common.Hash) {
 	p.lacking[hash] = struct{}{}
 }
 
-// Lacks retrieves whlemoer the hash of a blockchain item is on the peers lacking
-// list (i.e. whlemoer we know that the peer does not have it).
+// Lacks retrieves whether the hash of a blockchain item is on the peers lacking
+// list (i.e. whether we know that the peer does not have it).
 func (p *peerConnection) Lacks(hash common.Hash) bool {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
@@ -386,7 +386,7 @@ func (ps *peerSet) Reset() {
 // Register injects a new peer into the working set, or returns an error if the
 // peer is already known.
 //
-// The mlemood also sets the starting throughput values of the new peer to the
+// The method also sets the starting throughput values of the new peer to the
 // average of all existing peers, to give it a realistic chance of being used
 // for data retrievals.
 func (ps *peerSet) Register(p *peerConnection) error {

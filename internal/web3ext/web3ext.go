@@ -35,7 +35,7 @@ var Modules = map[string]string{
 const Chequebook_JS = `
 web3._extend({
 	property: 'chequebook',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'deposit',
 			call: 'chequebook_deposit',
@@ -66,7 +66,7 @@ web3._extend({
 const Clique_JS = `
 web3._extend({
 	property: 'clique',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'getSnapshot',
 			call: 'clique_getSnapshot',
@@ -112,7 +112,7 @@ web3._extend({
 const Admin_JS = `
 web3._extend({
 	property: 'admin',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'addPeer',
 			call: 'admin_addPeer',
@@ -180,7 +180,7 @@ web3._extend({
 const Debug_JS = `
 web3._extend({
 	property: 'debug',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'printBlock',
 			call: 'debug_printBlock',
@@ -393,7 +393,7 @@ web3._extend({
 const Lemo_JS = `
 web3._extend({
 	property: 'lemo',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'sign',
 			call: 'lemo_sign',
@@ -452,7 +452,7 @@ web3._extend({
 const Miner_JS = `
 web3._extend({
 	property: 'miner',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'start',
 			call: 'miner_start',
@@ -492,7 +492,7 @@ web3._extend({
 const Net_JS = `
 web3._extend({
 	property: 'net',
-	mlemoods: [],
+	methods: [],
 	properties: [
 		new web3._extend.Property({
 			name: 'version',
@@ -505,7 +505,7 @@ web3._extend({
 const Personal_JS = `
 web3._extend({
 	property: 'personal',
-	mlemoods: [
+	methods: [
 		new web3._extend.Method({
 			name: 'importRawKey',
 			call: 'personal_importRawKey',
@@ -551,7 +551,7 @@ web3._extend({
 const RPC_JS = `
 web3._extend({
 	property: 'rpc',
-	mlemoods: [],
+	methods: [],
 	properties: [
 		new web3._extend.Property({
 			name: 'modules',
@@ -564,7 +564,7 @@ web3._extend({
 const Shh_JS = `
 web3._extend({
 	property: 'shh',
-	mlemoods: [
+	methods: [
 	],
 	properties:
 	[
@@ -584,7 +584,7 @@ web3._extend({
 const SWARMFS_JS = `
 web3._extend({
 	property: 'swarmfs',
-	mlemoods:
+	methods:
 	[
 		new web3._extend.Method({
 			name: 'mount',
@@ -608,7 +608,7 @@ web3._extend({
 const TxPool_JS = `
 web3._extend({
 	property: 'txpool',
-	mlemoods: [],
+	methods: [],
 	properties:
 	[
 		new web3._extend.Property({

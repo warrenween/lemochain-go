@@ -49,7 +49,7 @@ const (
 )
 
 // PublicLemochainAPI provides an API to access Lemochain related information.
-// It offers only mlemoods that operate on public data that is freely available to anyone.
+// It offers only methods that operate on public data that is freely available to anyone.
 type PublicLemochainAPI struct {
 	b Backend
 }
@@ -175,7 +175,7 @@ func (s *PublicTxPoolAPI) Inspect() map[string]map[string]map[string]string {
 }
 
 // PublicAccountAPI provides an API to access accounts managed by this node.
-// It offers only mlemoods that can retrieve accounts.
+// It offers only methods that can retrieve accounts.
 type PublicAccountAPI struct {
 	am *accounts.Manager
 }
@@ -197,7 +197,7 @@ func (s *PublicAccountAPI) Accounts() []common.Address {
 }
 
 // PrivateAccountAPI provides an API to access accounts managed by this node.
-// It offers mlemoods to create, (un)lock en list accounts. Some mlemoods accept
+// It offers methods to create, (un)lock en list accounts. Some methods accept
 // passwords and are therefore considered private by default.
 type PrivateAccountAPI struct {
 	am        *accounts.Manager
@@ -255,7 +255,7 @@ func (s *PrivateAccountAPI) ListWallets() []rawWallet {
 
 // OpenWallet initiates a hardware wallet opening procedure, establishing a USB
 // connection and attempting to authenticate via the provided passphrase. Note,
-// the mlemood may return an extra challenge requiring a second open (e.g. the
+// the method may return an extra challenge requiring a second open (e.g. the
 // Trezor PIN matrix challenge).
 func (s *PrivateAccountAPI) OpenWallet(url string, passphrase *string) error {
 	wallet, err := s.am.Wallet(url)
@@ -467,14 +467,14 @@ func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Byt
 	return recoveredAddr, nil
 }
 
-// SignAndSendTransaction was renamed to SendTransaction. This mlemood is deprecated
+// SignAndSendTransaction was renamed to SendTransaction. This method is deprecated
 // and will be removed in the future. It primary goal is to give clients time to update.
 func (s *PrivateAccountAPI) SignAndSendTransaction(ctx context.Context, args SendTxArgs, passwd string) (common.Hash, error) {
 	return s.SendTransaction(ctx, args, passwd)
 }
 
 // PublicBlockChainAPI provides an API to access the Lemochain blockchain.
-// It offers only mlemoods that operate on public data that is freely available to anyone.
+// It offers only methods that operate on public data that is freely available to anyone.
 type PublicBlockChainAPI struct {
 	b Backend
 }
@@ -931,13 +931,13 @@ func newRPCTransactionFromBlockHash(b *types.Block, hash common.Hash) *RPCTransa
 	return nil
 }
 
-// PublicTransactionPoolAPI exposes mlemoods for the RPC interface
+// PublicTransactionPoolAPI exposes methods for the RPC interface
 type PublicTransactionPoolAPI struct {
 	b         Backend
 	nonceLock *AddrLocker
 }
 
-// NewPublicTransactionPoolAPI creates a new RPC service with mlemoods specific for the transaction pool.
+// NewPublicTransactionPoolAPI creates a new RPC service with methods specific for the transaction pool.
 func NewPublicTransactionPoolAPI(b Backend, nonceLock *AddrLocker) *PublicTransactionPoolAPI {
 	return &PublicTransactionPoolAPI{b, nonceLock}
 }
@@ -1363,7 +1363,7 @@ type PublicDebugAPI struct {
 	b Backend
 }
 
-// NewPublicDebugAPI creates a new API definition for the public debug mlemoods
+// NewPublicDebugAPI creates a new API definition for the public debug methods
 // of the Lemochain service.
 func NewPublicDebugAPI(b Backend) *PublicDebugAPI {
 	return &PublicDebugAPI{b: b}
@@ -1406,7 +1406,7 @@ type PrivateDebugAPI struct {
 	b Backend
 }
 
-// NewPrivateDebugAPI creates a new API definition for the private debug mlemoods
+// NewPrivateDebugAPI creates a new API definition for the private debug methods
 // of the Lemochain service.
 func NewPrivateDebugAPI(b Backend) *PrivateDebugAPI {
 	return &PrivateDebugAPI{b: b}
@@ -1451,7 +1451,7 @@ func (api *PrivateDebugAPI) SetHead(number hexutil.Uint64) {
 	api.b.SetHead(uint64(number))
 }
 
-// PublicNetAPI offers network related RPC mlemoods
+// PublicNetAPI offers network related RPC methods
 type PublicNetAPI struct {
 	net            *p2p.Server
 	networkVersion uint64

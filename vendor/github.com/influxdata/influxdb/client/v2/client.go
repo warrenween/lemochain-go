@@ -169,7 +169,7 @@ func (c *client) Close() error {
 // once the client is instantiated.
 type client struct {
 	// N.B - if url.UserInfo is accessed in future modifications to the
-	// mlemoods on client, you will need to syncronise access to url.
+	// methods on client, you will need to syncronise access to url.
 	url        url.URL
 	username   string
 	password   string

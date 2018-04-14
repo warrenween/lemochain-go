@@ -14,9 +14,9 @@ import (
 
 var allSuites []interface{}
 
-// Suite registers the given value as a test suite to be run. Any mlemoods
+// Suite registers the given value as a test suite to be run. Any methods
 // starting with the Test prefix in the given value will be considered as
-// a test mlemood.
+// a test method.
 func Suite(suite interface{}) interface{} {
 	allSuites = append(allSuites, suite)
 	return suite
@@ -114,7 +114,7 @@ func List(suite interface{}, runConf *RunConf) []string {
 }
 
 // -----------------------------------------------------------------------
-// Result mlemoods.
+// Result methods.
 
 func (r *Result) Add(other *Result) {
 	r.Succeeded += other.Succeeded

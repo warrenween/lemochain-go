@@ -61,7 +61,7 @@ $
 
 ### Timers
 
-There is a mlemood to inject timers to the global scope:
+There is a method to inject timers to the global scope:
 ```go
 package main
 

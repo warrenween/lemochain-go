@@ -338,12 +338,12 @@ Object is the representation of a JavaScript object.
 ```go
 func (self Object) Call(name string, argumentList ...interface{}) (Value, error)
 ```
-Call a mlemood on the object.
+Call a method on the object.
 
 It is essentially equivalent to:
 
-    var mlemood, _ := object.Get(name)
-    mlemood.Call(object, argumentList...)
+    var method, _ := object.Get(name)
+    method.Call(object, argumentList...)
 
 An undefined value and an error will result if:
 
@@ -487,7 +487,7 @@ Copy will create a copy/clone of the runtime.
 
 Copy is useful for saving some time when creating many similar runtimes.
 
-This mlemood works by walking the original runtime and cloning each object,
+This method works by walking the original runtime and cloning each object,
 scope, stash, etc. into a new runtime.
 
 Be on the lookout for memory leaks or inadvertent sharing of resources.
@@ -581,7 +581,7 @@ type Script struct {
 ```
 
 Script is a handle for some (reusable) JavaScript. Passing a Script value to a
-run mlemood will evaluate the JavaScript.
+run method will evaluate the JavaScript.
 
 #### func (*Script) String
 
@@ -795,8 +795,8 @@ func (value Value) Object() *Object
 ```
 Object will return the object of the value, or nil if value is not an object.
 
-This mlemood will not do any implicit conversion. For example, calling this
-mlemood on a string primitive value will not return a String object.
+This method will not do any implicit conversion. For example, calling this
+method on a string primitive value will not return a String object.
 
 #### func (Value) String
 
@@ -805,7 +805,7 @@ func (value Value) String() string
 ```
 String will return the value as a string.
 
-This mlemood will make return the empty string if there is an error.
+This method will make return the empty string if there is an error.
 
 #### func (Value) ToBoolean
 

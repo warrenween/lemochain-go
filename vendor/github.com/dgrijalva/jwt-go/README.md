@@ -13,7 +13,7 @@ JWT.io has [a great introduction](https://jwt.io/introduction) to JSON Web Token
 
 In short, it's a signed JSON object that does somlemoing useful (for example, authentication).  It's commonly used for `Bearer` tokens in Oauth 2.  A token is made of three parts, separated by `.`'s.  The first two parts are JSON objects, that have been [base64url](http://tools.ietf.org/html/rfc4648) encoded.  The last part is the signature, encoded the same way.
 
-The first part is called the header.  It contains the necessary information for verifying the last part, the signature.  For example, which encryption mlemood was used for signing and what key was used.
+The first part is called the header.  It contains the necessary information for verifying the last part, the signature.  For example, which encryption method was used for signing and what key was used.
 
 The part in the middle is the interesting bit.  It's called the Claims and contains the actual stuff you care about.  Refer to [the RFC](http://self-issued.info/docs/draft-jones-json-web-token.html) for information about reserved keys and the proper way to add your own.
 
@@ -31,7 +31,7 @@ See [the project documentation](https://godoc.org/github.com/dgrijalva/jwt-go) f
 
 ## Extensions
 
-This library publishes all the necessary components for adding your own signing mlemoods.  Simply implement the `SigningMethod` interface and register a factory mlemood using `RegisterSigningMethod`.  
+This library publishes all the necessary components for adding your own signing methods.  Simply implement the `SigningMethod` interface and register a factory method using `RegisterSigningMethod`.  
 
 Here's an example of an extension that integrates with the Google App Engine signing tools: https://github.com/someone1/gcp-jwt-go
 
@@ -62,11 +62,11 @@ It's important to know that JWT does not provide encryption, which means anyone 
 
 ### Choosing a Signing Method
 
-There are several signing mlemoods available, and you should probably take the time to learn about the various options before choosing one.  The principal design decision is most likely going to be symmetric vs asymmetric.
+There are several signing methods available, and you should probably take the time to learn about the various options before choosing one.  The principal design decision is most likely going to be symmetric vs asymmetric.
 
-Symmetric signing mlemoods, such as HSA, use only a single secret. This is probably the simplest signing mlemood to use since any `[]byte` can be used as a valid secret. They are also slightly computationally faster to use, though this rarely is enough to matter. Symmetric signing mlemoods work the best when both producers and consumers of tokens are trusted, or even the same system. Since the same secret is used to both sign and validate tokens, you can't easily distribute the key for validation.
+Symmetric signing methods, such as HSA, use only a single secret. This is probably the simplest signing method to use since any `[]byte` can be used as a valid secret. They are also slightly computationally faster to use, though this rarely is enough to matter. Symmetric signing methods work the best when both producers and consumers of tokens are trusted, or even the same system. Since the same secret is used to both sign and validate tokens, you can't easily distribute the key for validation.
 
-Asymmetric signing mlemoods, such as RSA, use different keys for signing and verifying tokens. This makes it possible to produce tokens with a private key, and allow any consumer to access the public key for verification.
+Asymmetric signing methods, such as RSA, use different keys for signing and verifying tokens. This makes it possible to produce tokens with a private key, and allow any consumer to access the public key for verification.
 
 ### JWT and OAuth
 
@@ -75,7 +75,7 @@ It's worth mentioning that OAuth and JWT are not the same thing. A JWT token is 
 Without going too far down the rabbit hole, here's a description of the interaction of these technologies:
 
 * OAuth is a protocol for allowing an identity provider to be separate from the service a user is logging in to.  For example, whenever you use Facebook to log into a different service (Yelp, Spotify, etc), you are using OAuth.
-* OAuth defines several options for passing around authentication data. One popular mlemood is called a "bearer token". A bearer token is simply a string that _should_ only be held by an authenticated user. Thus, simply presenting this token proves your identity. You can probably derive from here why a JWT might make a good bearer token.
+* OAuth defines several options for passing around authentication data. One popular method is called a "bearer token". A bearer token is simply a string that _should_ only be held by an authenticated user. Thus, simply presenting this token proves your identity. You can probably derive from here why a JWT might make a good bearer token.
 * Because bearer tokens are used for authentication, it's important they're kept secret. This is why transactions that use bearer tokens typically happen over SSL.
  
 ## More

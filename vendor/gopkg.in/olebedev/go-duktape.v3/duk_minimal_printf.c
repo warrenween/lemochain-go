@@ -8,7 +8,7 @@
 #include <stdint.h>  /* SIZE_MAX */
 
 /* Write character with bound checking.  Offset 'off' is updated regardless
- * of whlemoer an actual write is made.  This is necessary to satisfy snprintf()
+ * of whether an actual write is made.  This is necessary to satisfy snprintf()
  * return value semantics.
  */
 #define DUK__WRITE_CHAR(c) do { \
