@@ -2,8 +2,6 @@
 # lemo-core
 Lemo Chain
 
-### Upcoming April 
-
 LemoChain is a decentralized, open source platform for companies of all sizes to monetize and exchange their structured business data. 
 LemoChain will accelerate blockchain’s integration into our every-day lives by means of increasing it's universal commercial relevance.
    
