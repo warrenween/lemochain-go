@@ -253,7 +253,7 @@ type ChequebookOverdraftIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 

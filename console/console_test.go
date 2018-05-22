@@ -97,7 +97,7 @@ func newTester(t *testing.T, confOverride func(*lemo.Config)) *tester {
 	}
 	lemoConf := &lemo.Config{
 		Genesis:   core.DeveloperGenesisBlock(15, common.Address{}),
-		Lemoerbase: common.HexToAddress(testAddress),
+		Lemobase: common.HexToAddress(testAddress),
 		Lemohash: lemohash.Config{
 			PowMode: lemohash.ModeTest,
 		},

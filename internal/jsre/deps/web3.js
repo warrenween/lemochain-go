@@ -1,4 +1,4 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports=[
   {
     "constant": true,
@@ -619,7 +619,7 @@ module.exports = SolidityTypeBytes;
 */
 /**
  * @file coder.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -735,68 +735,52 @@ SolidityCoder.prototype.encodeMultiWithOffset = function (types, solidityTypes, 
     return result;
 };
 
-// TODO: refactor whole encoding!
 SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded, offset) {
+    /* jshint maxcomplexity: 17 */
+    /* jshint maxdepth: 5 */
+
     var self = this;
-    if (solidityType.isDynamicArray(type)) {
-        return (function () {
-            // offset was already set
-            var nestedName = solidityType.nestedName(type);
-            var nestedStaticPartLength = solidityType.staticPartLength(nestedName);
-            var result = encoded[0];
+    var encodingMode={dynamic:1,static:2,other:3};
 
-            (function () {
-                var previousLength = 2; // in int
-                if (solidityType.isDynamicArray(nestedName)) {
-                    for (var i = 1; i < encoded.length; i++) {
-                        previousLength += +(encoded[i - 1])[0] || 0;
-                        result += f.formatInputInt(offset + i * nestedStaticPartLength + previousLength * 32).encode();
-                    }
+    var mode=(solidityType.isDynamicArray(type)?encodingMode.dynamic:(solidityType.isStaticArray(type)?encodingMode.static:encodingMode.other));
+
+    if(mode !== encodingMode.other){
+        var nestedName = solidityType.nestedName(type);
+        var nestedStaticPartLength = solidityType.staticPartLength(nestedName);
+        var result = (mode === encodingMode.dynamic ? encoded[0] : '');
+
+        if (solidityType.isDynamicArray(nestedName)) {
+            var previousLength = (mode === encodingMode.dynamic ? 2 : 0);
+
+            for (var i = 0; i < encoded.length; i++) {
+                // calculate length of previous item
+                if(mode === encodingMode.dynamic){
+                    previousLength += +(encoded[i - 1])[0] || 0;
                 }
-            })();
-
-            // first element is length, skip it
-            (function () {
-                for (var i = 0; i < encoded.length - 1; i++) {
-                    var additionalOffset = result / 2;
-                    result += self.encodeWithOffset(nestedName, solidityType, encoded[i + 1], offset +  additionalOffset);
+                else if(mode === encodingMode.static){
+                    previousLength += +(encoded[i - 1] || [])[0] || 0;
                 }
-            })();
-
-            return result;
-        })();
-
-    } else if (solidityType.isStaticArray(type)) {
-        return (function () {
-            var nestedName = solidityType.nestedName(type);
-            var nestedStaticPartLength = solidityType.staticPartLength(nestedName);
-            var result = "";
-
-
-            if (solidityType.isDynamicArray(nestedName)) {
-                (function () {
-                    var previousLength = 0; // in int
-                    for (var i = 0; i < encoded.length; i++) {
-                        // calculate length of previous item
-                        previousLength += +(encoded[i - 1] || [])[0] || 0;
-                        result += f.formatInputInt(offset + i * nestedStaticPartLength + previousLength * 32).encode();
-                    }
-                })();
+                result += f.formatInputInt(offset + i * nestedStaticPartLength + previousLength * 32).encode();
             }
+        }
 
-            (function () {
-                for (var i = 0; i < encoded.length; i++) {
-                    var additionalOffset = result / 2;
-                    result += self.encodeWithOffset(nestedName, solidityType, encoded[i], offset + additionalOffset);
-                }
-            })();
+        var len= (mode === encodingMode.dynamic ? encoded.length-1 : encoded.length);
+        for (var c = 0; c < len; c++) {
+            var additionalOffset = result / 2;
+            if(mode === encodingMode.dynamic){
+                result += self.encodeWithOffset(nestedName, solidityType, encoded[c + 1], offset +  additionalOffset);
+            }
+            else if(mode === encodingMode.static){
+                result += self.encodeWithOffset(nestedName, solidityType, encoded[c], offset + additionalOffset);
+            }
+        }
 
-            return result;
-        })();
+        return result;
     }
 
     return encoded;
 };
+
 
 /**
  * Should be used to decode bytes to plain param
@@ -906,7 +890,7 @@ module.exports = SolidityTypeDynamicBytes;
 */
 /**
  * @file formatters.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -1194,7 +1178,7 @@ module.exports = SolidityTypeInt;
 */
 /** 
  * @file param.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -1231,7 +1215,7 @@ SolidityParam.prototype.withOffset = function (offset) {
 };
 
 /**
- * This method should be used to combine solidity params toglemoer
+ * This method should be used to combine solidity params together
  * eg. when appending an array
  *
  * @method combine
@@ -1746,13 +1730,13 @@ if (typeof XMLHttpRequest === 'undefined') {
 
 /**
  * Utils
- * 
+ *
  * @module utils
  */
 
 /**
  * Utility functions
- * 
+ *
  * @class [utils] config
  * @constructor
  */
@@ -1768,27 +1752,27 @@ var ETH_UNITS = [
     'Gwei',
     'szabo',
     'finney',
-    'femtolemoer',
-    'picolemoer',
-    'nanolemoer',
-    'microlemoer',
-    'millilemoer',
+    'femtolemo',
+    'picolemo',
+    'nanolemo',
+    'microlemo',
+    'millilemo',
     'nano',
     'micro',
     'milli',
-    'lemoer',
+    'lemo',
     'grand',
-    'Mlemoer',
-    'Glemoer',
-    'Tlemoer',
-    'Plemoer',
-    'Elemoer',
-    'Zlemoer',
-    'Ylemoer',
-    'Nlemoer',
-    'Dlemoer',
-    'Vlemoer',
-    'Ulemoer'
+    'Mlemo',
+    'Glemo',
+    'Tlemo',
+    'Plemo',
+    'Elemo',
+    'Zlemo',
+    'Ylemo',
+    'Nlemo',
+    'Dlemo',
+    'Vlemo',
+    'Ulemo'
 ];
 
 module.exports = {
@@ -1821,7 +1805,7 @@ module.exports = {
 */
 /** 
  * @file sha3.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -1884,33 +1868,33 @@ var sha3 = require('./sha3.js');
 var utf8 = require('utf8');
 
 var unitMap = {
-    'nolemoer':      '0',
+    'nolemo':      '0',
     'wei':          '1',
     'kwei':         '1000',
     'Kwei':         '1000',
     'babbage':      '1000',
-    'femtolemoer':   '1000',
+    'femtolemo':   '1000',
     'mwei':         '1000000',
     'Mwei':         '1000000',
     'lovelace':     '1000000',
-    'picolemoer':    '1000000',
+    'picolemo':    '1000000',
     'gwei':         '1000000000',
     'Gwei':         '1000000000',
     'shannon':      '1000000000',
-    'nanolemoer':    '1000000000',
+    'nanolemo':    '1000000000',
     'nano':         '1000000000',
     'szabo':        '1000000000000',
-    'microlemoer':   '1000000000000',
+    'microlemo':   '1000000000000',
     'micro':        '1000000000000',
     'finney':       '1000000000000000',
-    'millilemoer':    '1000000000000000',
-    'milli':         '1000000000000000',
-    'lemoer':        '1000000000000000000',
-    'klemoer':       '1000000000000000000000',
+    'millilemo':   '1000000000000000',
+    'milli':        '1000000000000000',
+    'lemo':        '1000000000000000000',
+    'klemo':       '1000000000000000000000',
     'grand':        '1000000000000000000000',
-    'mlemoer':       '1000000000000000000000000',
-    'glemoer':       '1000000000000000000000000000',
-    'tlemoer':       '1000000000000000000000000000000'
+    'mlemo':       '1000000000000000000000000',
+    'glemo':       '1000000000000000000000000000',
+    'tlemo':       '1000000000000000000000000000000'
 };
 
 /**
@@ -1990,18 +1974,24 @@ var toAscii = function(hex) {
  *
  * @method fromUtf8
  * @param {String} string
- * @param {Number} optional padding
+ * @param {Boolean} allowZero to convert code point zero to 00 instead of end of string
  * @returns {String} hex representation of input string
  */
-var fromUtf8 = function(str) {
+var fromUtf8 = function(str, allowZero) {
     str = utf8.encode(str);
     var hex = "";
     for(var i = 0; i < str.length; i++) {
         var code = str.charCodeAt(i);
-        if (code === 0)
-            break;
-        var n = code.toString(16);
-        hex += n.length < 2 ? '0' + n : n;
+        if (code === 0) {
+            if (allowZero) {
+                hex += '00';
+            } else {
+                break;
+            }
+        } else {
+            var n = code.toString(16);
+            hex += n.length < 2 ? '0' + n : n;
+        }
     }
 
     return "0x" + hex;
@@ -2015,7 +2005,7 @@ var fromUtf8 = function(str) {
  * @param {Number} optional padding
  * @returns {String} hex representation of input string
  */
-var fromAscii = function(str) {
+var fromAscii = function(str, num) {
     var hex = "";
     for(var i = 0; i < str.length; i++) {
         var code = str.charCodeAt(i);
@@ -2023,7 +2013,7 @@ var fromAscii = function(str) {
         hex += n.length < 2 ? '0' + n : n;
     }
 
-    return "0x" + hex;
+    return "0x" + hex.padEnd(num,'0');
 };
 
 /**
@@ -2050,15 +2040,22 @@ var transformToFullName = function (json) {
  * @returns {String} display name for function/event eg. multiply(uint256) -> multiply
  */
 var extractDisplayName = function (name) {
-    var length = name.indexOf('(');
-    return length !== -1 ? name.substr(0, length) : name;
+    var stBracket = name.indexOf('(');
+    var endBracket = name.indexOf(')');
+    return (stBracket !== -1 && endBracket !== -1) ? name.substr(0, stBracket) : name;
 };
 
-/// @returns overloaded part of function/event name
+/**
+ * Should be called to get type name of contract function
+ *
+ * @method extractTypeName
+ * @param {String} name of function/event
+ * @returns {String} type name for function/event eg. multiply(uint256) -> uint256
+ */
 var extractTypeName = function (name) {
-    /// TODO: make it invulnerable
-    var length = name.indexOf('(');
-    return length !== -1 ? name.substr(length + 1, name.length - 1 - (length + 1)).replace(' ', '') : "";
+    var stBracket = name.indexOf('(');
+    var endBracket = name.indexOf(')');
+    return (stBracket !== -1 && endBracket !== -1) ? name.substr(stBracket + 1, endBracket - stBracket - 1).replace(' ', '') : "";
 };
 
 /**
@@ -2114,7 +2111,7 @@ var toHex = function (val) {
         else if(val.indexOf('0x') === 0)
             return val;
         else if (!isFinite(val))
-            return fromAscii(val);
+            return fromUtf8(val,1);
     }
 
     return fromDecimal(val);
@@ -2124,12 +2121,12 @@ var toHex = function (val) {
  * Returns value of unit in Wei
  *
  * @method getValueOfUnit
- * @param {String} unit the unit to convert to, default lemoer
+ * @param {String} unit the unit to convert to, default lemo
  * @returns {BigNumber} value of the unit (in Wei)
  * @throws error if the unit is not correct:w
  */
 var getValueOfUnit = function (unit) {
-    unit = unit ? unit.toLowerCase() : 'lemoer';
+    unit = unit ? unit.toLowerCase() : 'lemo';
     var unitValue = unitMap[unit];
     if (unitValue === undefined) {
         throw new Error('This unit doesn\'t exists, please use the one of the following units' + JSON.stringify(unitMap, null, 2));
@@ -2138,24 +2135,24 @@ var getValueOfUnit = function (unit) {
 };
 
 /**
- * Takes a number of wei and converts it to any other lemoer unit.
+ * Takes a number of wei and converts it to any other lemo unit.
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtolemoer     babbage
- * - mwei       picolemoer      lovelace
- * - gwei       nanolemoer      shannon      nano
- * - --         microlemoer     szabo        micro
- * - --         millilemoer     finney       milli
- * - lemoer      --             --
- * - klemoer                    --           grand
- * - mlemoer
- * - glemoer
- * - tlemoer
+ * - kwei       femtolemo     babbage
+ * - mwei       picolemo      lovelace
+ * - gwei       nanolemo      shannon      nano
+ * - --         microlemo     szabo        micro
+ * - --         millilemo     finney       milli
+ * - lemo      --             --
+ * - klemo                    --           grand
+ * - mlemo
+ * - glemo
+ * - tlemo
  *
  * @method fromWei
  * @param {Number|String} number can be a number, number string or a HEX of a decimal
- * @param {String} unit the unit to convert to, default lemoer
+ * @param {String} unit the unit to convert to, default lemo
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
 */
 var fromWei = function(number, unit) {
@@ -2169,21 +2166,20 @@ var fromWei = function(number, unit) {
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtolemoer     babbage
- * - mwei       picolemoer      lovelace
- * - gwei       nanolemoer      shannon      nano
- * - --         microlemoer     szabo        micro
- * - --         microlemoer     szabo        micro
- * - --         millilemoer     finney       milli
- * - lemoer      --             --
- * - klemoer                    --           grand
- * - mlemoer
- * - glemoer
- * - tlemoer
+ * - kwei       femtolemo     babbage
+ * - mwei       picolemo      lovelace
+ * - gwei       nanolemo      shannon      nano
+ * - --         microlemo     szabo        micro
+ * - --         millilemo     finney       milli
+ * - lemo      --             --
+ * - klemo                    --           grand
+ * - mlemo
+ * - glemo
+ * - tlemo
  *
  * @method toWei
  * @param {Number|String|BigNumber} number can be a number, number string or a HEX of a decimal
- * @param {String} unit the unit to convert from, default lemoer
+ * @param {String} unit the unit to convert from, default lemo
  * @return {String|Object} When given a BigNumber object it returns one as well, otherwise a number
 */
 var toWei = function(number, unit) {
@@ -2368,7 +2364,7 @@ var isFunction = function (object) {
  * @return {Boolean}
  */
 var isObject = function (object) {
-    return object !== null && !(object instanceof Array) && typeof object === 'object';
+    return object !== null && !(Array.isArray(object)) && typeof object === 'object';
 };
 
 /**
@@ -2390,7 +2386,7 @@ var isBoolean = function (object) {
  * @return {Boolean}
  */
 var isArray = function (object) {
-    return object instanceof Array;
+    return Array.isArray(object);
 };
 
 /**
@@ -2475,34 +2471,39 @@ module.exports = {
 
 },{"./sha3.js":19,"bignumber.js":"bignumber.js","utf8":85}],21:[function(require,module,exports){
 module.exports={
-    "version": "0.20.1"
+    "version": "0.20.6"
 }
 
 },{}],22:[function(require,module,exports){
-/*
-    This file is part of web3.js.
-
-    web3.js is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    web3.js is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+/*!
+ * web3.js - Lemochain JavaScript API
+ *
+ * @license lgpl-3.0
 */
-/**
+
+/*
+ * This file is part of web3.js.
+ *
+ * web3.js is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * web3.js is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * @file web3.js
  * @authors:
  *   Jeffrey Wilcke <jeff@lemodev.com>
  *   Marek Kotewicz <marek@lemodev.com>
  *   Marian Oancea <marian@lemodev.com>
  *   Fabian Vogelsteller <fabian@lemodev.com>
- *   Gav Wood <g@lemodev.com>
+ *   Gav Wood <g@ethdev.com>
  * @date 2014
  */
 
@@ -2651,7 +2652,7 @@ module.exports = Web3;
 */
 /**
  * @file allevents.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2014
  */
 
@@ -2685,16 +2686,15 @@ AllSolidityEvents.prototype.encode = function (options) {
 
 AllSolidityEvents.prototype.decode = function (data) {
     data.data = data.data || '';
-    data.topics = data.topics || [];
 
-    var eventTopic = data.topics[0].slice(2);
+
+    var eventTopic = (utils.isArray(data.topics) && utils.isString(data.topics[0])) ? data.topics[0].slice(2) : '';
     var match = this._json.filter(function (j) {
         return eventTopic === sha3(utils.transformToFullName(j));
     })[0];
 
     if (!match) { // cannot find matching event?
-        console.warn('cannot find event for log');
-        return data;
+        return formatters.outputLogFormatter(data);
     }
 
     var event = new SolidityEvent(this._requestManager, match, this._address);
@@ -2741,7 +2741,7 @@ module.exports = AllSolidityEvents;
 */
 /** 
  * @file batch.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -2809,7 +2809,7 @@ module.exports = Batch;
 */
 /**
  * @file contract.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2014
  */
 
@@ -2910,7 +2910,7 @@ var checkForContractAddress = function(contract, callback){
             } else {
 
                 contract._lemo.getTransactionReceipt(contract.transactionHash, function(e, receipt){
-                    if(receipt && !callbackFired) {
+                    if(receipt && receipt.blockHash && !callbackFired) {
 
                         contract._lemo.getCode(receipt.contractAddress, function(e, code){
                             /*jshint maxcomplexity: 6 */
@@ -2971,7 +2971,7 @@ var ContractFactory = function (lemo, abi) {
      */
     this.new = function () {
         /*jshint maxcomplexity: 7 */
-        
+
         var contract = new Contract(this.lemo, this.abi);
 
         // parse arguments
@@ -3003,7 +3003,7 @@ var ContractFactory = function (lemo, abi) {
 
         if (callback) {
 
-            // wait for the contract address adn check if the code was deployed
+            // wait for the contract address and check if the code was deployed
             this.lemo.sendTransaction(options, function (err, hash) {
                 if (err) {
                     callback(err);
@@ -3121,7 +3121,7 @@ module.exports = ContractFactory;
 */
 /** 
  * @file errors.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -3166,7 +3166,7 @@ module.exports = {
 */
 /**
  * @file event.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2014
  */
 
@@ -3239,7 +3239,7 @@ SolidityEvent.prototype.signature = function () {
  * @method encode
  * @param {Object} indexed
  * @param {Object} options
- * @return {Object} everything combined toglemoer and encoded
+ * @return {Object} everything combined together and encoded
  */
 SolidityEvent.prototype.encode = function (indexed, options) {
     indexed = indexed || {};
@@ -3291,6 +3291,7 @@ SolidityEvent.prototype.decode = function (data) {
 
     data.data = data.data || '';
     data.topics = data.topics || [];
+
 
     var argTopics = this._anonymous ? data.topics : data.topics.slice(1);
     var indexedData = argTopics.map(function (topics) { return topics.slice(2); }).join("");
@@ -3426,11 +3427,11 @@ module.exports = extend;
 */
 /** @file filter.js
  * @authors:
- *   Jeffrey Wilcke <jeff@lemodev.com>
- *   Marek Kotewicz <marek@lemodev.com>
- *   Marian Oancea <marian@lemodev.com>
- *   Fabian Vogelsteller <fabian@lemodev.com>
- *   Gav Wood <g@lemodev.com>
+ *   Jeffrey Wilcke <jeff@ethdev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
+ *   Marian Oancea <marian@ethdev.com>
+ *   Fabian Vogelsteller <fabian@ethdev.com>
+ *   Gav Wood <g@ethdev.com>
  * @date 2014
  */
 
@@ -3655,8 +3656,6 @@ module.exports = Filter;
 
 
 },{"../utils/utils":20,"./formatters":30}],30:[function(require,module,exports){
-'use strict'
-
 /*
     This file is part of web3.js.
 
@@ -3675,10 +3674,13 @@ module.exports = Filter;
 */
 /**
  * @file formatters.js
- * @author Marek Kotewicz <marek@lemodev.com>
- * @author Fabian Vogelsteller <fabian@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
+ * @author Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
  */
+
+'use strict';
+
 
 var utils = require('../utils/utils');
 var config = require('../utils/config');
@@ -4160,7 +4162,7 @@ SolidityFunction.prototype.estimateGas = function () {
 /**
  * Return the encoded data of the call
  *
- * @method getData
+ * @mlemood getData
  * @return {String} the encoded data
  */
 SolidityFunction.prototype.getData = function () {
@@ -4268,9 +4270,9 @@ module.exports = SolidityFunction;
 */
 /** @file httpprovider.js
  * @authors:
- *   Marek Kotewicz <marek@lemodev.com>
- *   Marian Oancea <marian@lemodev.com>
- *   Fabian Vogelsteller <fabian@lemodev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
+ *   Marian Oancea <marian@ethdev.com>
+ *   Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
  */
 
@@ -4291,11 +4293,12 @@ var XHR2 = require('xhr2'); // jshint ignore: line
 /**
  * HttpProvider should be used to send rpc calls over http
  */
-var HttpProvider = function (host, timeout, user, password) {
+var HttpProvider = function (host, timeout, user, password, headers) {
   this.host = host || 'http://localhost:8545';
   this.timeout = timeout || 0;
   this.user = user;
   this.password = password;
+  this.headers = headers;
 };
 
 /**
@@ -4320,6 +4323,11 @@ HttpProvider.prototype.prepareRequest = function (async) {
     var auth = 'Basic ' + new Buffer(this.user + ':' + this.password).toString('base64');
     request.setRequestHeader('Authorization', auth);
   } request.setRequestHeader('Content-Type', 'application/json');
+  if(this.headers) {
+      this.headers.forEach(function(header) {
+          request.setRequestHeader(header.name, header.value);
+      });
+  }
   return request;
 };
 
@@ -4425,9 +4433,9 @@ module.exports = HttpProvider;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file iban.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -4535,7 +4543,7 @@ Iban.fromBban = function (bban) {
  * @return {Iban} the IBAN object
  */
 Iban.createIndirect = function (options) {
-    return Iban.fromBban('ETH' + options.institution + options.identifier);
+    return Iban.fromBban('LEMO' + options.institution + options.identifier);
 };
 
 /**
@@ -4557,7 +4565,7 @@ Iban.isValid = function (iban) {
  * @returns {Boolean} true if it is, otherwise false
  */
 Iban.prototype.isValid = function () {
-    return /^XE[0-9]{2}(ETH[0-9A-Z]{13}|[0-9A-Z]{30,31})$/.test(this._iban) &&
+    return /^XE[0-9]{2}(LEMO[0-9A-Z]{13}|[0-9A-Z]{30,31})$/.test(this._iban) &&
         mod9710(iso13616Prepare(this._iban)) === 1;
 };
 
@@ -4625,7 +4633,7 @@ Iban.prototype.address = function () {
         var base36 = this._iban.substr(4);
         var asBn = new BigNumber(base36, 36);
         return padLeft(asBn.toString(16), 20);
-    } 
+    }
 
     return '';
 };
@@ -4656,7 +4664,7 @@ module.exports = Iban;
 */
 /** @file ipcprovider.js
  * @authors:
- *   Fabian Vogelsteller <fabian@lemodev.com>
+ *   Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
  */
 
@@ -4865,7 +4873,7 @@ module.exports = IpcProvider;
 */
 /** @file jsonrpc.js
  * @authors:
- *   Marek Kotewicz <marek@lemodev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
  *   Aaron Kumavis <aaron@kumavis.me>
  * @date 2015
  */
@@ -4952,7 +4960,7 @@ module.exports = Jsonrpc;
 */
 /**
  * @file method.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -5118,7 +5126,7 @@ module.exports = Method;
 */
 /** @file db.js
  * @authors:
- *   Marek Kotewicz <marek@lemodev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -5542,7 +5550,7 @@ module.exports = Lemo;
 */
 /** @file lemo.js
  * @authors:
- *   Marek Kotewicz <marek@lemodev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -5554,7 +5562,7 @@ var Net = function (web3) {
 
     var self = this;
 
-    properties().forEach(function(p) { 
+    properties().forEach(function(p) {
         p.attachToObject(self);
         p.setRequestManager(web3._requestManager);
     });
@@ -5596,8 +5604,8 @@ module.exports = Net;
 */
 /**
  * @file lemo.js
- * @author Marek Kotewicz <marek@lemodev.com>
- * @author Fabian Vogelsteller <fabian@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
+ * @author Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
  */
 
@@ -5862,7 +5870,7 @@ module.exports = Shh;
  * @author Alex Beregszaszi <alex@rtfs.hu>
  * @date 2016
  *
- * Reference: https://github.com/LemoFoundationLtd/lemochain-go/blob/swarm/internal/web3ext/web3ext.go#L33
+ *
  */
 
 "use strict";
@@ -6006,7 +6014,7 @@ module.exports = Swarm;
 */
 /** @file watches.js
  * @authors:
- *   Marek Kotewicz <marek@lemodev.com>
+ *   Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -6115,7 +6123,7 @@ module.exports = {
 */
 /** 
  * @file namereg.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -6157,7 +6165,7 @@ module.exports = {
 /**
  * @file property.js
  * @author Fabian Vogelsteller <fabian@frozeman.de>
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -6300,13 +6308,13 @@ module.exports = Property;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file requestmanager.js
- * @author Jeffrey Wilcke <jeff@lemodev.com>
- * @author Marek Kotewicz <marek@lemodev.com>
- * @author Marian Oancea <marian@lemodev.com>
- * @author Fabian Vogelsteller <fabian@lemodev.com>
- * @author Gav Wood <g@lemodev.com>
+ * @author Jeffrey Wilcke <jeff@ethdev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
+ * @author Marian Oancea <marian@ethdev.com>
+ * @author Fabian Vogelsteller <fabian@ethdev.com>
+ * @author Gav Wood <g@ethdev.com>
  * @date 2014
  */
 
@@ -6367,7 +6375,7 @@ RequestManager.prototype.sendAsync = function (data, callback) {
         if (err) {
             return callback(err);
         }
-        
+
         if (!Jsonrpc.isValidResponse(result)) {
             return callback(errors.InvalidResponse(result));
         }
@@ -6400,7 +6408,7 @@ RequestManager.prototype.sendBatch = function (data, callback) {
         }
 
         callback(err, results);
-    }); 
+    });
 };
 
 /**
@@ -6504,7 +6512,7 @@ RequestManager.prototype.poll = function () {
     }
 
     var payload = Jsonrpc.toBatchPayload(pollsData);
-    
+
     // map the request id to they poll id
     var pollsIdMap = {};
     payload.forEach(function(load, index){
@@ -6534,7 +6542,7 @@ RequestManager.prototype.poll = function () {
             } else
                 return false;
         }).filter(function (result) {
-            return !!result; 
+            return !!result;
         }).filter(function (result) {
             var valid = Jsonrpc.isValidResponse(result);
             if (!valid) {
@@ -6580,7 +6588,7 @@ module.exports = Settings;
 */
 /** @file syncing.js
  * @authors:
- *   Fabian Vogelsteller <fabian@lemodev.com>
+ *   Fabian Vogelsteller <fabian@ethdev.com>
  * @date 2015
  */
 
@@ -6609,16 +6617,16 @@ var pollSyncing = function(self) {
 
         self.callbacks.forEach(function (callback) {
             if (self.lastSyncState !== sync) {
-                
+
                 // call the callback with true first so the app can stop anything, before receiving the sync data
                 if(!self.lastSyncState && utils.isObject(sync))
                     callback(null, true);
-                
+
                 // call on the next CPU cycle, so the actions of the sync stop can be processes first
                 setTimeout(function() {
                     callback(null, sync);
                 }, 0);
-                
+
                 self.lastSyncState = sync;
             }
         });
@@ -6673,9 +6681,9 @@ module.exports = IsSyncing;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file transfer.js
- * @author Marek Kotewicz <marek@lemodev.com>
+ * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
  */
 
@@ -6692,7 +6700,7 @@ var exchangeAbi = require('../contracts/SmartExchange.json');
  * @param {Function} callback, callback
  */
 var transfer = function (lemo, from, to, value, callback) {
-    var iban = new Iban(to); 
+    var iban = new Iban(to);
     if (!iban.isValid()) {
         throw new Error('invalid iban address');
     }
@@ -6700,7 +6708,7 @@ var transfer = function (lemo, from, to, value, callback) {
     if (iban.isDirect()) {
         return transferToAddress(lemo, from, iban.address(), value, callback);
     }
-    
+
     if (!callback) {
         var address = lemo.icapNamereg().addr(iban.institution());
         return deposit(lemo, from, address, value, iban.client());
@@ -6709,13 +6717,13 @@ var transfer = function (lemo, from, to, value, callback) {
     lemo.icapNamereg().addr(iban.institution(), function (err, address) {
         return deposit(lemo, from, address, value, iban.client(), callback);
     });
-    
+
 };
 
 /**
  * Should be used to transfer funds to certain address
  *
- * @method transferToAddress
+ * @transferToAddress
  * @param {String} from
  * @param {String} to
  * @param {Value} value to be tranfered
@@ -8408,7 +8416,7 @@ module.exports = transfer;
 	         *
 	         * This method invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
 	         *
-	         * @param {boolean} doFlush Whlemoer all blocks and partial blocks should be processed.
+	         * @param {boolean} doFlush Whether all blocks and partial blocks should be processed.
 	         *
 	         * @return {WordArray} The processed data.
 	         *

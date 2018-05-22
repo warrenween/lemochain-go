@@ -56,9 +56,9 @@ func run(evm *EVM, contract *Contract, input []byte) ([]byte, error) {
 // it shouldn't be modified.
 type Context struct {
 	// CanTransfer returns whether the account contains
-	// sufficient lemoer to transfer the value
+	// sufficient lemo to transfer the value
 	CanTransfer CanTransferFunc
-	// Transfer transfers lemoer from one account to the other
+	// Transfer transfers lemo from one account to the other
 	Transfer TransferFunc
 	// GetHash returns the hash corresponding to n
 	GetHash GetHashFunc

@@ -513,7 +513,7 @@ type PublicResolverABIChangedIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 
@@ -654,7 +654,7 @@ type PublicResolverAddrChangedIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 
@@ -787,7 +787,7 @@ type PublicResolverContentChangedIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 
@@ -920,7 +920,7 @@ type PublicResolverNameChangedIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 
@@ -1053,7 +1053,7 @@ type PublicResolverPubkeyChangedIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 
@@ -1187,7 +1187,7 @@ type PublicResolverTextChangedIterator struct {
 
 	logs chan types.Log        // Log channel receiving the found contract events
 	sub  lemochain.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whlemoer the subscription completed delivering logs
+	done bool                  // Whlemo the subscription completed delivering logs
 	fail error                 // Occurred error to stop iteration
 }
 

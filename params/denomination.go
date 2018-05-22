@@ -17,7 +17,7 @@
 package params
 
 const (
-	// These are the multipliers for lemoer denominations.
+	// These are the multipliers for lemo denominations.
 	// Example: To get the wei value of an amount in 'douglas', use
 	//
 	//    new(big.Int).Mul(value, big.NewInt(params.Douglas))
@@ -28,7 +28,7 @@ const (
 	Shannon  = 1e9
 	Szabo    = 1e12
 	Finney   = 1e15
-	Lemoer    = 1e18
+	Lemo    = 1e18
 	Einstein = 1e21
 	Douglas  = 1e42
 )

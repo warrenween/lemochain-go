@@ -104,7 +104,7 @@ func init() {
 	}
 }
 
-// genTxRing returns a block generator that sends lemoer in a ring
+// genTxRing returns a block generator that sends lemo in a ring
 // among n accounts. This is creates n entries in the state database
 // and fills the blocks with many small transactions.
 func genTxRing(naccounts int) func(int, *BlockGen) {

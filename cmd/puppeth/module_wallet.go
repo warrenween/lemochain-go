@@ -40,11 +40,11 @@ RUN \
 	echo $'glemo --networkid {{.NetworkID}} --port {{.NodePort}} --bootnodes {{.Bootnodes}} --lemostats \'{{.Lemostats}}\' --cache=512 --rpc --rpcaddr=0.0.0.0 --rpccorsdomain "*" --rpcvhosts "*"' >> wallet.sh
 
 RUN \
-	sed -i 's/PupplemoNetworkID/{{.NetworkID}}/g' dist/js/lemoerwallet-master.js && \
-	sed -i 's/PupplemoNetwork/{{.Network}}/g'     dist/js/lemoerwallet-master.js && \
-	sed -i 's/PupplemoDenom/{{.Denom}}/g'         dist/js/lemoerwallet-master.js && \
-	sed -i 's/PupplemoHost/{{.Host}}/g'           dist/js/lemoerwallet-master.js && \
-	sed -i 's/PupplemoRPCPort/{{.RPCPort}}/g'     dist/js/lemoerwallet-master.js
+	sed -i 's/PupplemoNetworkID/{{.NetworkID}}/g' dist/js/lemowallet-master.js && \
+	sed -i 's/PupplemoNetwork/{{.Network}}/g'     dist/js/lemowallet-master.js && \
+	sed -i 's/PupplemoDenom/{{.Denom}}/g'         dist/js/lemowallet-master.js && \
+	sed -i 's/PupplemoHost/{{.Host}}/g'           dist/js/lemowallet-master.js && \
+	sed -i 's/PupplemoRPCPort/{{.RPCPort}}/g'     dist/js/lemowallet-master.js
 
 ENTRYPOINT ["/bin/sh", "wallet.sh"]
 `

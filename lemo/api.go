@@ -49,14 +49,14 @@ func NewPublicLemochainAPI(e *Lemochain) *PublicLemochainAPI {
 	return &PublicLemochainAPI{e}
 }
 
-// Lemoerbase is the address that mining rewards will be send to
-func (api *PublicLemochainAPI) Lemoerbase() (common.Address, error) {
-	return api.e.Lemoerbase()
+// Lemobase is the address that mining rewards will be send to
+func (api *PublicLemochainAPI) Lemobase() (common.Address, error) {
+	return api.e.Lemobase()
 }
 
-// Coinbase is the address that mining rewards will be send to (alias for Lemoerbase)
+// Coinbase is the address that mining rewards will be send to (alias for Lemobase)
 func (api *PublicLemochainAPI) Coinbase() (common.Address, error) {
-	return api.Lemoerbase()
+	return api.Lemobase()
 }
 
 // Hashrate returns the POW hashrate
@@ -187,9 +187,9 @@ func (api *PrivateMinerAPI) SetGasPrice(gasPrice hexutil.Big) bool {
 	return true
 }
 
-// SetLemoerbase sets the lemoerbase of the miner
-func (api *PrivateMinerAPI) SetLemoerbase(lemoerbase common.Address) bool {
-	api.e.SetLemoerbase(lemoerbase)
+// SetLemobase sets the lemobase of the miner
+func (api *PrivateMinerAPI) SetLemobase(lemobase common.Address) bool {
+	api.e.SetLemobase(lemobase)
 	return true
 }
 

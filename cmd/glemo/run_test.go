@@ -39,7 +39,7 @@ type testglemo struct {
 
 	// template variables for expect
 	Datadir   string
-	Lemoerbase string
+	Lemobase string
 }
 
 func init() {
@@ -72,9 +72,9 @@ func runGlemo(t *testing.T, args ...string) *testglemo {
 			if i < len(args)-1 {
 				tt.Datadir = args[i+1]
 			}
-		case arg == "-lemoerbase" || arg == "--lemoerbase":
+		case arg == "-lemobase" || arg == "--lemobase":
 			if i < len(args)-1 {
-				tt.Lemoerbase = args[i+1]
+				tt.Lemobase = args[i+1]
 			}
 		}
 	}
