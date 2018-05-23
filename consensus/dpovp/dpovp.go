@@ -16,6 +16,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
+	"fmt"
+	"bytes"
 )
 
 type Dpovp struct {
@@ -128,8 +130,7 @@ func (d *Dpovp) Author(header *types.Header) (common.Address, error) {
 // given engine. Verifying the seal may be done optionally here, or explicitly
 // via the VerifySeal method.
 func (d *Dpovp) VerifyHeader(chain consensus.ChainReader, header *types.Header, seal bool) error {
-
-	return nil
+	return d.verifyHeader(chain, header, nil)
 }
 
 // VerifyHeaders is similar to VerifyHeader, but verifies a batch of headers
@@ -139,6 +140,40 @@ func (d *Dpovp) VerifyHeader(chain consensus.ChainReader, header *types.Header, 
 func (d *Dpovp) VerifyHeaders(chain consensus.ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
 
 	return nil, nil
+}
+
+// verifyHeader checks whether a header conforms to the consensus rules.The
+// caller may optionally pass in a batch of parents (ascending order) to avoid
+// looking those up from the database. This is useful for concurrently verifying
+// a batch of new headers.
+func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, parents []*types.Header) error {
+	if header.Number == nil {
+		return consensus.ErrInvalidNumber
+	}
+	number := header.Number.Uint64()
+	parent := chain.GetHeader(header.ParentHash, number-1)
+	if parent == nil {
+		return consensus.ErrUnknownAncestor
+	}
+	// Don't waste time checking blocks from the future
+	if header.Time.Cmp(big.NewInt(time.Now().Unix())) > 0 {
+		return consensus.ErrFutureBlock
+	}
+	// 验证签名与coinbase是否一致
+	pubkey, err := crypto.Ecrecover(header.Hash().Bytes(), header.SignInfo)
+	if err != nil {
+		return fmt.Errorf(`wrong signinfo`)
+	}
+	var signer common.Address
+	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
+	if bytes.Compare(header.Coinbase[:], signer[:]) != 0{
+		return fmt.Errorf(`signer != coinbase`)
+	}
+	// 是否该该节点出块
+
+
+	// All basic checks passed, verify cascading fields
+	return nil
 }
 
 // VerifyUncles verifies that the given block's uncles conform to the consensus
