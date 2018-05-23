@@ -29,13 +29,13 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/bloombits"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
+	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/internal/lemoapi"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/downloader"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/filters"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/gasprice"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
-	"github.com/LemoFoundationLtd/lemochain-go/event"
-	"github.com/LemoFoundationLtd/lemochain-go/internal/lemoapi"
 	"github.com/LemoFoundationLtd/lemochain-go/light"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
@@ -101,7 +101,7 @@ func New(ctx *node.ServiceContext, config *lemo.Config) (*LightLemochain, error)
 		peers:            peers,
 		reqDist:          newRequestDistributor(peers, quitSync),
 		accountManager:   ctx.AccountManager,
-		engine:           lemo.CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb),
+		engine:           lemo.CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb, common.Address{}, nil),
 		shutdownChan:     make(chan bool),
 		networkId:        config.NetworkId,
 		bloomRequests:    make(chan chan *bloombits.Retrieval),
@@ -109,7 +109,6 @@ func New(ctx *node.ServiceContext, config *lemo.Config) (*LightLemochain, error)
 		chtIndexer:       light.NewChtIndexer(chainDb, true),
 		bloomTrieIndexer: light.NewBloomTrieIndexer(chainDb, true),
 	}
-
 	llemo.relay = NewLesTxRelay(peers, llemo.reqDist)
 	llemo.serverPool = newServerPool(chainDb, quitSync, &llemo.wg)
 	llemo.retriever = newRetrieveManager(peers, llemo.reqDist, llemo.serverPool)

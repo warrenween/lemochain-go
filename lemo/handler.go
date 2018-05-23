@@ -27,14 +27,16 @@ import (
 	"time"
 
 	"github.com/LemoFoundationLtd/lemochain-go/common"
+	"github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/misc"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
+	"github.com/LemoFoundationLtd/lemochain-go/crypto"
+	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/downloader"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/fetcher"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
-	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p/discover"
@@ -76,7 +78,8 @@ type ProtocolManager struct {
 
 	downloader *downloader.Downloader
 	fetcher    *fetcher.Fetcher
-	peers      *peerSet
+	peers      *peerSet // 主节点网络连接
+	peersDelay *peerSet // sman 普通节点网络连接
 
 	SubProtocols []p2p.Protocol
 
@@ -107,6 +110,7 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 		blockchain:  blockchain,
 		chainconfig: config,
 		peers:       newPeerSet(),
+		peersDelay:  newPeerSet(), // sman add
 		newPeerCh:   make(chan *peer),
 		noMorePeers: make(chan struct{}),
 		txsyncCh:    make(chan *txsync),
@@ -161,12 +165,15 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 	// Construct the different synchronisation mechanisms
 	manager.downloader = downloader.New(mode, chaindb, manager.eventMux, blockchain, nil, manager.removePeer)
 
+	// 验证头部 调用engine的验证程序
 	validator := func(header *types.Header) error {
 		return engine.VerifyHeader(blockchain, header, true)
 	}
+	// 获取当前区块的高度
 	heighter := func() uint64 {
 		return blockchain.CurrentBlock().NumberU64()
 	}
+	// 将区块加入链
 	inserter := func(blocks types.Blocks) (int, error) {
 		// If fast sync is running, deny importing weird blocks
 		if atomic.LoadUint32(&manager.fastSync) == 1 {
@@ -181,6 +188,7 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 	return manager, nil
 }
 
+// 移除网络节点
 func (pm *ProtocolManager) removePeer(id string) {
 	// Short circuit if the peer was already removed
 	peer := pm.peers.Peer(id)
@@ -192,6 +200,26 @@ func (pm *ProtocolManager) removePeer(id string) {
 	// Unregister the peer from the downloader and Lemochain peer set
 	pm.downloader.UnregisterPeer(id)
 	if err := pm.peers.Unregister(id); err != nil {
+		log.Error("Peer removal failed", "peer", id, "err", err)
+	}
+	// Hard disconnect at the networking layer
+	if peer != nil {
+		peer.Peer.Disconnect(p2p.DiscUselessPeer)
+	}
+}
+
+// sman 移除普通节点
+func (pm *ProtocolManager) removePeerDelay(id string) {
+	// Short circuit if the peer was already removed
+	peer := pm.peersDelay.Peer(id)
+	if peer == nil {
+		return
+	}
+	log.Debug("Removing Lemochain peer", "peer", id)
+
+	// Unregister the peer from the downloader and Lemochain peer set
+	pm.downloader.UnregisterPeer(id)
+	if err := pm.peersDelay.Unregister(id); err != nil {
 		log.Error("Peer removal failed", "peer", id, "err", err)
 	}
 	// Hard disconnect at the networking layer
@@ -270,12 +298,23 @@ func (pm *ProtocolManager) handle(p *peer) error {
 	if rw, ok := p.rw.(*meteredMsgReadWriter); ok {
 		rw.Init(p.version)
 	}
-	// Register the peer locally
-	if err := pm.peers.Register(p); err != nil {
-		p.Log().Error("Lemochain peer registration failed", "err", err)
-		return err
+	// sman 获取地址
+	addr := dpovp.GetAddressByPubkey(p.Pubkey)
+	// sman 判断是否在主节点列表中
+	if dpovp.GetCoreNodeIndex(addr) == -1 { // 不在主节点中
+		// Register the peer locally
+		if err := pm.peersDelay.Register(p); err != nil {
+			p.Log().Error("Lemochain peer registration failed", "err", err)
+			return err
+		}
+		defer pm.removePeerDelay(p.id)
+	} else {
+		if err := pm.peers.Register(p); err != nil {
+			p.Log().Error("Lemochain peer registration failed", "err", err)
+			return err
+		}
+		defer pm.removePeer(p.id)
 	}
-	defer pm.removePeer(p.id)
 
 	// Register the peer in the downloader. If the downloader considers it banned, we disconnect
 	if err := pm.downloader.RegisterPeer(p.id, p.version, p); err != nil {
@@ -333,7 +372,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 		return errResp(ErrExtraStatusMsg, "uncontrolled status message")
 
 	// Block header query, collect the requested headers and reply
-	case msg.Code == GetBlockHeadersMsg:
+	case msg.Code == GetBlockHeadersMsg: // 根据区块号或Hash获取区块头消息
 		// Decode the complex header query
 		var query getBlockHeadersData
 		if err := msg.Decode(&query); err != nil {
@@ -411,7 +450,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 		}
 		return p.SendBlockHeaders(headers)
 
-	case msg.Code == BlockHeadersMsg:
+	case msg.Code == BlockHeadersMsg: // 收到block的headers消息
 		// A batch of headers arrived to one of our previous requests
 		var headers []*types.Header
 		if err := msg.Decode(&headers); err != nil {
@@ -617,7 +656,10 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 			if !pm.blockchain.HasBlock(block.Hash, block.Number) {
 				unknown = append(unknown, block)
 			}
+			// sman 判断是否有确认标识
+			pm.blockchain.ProcHashesMsg(block)
 		}
+
 		for _, block := range unknown {
 			pm.fetcher.Notify(p.id, block.Hash, block.Number, time.Now(), p.RequestOneHeader, p.RequestBodies)
 		}
@@ -685,11 +727,14 @@ func (pm *ProtocolManager) BroadcastBlock(block *types.Block, propagate bool) {
 	hash := block.Hash()
 	peers := pm.peers.PeersWithoutBlock(hash)
 
+	// 广播区块
 	// If propagation is requested, send to a subset of the peer
 	if propagate {
 		// Calculate the TD of the block (it's not imported yet, so block.Td is not valid)
 		var td *big.Int
-		if parent := pm.blockchain.GetBlock(block.ParentHash(), block.NumberU64()-1); parent != nil {
+		parHash :=block.ParentHash()
+		parNum :=block.NumberU64()-1
+		if parent := pm.blockchain.GetBlock(parHash, parNum); parent != nil {
 			td = new(big.Int).Add(block.Difficulty(), pm.blockchain.GetTd(block.ParentHash(), block.NumberU64()-1))
 		} else {
 			log.Error("Propagating dangling block", "number", block.Number(), "hash", hash)
@@ -703,10 +748,17 @@ func (pm *ProtocolManager) BroadcastBlock(block *types.Block, propagate bool) {
 		log.Trace("Propagated block", "hash", hash, "recipients", len(transfer), "duration", common.PrettyDuration(time.Since(block.ReceivedAt)))
 		return
 	}
+	// 仅仅发送块hash到所有节点
 	// Otherwise if the block is indeed in out own chain, announce it
 	if pm.blockchain.HasBlock(hash, block.NumberU64()) {
 		for _, peer := range peers {
-			peer.SendNewBlockHashes([]common.Hash{hash}, []uint64{block.NumberU64()})
+			// sman modify
+			//peer.SendNewBlockHashes([]common.Hash{hash}, []uint64{block.NumberU64()})
+			privKey := dpovp.GetPrivKey()                                    // 获取私钥
+			if signInfo, err := crypto.Sign(hash[:], &privKey); err == nil { // 签名
+				data := newBlockHashesData{blockConsensusData{hash, block.NumberU64(), uint8(1), signInfo}}
+				peer.SendBlockHashesWithConsensusInfo(data) // 发送确认信息到远程节点
+			}
 		}
 		log.Trace("Announced block", "hash", hash, "recipients", len(peers), "duration", common.PrettyDuration(time.Since(block.ReceivedAt)))
 	}

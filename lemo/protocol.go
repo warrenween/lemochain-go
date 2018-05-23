@@ -48,14 +48,14 @@ const ProtocolMaxMsgSize = 10 * 1024 * 1024 // Maximum cap on the size of a prot
 // lemo protocol message codes
 const (
 	// Protocol messages belonging to lemo/62
-	StatusMsg          = 0x00
-	NewBlockHashesMsg  = 0x01
+	StatusMsg          = 0x00 // 用于握手时发送/接收当前节点状态包括版本号，genesis的hash，current的hash等
+	NewBlockHashesMsg  = 0x01 // 新block的hash集消息
 	TxMsg              = 0x02
 	GetBlockHeadersMsg = 0x03
-	BlockHeadersMsg    = 0x04
+	BlockHeadersMsg    = 0x04 // 区块头集消息
 	GetBlockBodiesMsg  = 0x05
-	BlockBodiesMsg     = 0x06
-	NewBlockMsg        = 0x07
+	BlockBodiesMsg     = 0x06 //区块体集消息
+	NewBlockMsg        = 0x07 // 新的完整的block消息
 
 	// Protocol messages belonging to lemo/63
 	GetNodeDataMsg = 0x0d
@@ -115,13 +115,21 @@ type statusData struct {
 	TD              *big.Int
 	CurrentBlock    common.Hash
 	GenesisBlock    common.Hash
+	// sman
+	Coinbase common.Address // coinbase
+	SignInfo []byte         // 签名信息
 }
 
+// for: NewBlockHashesMsg
 // newBlockHashesData is the network packet for the block announcements.
-type newBlockHashesData []struct {
-	Hash   common.Hash // Hash of one particular block being announced
-	Number uint64      // Number of one particular block being announced
-}
+// type newBlockHashesData []struct {
+// 	Hash   common.Hash // Hash of one particular block being announced
+// 	Number uint64      // Number of one particular block being announced
+// 	// sman add
+// 	HasConsensus uint8  // 是否有确认信息
+// 	SignInfo     []byte // 签名信息
+// }
+type newBlockHashesData []blockConsensusData
 
 // getBlockHeadersData represents a block header query.
 type getBlockHeadersData struct {
@@ -181,3 +189,11 @@ type blockBody struct {
 
 // blockBodiesData is the network packet for block content distribution.
 type blockBodiesData []*blockBody
+
+// sman blockConsensusData
+type blockConsensusData struct {
+	Hash         common.Hash // 区块hash
+	Number       uint64      // 区块高度
+	HasConsensus uint8       // 是否有确认信息
+	SignInfo     []byte      // 签名信息
+}

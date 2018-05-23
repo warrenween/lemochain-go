@@ -30,17 +30,18 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/common/hexutil"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/clique"
+	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/lemohash"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/bloombits"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/core/vm"
+	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/internal/lemoapi"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/downloader"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/filters"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/gasprice"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
-	"github.com/LemoFoundationLtd/lemochain-go/event"
-	"github.com/LemoFoundationLtd/lemochain-go/internal/lemoapi"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/miner"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
@@ -84,8 +85,8 @@ type Lemochain struct {
 
 	ApiBackend *LemoApiBackend
 
-	miner     *miner.Miner
-	gasPrice  *big.Int
+	miner      *miner.Miner
+	gasPrice   *big.Int
 	lemoerbase common.Address
 
 	networkId     uint64
@@ -125,15 +126,16 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 		chainConfig:    chainConfig,
 		eventMux:       ctx.EventMux,
 		accountManager: ctx.AccountManager,
-		engine:         CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb),
 		shutdownChan:   make(chan bool),
 		stopDbUpgrade:  stopDbUpgrade,
 		networkId:      config.NetworkId,
 		gasPrice:       config.GasPrice,
-		lemoerbase:      config.Lemoerbase,
+		lemoerbase:     config.Lemoerbase,
 		bloomRequests:  make(chan chan *bloombits.Retrieval),
 		bloomIndexer:   NewBloomIndexer(chainDb, params.BloomBitsBlocks),
 	}
+	// sman modify
+	lemo.engine = CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb, config.Lemoerbase, func() *types.Block { return lemo.blockchain.CurrentBlock() })
 
 	log.Info("Initialising Lemochain protocol", "versions", ProtocolVersions, "network", config.NetworkId)
 
@@ -152,6 +154,9 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 	if err != nil {
 		return nil, err
 	}
+	// sman set coinbase to blockchain
+	lemo.blockchain.SetCoinbase(lemo.lemoerbase)
+
 	// Rewind the chain in case of an incompatible config upgrade.
 	if compat, ok := genesisErr.(*params.ConfigCompatError); ok {
 		log.Warn("Rewinding chain to upgrade configuration", "err", compat)
@@ -211,7 +216,15 @@ func CreateDB(ctx *node.ServiceContext, config *Config, name string) (lemodb.Dat
 }
 
 // CreateConsensusEngine creates the required type of consensus engine instance for an Lemochain service
-func CreateConsensusEngine(ctx *node.ServiceContext, config *lemohash.Config, chainConfig *params.ChainConfig, db lemodb.Database) consensus.Engine {
+func CreateConsensusEngine(ctx *node.ServiceContext, config *lemohash.Config, chainConfig *params.ChainConfig, db lemodb.Database, coinbase common.Address, currentblock func() *types.Block) consensus.Engine {
+	// sman 此处路由到我们的新的共识方法：DPOVP
+	if chainConfig.Dpovp != nil {
+		return dpovp.New(chainConfig.Dpovp, db, coinbase, currentblock)
+	} else {
+		log.Error(`sman not dpovp`)
+		return nil
+	}
+
 	// If proof-of-authority is requested, set it up
 	if chainConfig.Clique != nil {
 		return clique.New(chainConfig.Clique, db)
@@ -368,9 +381,9 @@ func (s *Lemochain) BlockChain() *core.BlockChain       { return s.blockchain }
 func (s *Lemochain) TxPool() *core.TxPool               { return s.txPool }
 func (s *Lemochain) EventMux() *event.TypeMux           { return s.eventMux }
 func (s *Lemochain) Engine() consensus.Engine           { return s.engine }
-func (s *Lemochain) ChainDb() lemodb.Database            { return s.chainDb }
+func (s *Lemochain) ChainDb() lemodb.Database           { return s.chainDb }
 func (s *Lemochain) IsListening() bool                  { return true } // Always listening
-func (s *Lemochain) LemoVersion() int                    { return int(s.protocolManager.SubProtocols[0].Version) }
+func (s *Lemochain) LemoVersion() int                   { return int(s.protocolManager.SubProtocols[0].Version) }
 func (s *Lemochain) NetVersion() uint64                 { return s.networkId }
 func (s *Lemochain) Downloader() *downloader.Downloader { return s.protocolManager.downloader }
 

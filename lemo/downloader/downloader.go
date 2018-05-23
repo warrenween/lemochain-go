@@ -29,8 +29,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/metrics"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
@@ -534,6 +534,7 @@ func (d *Downloader) Terminate() {
 	d.Cancel()
 }
 
+//
 // fetchHeight retrieves the head header of the remote peer to aid in estimating
 // the total time a pending synchronisation would take.
 func (d *Downloader) fetchHeight(p *peerConnection) (*types.Header, error) {
@@ -1514,6 +1515,7 @@ func (d *Downloader) commitPivotBlock(result *fetchResult) error {
 	return nil
 }
 
+// 注入一批新的从远程节点收到的block headers到download shedule
 // DeliverHeaders injects a new batch of block headers received from a remote
 // node into the download schedule.
 func (d *Downloader) DeliverHeaders(id string, headers []*types.Header) (err error) {

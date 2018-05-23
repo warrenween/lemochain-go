@@ -109,6 +109,8 @@ type Peer struct {
 
 	// events receives message send / receive events if set
 	events *event.Feed
+
+	Pubkey []byte // sman 远程节点公钥
 }
 
 // NewPeer returns a peer for testing purposes.
@@ -175,7 +177,9 @@ func newPeer(conn *conn, protocols []Protocol) *Peer {
 		protoErr: make(chan error, len(protomap)+1), // protocols + pingLoop
 		closed:   make(chan struct{}),
 		log:      log.New("id", conn.id, "conn", conn.flags),
+		//Pubkey:   conn.id,
 	}
+	copy(p.Pubkey[:], conn.id[:]) // sman pubkey
 	return p
 }
 

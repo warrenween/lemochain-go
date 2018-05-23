@@ -27,13 +27,15 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
+	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/downloader"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
-	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
+	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 )
 
+// sman 封装挖矿用的所有方法
 // Backend wraps all methods required for mining.
 type Backend interface {
 	AccountManager() *accounts.Manager
@@ -44,22 +46,27 @@ type Backend interface {
 
 // Miner creates blocks and searches for proof-of-work values.
 type Miner struct {
-	mux *event.TypeMux
+	mux    *event.TypeMux
+	worker *worker // sman delete
 
-	worker *worker
+	coinbase common.Address   // sman 挖矿收益地址
+	mining   int32            // sman 是否开启挖矿
+	lemo     Backend          // sman 用于挖矿的所有封装
+	engine   consensus.Engine // sman 确认共识机
 
-	coinbase common.Address
-	mining   int32
-	lemo      Backend
-	engine   consensus.Engine
-
-	canStart    int32 // can start indicates whether we can start the mining operation
+	// sman 是否可以开启挖矿操作
+	canStart int32 // can start indicates whether we can start the mining operation
+	// sman 标识是否同步区块后立即挖矿
 	shouldStart int32 // should start indicates whether we should start after sync
+}
+
+func (self *Miner) CoinBase() common.Address {
+	return self.coinbase
 }
 
 func New(lemo Backend, config *params.ChainConfig, mux *event.TypeMux, engine consensus.Engine) *Miner {
 	miner := &Miner{
-		lemo:      lemo,
+		lemo:     lemo,
 		mux:      mux,
 		engine:   engine,
 		worker:   newWorker(config, engine, common.Address{}, lemo, mux),
@@ -179,4 +186,5 @@ func (self *Miner) PendingBlock() *types.Block {
 func (self *Miner) SetLemoerbase(addr common.Address) {
 	self.coinbase = addr
 	self.worker.setLemoerbase(addr)
+	self.engine.(*dpovp.Dpovp).SetCoinbase(addr)
 }

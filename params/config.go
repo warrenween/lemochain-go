@@ -24,6 +24,7 @@ import (
 )
 
 var (
+	// TODO
 	MainnetGenesisHash = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3") // Mainnet genesis hash to enforce below configs on
 	TestnetGenesisHash = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d") // Testnet genesis hash to enforce below configs on
 )
@@ -41,7 +42,8 @@ var (
 		EIP158Block:         big.NewInt(2675000),
 		ByzantiumBlock:      big.NewInt(4370000),
 		ConstantinopleBlock: nil,
-		Lemohash:              new(LemohashConfig),
+		Lemohash:            new(LemohashConfig),
+		Dpovp:               &DpovpConfig{Timeout: 10 * 1000, Sleeptime: 3 * 1000},
 	}
 
 	// TestnetChainConfig contains the chain parameters to run a node on the Ropsten test network.
@@ -56,7 +58,8 @@ var (
 		EIP158Block:         big.NewInt(10),
 		ByzantiumBlock:      big.NewInt(1700000),
 		ConstantinopleBlock: nil,
-		Lemohash:              new(LemohashConfig),
+		Lemohash:            new(LemohashConfig),
+		Dpovp:               &DpovpConfig{Timeout: 10 * 1000, Sleeptime: 3 * 1000},
 	}
 
 	// RinkebyChainConfig contains the chain parameters to run a node on the Rinkeby test network.
@@ -75,6 +78,7 @@ var (
 			Period: 15,
 			Epoch:  30000,
 		},
+		Dpovp: &DpovpConfig{Timeout: 10 * 1000, Sleeptime: 3 * 1000},
 	}
 
 	// AllLemohashProtocolChanges contains every protocol change (EIPs) introduced
@@ -82,16 +86,16 @@ var (
 	//
 	// This configuration is intentionally not using keyed fields to force anyone
 	// adding flags to the config to also have to set these fields.
-	AllLemohashProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, new(LemohashConfig), nil}
+	AllLemohashProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, new(LemohashConfig), nil, &DpovpConfig{Timeout: 10 * 1000, Sleeptime: 3 * 1000}}
 
 	// AllCliqueProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Lemochain core developers into the Clique consensus.
 	//
 	// This configuration is intentionally not using keyed fields to force anyone
 	// adding flags to the config to also have to set these fields.
-	AllCliqueProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, &CliqueConfig{Period: 0, Epoch: 30000}}
+	AllCliqueProtocolChanges = &ChainConfig{big.NewInt(1337), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, nil, &CliqueConfig{Period: 0, Epoch: 30000}, new(DpovpConfig)}
 
-	TestChainConfig = &ChainConfig{big.NewInt(1), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, new(LemohashConfig), nil}
+	TestChainConfig = &ChainConfig{big.NewInt(1), big.NewInt(0), nil, false, big.NewInt(0), common.Hash{}, big.NewInt(0), big.NewInt(0), big.NewInt(0), nil, new(LemohashConfig), nil, new(DpovpConfig)}
 	TestRules       = TestChainConfig.Rules(new(big.Int))
 )
 
@@ -108,7 +112,7 @@ type ChainConfig struct {
 	DAOForkBlock   *big.Int `json:"daoForkBlock,omitempty"`   // TheDAO hard-fork switch block (nil = no fork)
 	DAOForkSupport bool     `json:"daoForkSupport,omitempty"` // Whlemoer the nodes supports or opposes the DAO hard-fork
 
-	// EIP150 implements the Gas price changes (https://github.com/lemochain/EIPs/issues/150)
+	// EIP150 implements the Gas price changes (https://github.com/ethereum/EIPs/issues/150)
 	EIP150Block *big.Int    `json:"eip150Block,omitempty"` // EIP150 HF block (nil = no fork)
 	EIP150Hash  common.Hash `json:"eip150Hash,omitempty"`  // EIP150 HF hash (needed for header only clients as only gas pricing changed)
 
@@ -120,7 +124,8 @@ type ChainConfig struct {
 
 	// Various consensus engines
 	Lemohash *LemohashConfig `json:"lemohash,omitempty"`
-	Clique *CliqueConfig `json:"clique,omitempty"`
+	Clique   *CliqueConfig   `json:"clique,omitempty"`
+	Dpovp    *DpovpConfig    `json:"dpovp,omitempty"` // sman for dpovp
 }
 
 // LemohashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -135,6 +140,12 @@ func (c *LemohashConfig) String() string {
 type CliqueConfig struct {
 	Period uint64 `json:"period"` // Number of seconds between blocks to enforce
 	Epoch  uint64 `json:"epoch"`  // Epoch length to reset votes and checkpoint
+}
+
+// sman DpovpConfig is the consensus engine configs for dpos
+type DpovpConfig struct {
+	Timeout   int64 `json:"Timeout"`   // Number of timeout between blocks to produce millsecond
+	Sleeptime int64 `json:"Sleeptime"` // Time of one block is produced and before ohter node begin produce another block millsecond
 }
 
 // String implements the stringer interface, returning the consensus engine details.

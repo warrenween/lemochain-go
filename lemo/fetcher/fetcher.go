@@ -304,6 +304,7 @@ func (f *Fetcher) loop() {
 				}
 				break
 			}
+			// sman TODO
 			// Otherwise if fresh and still unknown, try and import
 			hash := op.block.Hash()
 			if number+maxUncleDist < height || f.getBlock(hash) != nil {
@@ -670,6 +671,7 @@ func (f *Fetcher) insert(peer string, block *types.Block) {
 			log.Debug("Propagated block import failed", "peer", peer, "number", block.Number(), "hash", hash, "err", err)
 			return
 		}
+
 		// If import succeeded, broadcast the block
 		propAnnounceOutTimer.UpdateSince(block.ReceivedAt)
 		go f.broadcastBlock(block, false)

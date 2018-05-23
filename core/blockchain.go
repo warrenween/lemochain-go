@@ -22,20 +22,20 @@ import (
 	"fmt"
 	"io"
 	"math/big"
-	mrand "math/rand"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/LemoFoundationLtd/lemochain-go/common"
+	common_dpovp "github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/common/mclock"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/core/vm"
 	"github.com/LemoFoundationLtd/lemochain-go/crypto"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/metrics"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
@@ -90,8 +90,8 @@ type BlockChain struct {
 	cacheConfig *CacheConfig        // Cache configuration for pruning
 
 	db     lemodb.Database // Low level persistent database to store final content in
-	triegc *prque.Prque   // Priority queue mapping block numbers to tries to gc
-	gcproc time.Duration  // Accumulates canonical block processing for trie dumping
+	triegc *prque.Prque    // Priority queue mapping block numbers to tries to gc
+	gcproc time.Duration   // Accumulates canonical block processing for trie dumping
 
 	hc            *HeaderChain
 	rmLogsFeed    event.Feed
@@ -109,6 +109,9 @@ type BlockChain struct {
 	checkpoint       int          // checkpoint counts towards the new checkpoint
 	currentBlock     atomic.Value // Current head of the block chain
 	currentFastBlock atomic.Value // Current head of the fast-sync chain (may be above the block chain!)
+
+	stableBlock     atomic.Value           // sman 当前稳定块指针
+	blocksConsensus map[common.Hash]uint64 // sman 区块经过确认的标识 按位计算 最多64个主节点
 
 	stateCache   state.Database // State database to reuse between imports (contains state cache)
 	bodyCache    *lru.Cache     // Cache for the most recent block bodies
@@ -128,6 +131,13 @@ type BlockChain struct {
 	vmConfig  vm.Config
 
 	badBlocks *lru.Cache // Bad block cache
+
+	coinbase common.Address // sman coinbase
+}
+
+// 设置coinbase
+func (bc *BlockChain) SetCoinbase(coinbase common.Address) {
+	bc.coinbase = coinbase
 }
 
 // NewBlockChain returns a fully initialised block chain using information
@@ -341,6 +351,58 @@ func (bc *BlockChain) GasLimit() uint64 {
 // block is retrieved from the blockchain's internal cache.
 func (bc *BlockChain) CurrentBlock() *types.Block {
 	return bc.currentBlock.Load().(*types.Block)
+}
+
+// sman 获取当前稳定区块指针
+func (bc *BlockChain) StableBlock() *types.Block {
+	return bc.stableBlock.Load().(*types.Block)
+}
+
+// sman 设置当前稳定区块指针
+func (bc *BlockChain) SetStableBlock(block *types.Block) {
+	bc.stableBlock.Store(block)
+}
+
+// sman 设置确认标识
+// hash: block hash
+// address: consensus node address
+func (bc *BlockChain) SetConsensusFlag(hash common.Hash, address common.Address) {
+	index := common_dpovp.GetCoreNodeIndex(address)
+	if index < 0 {
+		err := errors.New(`Failed to set consensus flag`)
+		log.Crit("Failed to set consensus flag", "err", err)
+		return
+	}
+	v := uint64(1) << uint32(index)
+	if flag, ok := bc.blocksConsensus[hash]; ok == true {
+		v = flag | v
+	}
+	bc.blocksConsensus[hash] = v
+}
+
+// sman 验证区块是否得到超多2/3的确认
+func (bc *BlockChain) VerifyConsensusOK(hash common.Hash) bool {
+	flag, ok := bc.blocksConsensus[hash]
+	if ok != true {
+		return false
+	}
+	nodeCount := common_dpovp.GetCorNodesCount()
+	count := 0
+	for i := 0; i < nodeCount; i++ {
+		tmp := uint64(1 << uint32(i))
+		if tmp&flag == tmp {
+			count++
+		}
+	}
+	if count >= nodeCount*2/3 {
+		return true
+	}
+	return false
+}
+
+// sman 删除已达成共识的块标识
+func (bc *BlockChain) RemoveConsensusFlag(hash common.Hash) {
+	delete(bc.blocksConsensus, hash)
 }
 
 // CurrentFastBlock retrieves the current fast-sync head block of the canonical
@@ -870,28 +932,29 @@ func (bc *BlockChain) WriteBlockWithoutState(block *types.Block, td *big.Int) (e
 	return nil
 }
 
+// sman TODO
 // WriteBlockWithState writes the block and all associated state to the database.
 func (bc *BlockChain) WriteBlockWithState(block *types.Block, receipts []*types.Receipt, state *state.StateDB) (status WriteStatus, err error) {
 	bc.wg.Add(1)
 	defer bc.wg.Done()
 
 	// Calculate the total difficulty of the block
-	ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1)
-	if ptd == nil {
-		return NonStatTy, consensus.ErrUnknownAncestor
-	}
+	//ptd := bc.GetTd(block.ParentHash(), block.NumberU64()-1)
+	//if ptd == nil {
+	//	return NonStatTy, consensus.ErrUnknownAncestor
+	//}
 	// Make sure no inconsistent state is leaked during insertion
 	bc.mu.Lock()
 	defer bc.mu.Unlock()
 
-	currentBlock := bc.CurrentBlock()
-	localTd := bc.GetTd(currentBlock.Hash(), currentBlock.NumberU64())
-	externTd := new(big.Int).Add(block.Difficulty(), ptd)
+	//currentBlock := bc.CurrentBlock()
+	//localTd := bc.GetTd(currentBlock.Hash(), currentBlock.NumberU64())
+	//externTd := new(big.Int).Add(block.Difficulty(), ptd)
 
 	// Irrelevant of the canonical status, write the block itself to the database
-	if err := bc.hc.WriteTd(block.Hash(), block.NumberU64(), externTd); err != nil {
-		return NonStatTy, err
-	}
+	//if err := bc.hc.WriteTd(block.Hash(), block.NumberU64(), externTd); err != nil {
+	//	return NonStatTy, err
+	//}
 	// Write other block data using a batch.
 	batch := bc.db.NewBatch()
 	if err := WriteBlock(batch, block); err != nil {
@@ -959,39 +1022,39 @@ func (bc *BlockChain) WriteBlockWithState(block *types.Block, receipts []*types.
 	// If the total difficulty is higher than our known, add it to the canonical chain
 	// Second clause in the if statement reduces the vulnerability to selfish mining.
 	// Please refer to http://www.cs.cornell.edu/~ie53/publications/btcProcFC.pdf
-	reorg := externTd.Cmp(localTd) > 0
-	currentBlock = bc.CurrentBlock()
-	if !reorg && externTd.Cmp(localTd) == 0 {
-		// Split same-difficulty blocks by number, then at random
-		reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() && mrand.Float64() < 0.5)
-	}
-	if reorg {
-		// Reorganise the chain if the parent is not the head block
-		if block.ParentHash() != currentBlock.Hash() {
-			if err := bc.reorg(currentBlock, block); err != nil {
-				return NonStatTy, err
-			}
-		}
-		// Write the positional metadata for transaction and receipt lookups
-		if err := WriteTxLookupEntries(batch, block); err != nil {
-			return NonStatTy, err
-		}
-		// Write hash preimages
-		if err := WritePreimages(bc.db, block.NumberU64(), state.Preimages()); err != nil {
-			return NonStatTy, err
-		}
-		status = CanonStatTy
-	} else {
-		status = SideStatTy
-	}
-	if err := batch.Write(); err != nil {
-		return NonStatTy, err
-	}
+	// reorg := externTd.Cmp(localTd) >= 0
+	// currentBlock = bc.CurrentBlock()
+	// if !reorg && externTd.Cmp(localTd) == 0 {
+	// 	// Split same-difficulty blocks by number, then at random
+	// 	reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() && mrand.Float64() < 0.5)
+	// }
+	// if reorg {
+	// 	// Reorganise the chain if the parent is not the head block
+	// 	if block.ParentHash() != currentBlock.Hash() {
+	// 		if err := bc.reorg(currentBlock, block); err != nil {
+	// 			return NonStatTy, err
+	// 		}
+	// 	}
+	// 	// Write the positional metadata for transaction and receipt lookups
+	// 	if err := WriteTxLookupEntries(batch, block); err != nil {
+	// 		return NonStatTy, err
+	// 	}
+	// 	// Write hash preimages
+	// 	if err := WritePreimages(bc.db, block.NumberU64(), state.Preimages()); err != nil {
+	// 		return NonStatTy, err
+	// 	}
+	// 	status = CanonStatTy
+	// } else {
+	// 	status = SideStatTy
+	// }
+	// if err := batch.Write(); err != nil {
+	// 	return NonStatTy, err
+	// }
 
 	// Set new head.
-	if status == CanonStatTy {
+	//if status == CanonStatTy {
 		bc.insert(block)
-	}
+	//}
 	bc.futureBlocks.Remove(block.Hash())
 	return status, nil
 }
@@ -1012,6 +1075,7 @@ func (bc *BlockChain) InsertChain(chain types.Blocks) (int, error) {
 // only reason this method exists as a separate one is to make locking cleaner
 // with deferred statements.
 func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*types.Log, error) {
+	// 检查区块是否连续且继承关系正确
 	// Do a sanity check that the provided chain is actually ordered and linked
 	for i := 1; i < len(chain); i++ {
 		if chain[i].NumberU64() != chain[i-1].NumberU64()+1 || chain[i].ParentHash() != chain[i-1].Hash() {
@@ -1157,11 +1221,32 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		}
 		proctime := time.Since(bstart)
 
+		// sman 置出块者确认标识
+		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
+		// sman 高度是否大于当前head的高度 todo
+		if block.Header().Number.Int64() <= bc.CurrentBlock().Header().Number.Int64() {
+			err = errors.New(`height number need to be larger than currentblock`)
+			return i, events, coalescedLogs, err
+			// TODO
+		}
+
+		// sman 置自己节点对应的确认标识位
+		bc.SetConsensusFlag(block.Header().Hash(), bc.coinbase)
+		// sman 判断是否有2/3以上的确认
+		if bc.VerifyConsensusOK(block.Header().Hash()) {
+			if bc.stableBlock.Load().(*types.Block).Header().Number.Int64() > block.Header().Number.Int64() {
+				bc.stableBlock.Store(block)
+			}
+			// TODO 广播给普通节点
+			// go
+		}
 		// Write the block to the chain and get the status.
 		status, err := bc.WriteBlockWithState(block, receipts, state)
 		if err != nil {
 			return i, events, coalescedLogs, err
 		}
+		// sman TODO  广播该块的hash，附带上确认标识
+
 		switch status {
 		case CanonStatTy:
 			log.Debug("Inserted new block", "number", block.Number(), "hash", block.Hash(), "uncles", len(block.Uncles()),
@@ -1191,6 +1276,37 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		events = append(events, ChainHeadEvent{lastCanon})
 	}
 	return 0, events, coalescedLogs, nil
+}
+
+// sman 收到hash广播后的处理 主要处理确认标识 todo
+func (bc *BlockChain) ProcHashesMsg(info struct {
+	Hash         common.Hash // 区块hash
+	Number       uint64      // 区块高度
+	HasConsensus uint8       // 是否有确认信息
+	SignInfo     []byte      // 签名信息
+}) {
+	if info.HasConsensus != uint8(1) {
+		return
+	}
+	// 置签名者对应的确认标识位
+	// Recover the public key and the Lemochain address
+	pubkey, err := crypto.Ecrecover(info.Hash.Bytes(), info.SignInfo)
+	if err != nil {
+		return
+	}
+	var signer common.Address
+	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
+	bc.SetConsensusFlag(info.Hash, signer)
+	// 是否有该块 没有则返回
+	// todo
+	// 判断是否有2/3以上的确认
+	if bc.VerifyConsensusOK(info.Hash) {
+		if bc.stableBlock.Load().(*types.Block).Header().Number.Int64() > int64(info.Number) { // Stable_block是否已指向该块或该块的子块
+			//bc.stableBlock.Store(block) // 将stable_block指向该块
+		}
+		// TODO 广播给普通节点
+		// go
+	}
 }
 
 // insertStats tracks and reports on block insertion.

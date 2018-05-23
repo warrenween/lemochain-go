@@ -23,6 +23,7 @@ import (
 
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
+	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 )
 
 type CpuAgent struct {
@@ -73,6 +74,9 @@ func (self *CpuAgent) Start() {
 		return // agent already started
 	}
 	go self.update()
+	if _, ok := self.engine.(*dpovp.Dpovp);ok{
+		self.engine.(*dpovp.Dpovp).ModifyTimer()
+	}
 }
 
 func (self *CpuAgent) update() {
@@ -105,7 +109,7 @@ func (self *CpuAgent) mine(work *Work, stop <-chan struct{}) {
 		self.returnCh <- &Result{work, result}
 	} else {
 		if err != nil {
-			log.Warn("Block sealing failed", "err", err)
+		//	log.Warn("Block sealing failed", "err", err)
 		}
 		self.returnCh <- nil
 	}

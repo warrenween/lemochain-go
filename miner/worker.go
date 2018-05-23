@@ -31,8 +31,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/core/vm"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"gopkg.in/fatih/set.v0"
@@ -106,7 +106,7 @@ type worker struct {
 	agents map[Agent]struct{}
 	recv   chan *Result
 
-	lemo     Backend
+	lemo    Backend
 	chain   *core.BlockChain
 	proc    core.Validator
 	chainDb lemodb.Database
@@ -117,8 +117,8 @@ type worker struct {
 	currentMu sync.Mutex
 	current   *Work
 
-	uncleMu        sync.Mutex
-	possibleUncles map[common.Hash]*types.Block
+	uncleMu        sync.Mutex                   // sman delete
+	possibleUncles map[common.Hash]*types.Block // sman delete
 
 	unconfirmed *unconfirmedBlocks // set of locally mined blocks pending canonicalness confirmations
 
@@ -131,7 +131,7 @@ func newWorker(config *params.ChainConfig, engine consensus.Engine, coinbase com
 	worker := &worker{
 		config:         config,
 		engine:         engine,
-		lemo:            lemo,
+		lemo:           lemo,
 		mux:            mux,
 		txCh:           make(chan core.TxPreEvent, txChanSize),
 		chainHeadCh:    make(chan core.ChainHeadEvent, chainHeadChanSize),
@@ -203,7 +203,7 @@ func (self *worker) pendingBlock() *types.Block {
 func (self *worker) start() {
 	self.mu.Lock()
 	defer self.mu.Unlock()
-
+	log.Info("sman worker.start")
 	atomic.StoreInt32(&self.mining, 1)
 
 	// spin up agents
@@ -289,54 +289,53 @@ func (self *worker) update() {
 
 func (self *worker) wait() {
 	for {
-		mustCommitNewWork := true
+		//mustCommitNewWork := true
+		// sman self.recv: already sealed block
 		for result := range self.recv {
 			atomic.AddInt32(&self.atWork, -1)
+			if result != nil {
+				block := result.Block
+				work := result.Work
 
-			if result == nil {
-				continue
-			}
-			block := result.Block
-			work := result.Work
-
-			// Update the block hash in all logs since it is now available and not when the
-			// receipt/log of individual transactions were created.
-			for _, r := range work.receipts {
-				for _, l := range r.Logs {
-					l.BlockHash = block.Hash()
+				// Update the block hash in all logs since it is now available and not when the
+				// receipt/log of individual transactions were created.
+				for _, r := range work.receipts {
+					for _, l := range r.Logs {
+						l.BlockHash = block.Hash()
+					}
 				}
-			}
-			for _, log := range work.state.Logs() {
-				log.BlockHash = block.Hash()
-			}
-			stat, err := self.chain.WriteBlockWithState(block, work.receipts, work.state)
-			if err != nil {
-				log.Error("Failed writing block to chain", "err", err)
-				continue
-			}
-			// check if canon block and write transactions
-			if stat == core.CanonStatTy {
-				// implicit by posting ChainHeadEvent
-				mustCommitNewWork = false
-			}
-			// Broadcast the block and announce chain insertion event
-			self.mux.Post(core.NewMinedBlockEvent{Block: block})
-			var (
-				events []interface{}
-				logs   = work.state.Logs()
-			)
-			events = append(events, core.ChainEvent{Block: block, Hash: block.Hash(), Logs: logs})
-			if stat == core.CanonStatTy {
-				events = append(events, core.ChainHeadEvent{Block: block})
-			}
-			self.chain.PostChainEvents(events, logs)
+				for _, log := range work.state.Logs() {
+					log.BlockHash = block.Hash()
+				}
+				stat, err := self.chain.WriteBlockWithState(block, work.receipts, work.state)
+				if err != nil {
+					log.Error("Failed writing block to chain", "err", err)
+					continue
+				}
+				// check if canon block and write transactions
+				if stat == core.CanonStatTy {
+					// implicit by posting ChainHeadEvent
+					//mustCommitNewWork = false
+				}
+				// Broadcast the block and announce chain insertion event
+				self.mux.Post(core.NewMinedBlockEvent{Block: block})
+				var (
+					events []interface{}
+					logs= work.state.Logs()
+				)
+				events = append(events, core.ChainEvent{Block: block, Hash: block.Hash(), Logs: logs})
+				if stat == core.CanonStatTy {
+					events = append(events, core.ChainHeadEvent{Block: block})
+				}
+				self.chain.PostChainEvents(events, logs)
 
-			// Insert the block into the set of pending ones to wait for confirmations
-			self.unconfirmed.Insert(block.NumberU64(), block.Hash())
-
-			if mustCommitNewWork {
-				self.commitNewWork()
+				// Insert the block into the set of pending ones to wait for confirmations
+				self.unconfirmed.Insert(block.NumberU64(), block.Hash())
 			}
+			// 提交新work
+			//f mustCommitNewWork {
+			self.commitNewWork()
+			//}
 		}
 	}
 }
@@ -396,7 +395,6 @@ func (self *worker) commitNewWork() {
 
 	tstart := time.Now()
 	parent := self.chain.CurrentBlock()
-
 	tstamp := tstart.Unix()
 	if parent.Time().Cmp(new(big.Int).SetInt64(tstamp)) >= 0 {
 		tstamp = parent.Time().Int64() + 1
@@ -456,6 +454,7 @@ func (self *worker) commitNewWork() {
 	txs := types.NewTransactionsByPriceAndNonce(self.current.signer, pending)
 	work.commitTransactions(self.mux, txs, self.chain, self.coinbase)
 
+	// sman delete
 	// compute uncles for the new block.
 	var (
 		uncles    []*types.Header
@@ -485,7 +484,7 @@ func (self *worker) commitNewWork() {
 	}
 	// We only care about logging if we're actually mining.
 	if atomic.LoadInt32(&self.mining) == 1 {
-		log.Info("Commit new mining work", "number", work.Block.Number(), "txs", work.tcount, "uncles", len(uncles), "elapsed", common.PrettyDuration(time.Since(tstart)))
+		//log.Info("Commit new mining work", "number", work.Block.Number(), "txs", work.tcount, "uncles", len(uncles), "elapsed", common.PrettyDuration(time.Since(tstart)))
 		self.unconfirmed.Shift(work.Block.NumberU64() - 1)
 	}
 	self.push(work)
@@ -589,6 +588,7 @@ func (env *Work) commitTransactions(mux *event.TypeMux, txs *types.TransactionsB
 	}
 }
 
+// sman 将交易添加到work中
 func (env *Work) commitTransaction(tx *types.Transaction, bc *core.BlockChain, coinbase common.Address, gp *core.GasPool) (error, []*types.Log) {
 	snap := env.state.Snapshot()
 

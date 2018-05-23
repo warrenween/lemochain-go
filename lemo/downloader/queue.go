@@ -68,7 +68,7 @@ type queue struct {
 	mode SyncMode // Synchronisation mode to decide on the block parts to schedule for fetching
 
 	// Headers are "special", they download in batches, supported by a skeleton chain
-	headerHead      common.Hash                    // [lemo/62] Hash of the last queued header to verify order
+	headerHead      common.Hash                    // [lemo/62] Hash of the last queued header to verify order 
 	headerTaskPool  map[uint64]*types.Header       // [lemo/62] Pending header retrieval tasks, mapping starting indexes to skeleton headers
 	headerTaskQueue *prque.Prque                   // [lemo/62] Priority queue of the skeleton indexes to fetch the filling headers for
 	headerPeerMiss  map[string]map[uint64]struct{} // [lemo/62] Set of per-peer header batches known to be unavailable
@@ -76,7 +76,7 @@ type queue struct {
 	headerResults   []*types.Header                // [lemo/62] Result cache accumulating the completed headers
 	headerProced    int                            // [lemo/62] Number of headers already processed from the results
 	headerOffset    uint64                         // [lemo/62] Number of the first header in the result cache
-	headerContCh    chan bool                      // [lemo/62] Channel to notify when header download finishes
+	headerContCh    chan bool                       // [lemo/62] Channel to notify when header download finishes
 
 	// All data retrievals below are based on an already assembles header chain
 	blockTaskPool  map[common.Hash]*types.Header // [lemo/62] Pending block (body) retrieval tasks, mapping hashes to headers
@@ -304,6 +304,7 @@ func (q *queue) RetrieveHeaders() ([]*types.Header, int) {
 	return headers, proced
 }
 
+// 新增一系列头到下载队列中
 // Schedule adds a set of headers for the download queue for scheduling, returning
 // the new headers encountered.
 func (q *queue) Schedule(headers []*types.Header, from uint64) []*types.Header {
@@ -593,6 +594,7 @@ func (q *queue) cancel(request *fetchRequest, taskQueue *prque.Prque, pendPool m
 	delete(pendPool, request.Peer.id)
 }
 
+// 取消所有属于一个指定peer的pending的请求
 // Revoke cancels all pending requests belonging to a given peer. This method is
 // meant to be called during a peer drop to quickly reassign owned data fetches
 // to remaining nodes.
@@ -796,6 +798,7 @@ func (q *queue) DeliverReceipts(id string, receiptList [][]*types.Receipt) (int,
 	return q.deliver(id, q.receiptTaskPool, q.receiptTaskQueue, q.receiptPendPool, q.receiptDonePool, receiptReqTimer, len(receiptList), reconstruct)
 }
 
+// 将获取到的结果注入到队列中
 // deliver injects a data retrieval response into the results queue.
 //
 // Note, this method expects the queue lock to be already held for writing. The
