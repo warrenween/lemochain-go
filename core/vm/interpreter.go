@@ -51,7 +51,7 @@ type Interpreter struct {
 	gasTable params.GasTable
 	intPool  *intPool
 
-	readOnly   bool   // Whlemoer to throw on stateful modifications
+	readOnly   bool   // Whlemo to throw on stateful modifications
 	returnData []byte // Last CALL's return data for subsequent reuse
 }
 

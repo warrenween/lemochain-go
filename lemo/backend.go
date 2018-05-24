@@ -87,12 +87,12 @@ type Lemochain struct {
 
 	miner      *miner.Miner
 	gasPrice   *big.Int
-	lemoerbase common.Address
+	lemobase common.Address
 
 	networkId     uint64
 	netRPCService *lemoapi.PublicNetAPI
 
-	lock sync.RWMutex // Protects the variadic fields (e.g. gas price and lemoerbase)
+	lock sync.RWMutex // Protects the variadic fields (e.g. gas price and lemobase)
 }
 
 func (s *Lemochain) AddLesServer(ls LesServer) {
@@ -130,7 +130,7 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 		stopDbUpgrade:  stopDbUpgrade,
 		networkId:      config.NetworkId,
 		gasPrice:       config.GasPrice,
-		lemoerbase:     config.Lemoerbase,
+		lemobase:       config.Lemobase,
 		bloomRequests:  make(chan chan *bloombits.Retrieval),
 		bloomIndexer:   NewBloomIndexer(chainDb, params.BloomBitsBlocks),
 	}
@@ -315,48 +315,48 @@ func (s *Lemochain) ResetWithGenesisBlock(gb *types.Block) {
 	s.blockchain.ResetWithGenesisBlock(gb)
 }
 
-func (s *Lemochain) Lemoerbase() (eb common.Address, err error) {
+func (s *Lemochain) Lemobase() (eb common.Address, err error) {
 	s.lock.RLock()
-	lemoerbase := s.lemoerbase
+	lemobase := s.lemobase
 	s.lock.RUnlock()
 
-	if lemoerbase != (common.Address{}) {
-		return lemoerbase, nil
+	if lemobase != (common.Address{}) {
+		return lemobase, nil
 	}
 	if wallets := s.AccountManager().Wallets(); len(wallets) > 0 {
 		if accounts := wallets[0].Accounts(); len(accounts) > 0 {
-			lemoerbase := accounts[0].Address
+			lemobase := accounts[0].Address
 
 			s.lock.Lock()
-			s.lemoerbase = lemoerbase
+			s.lemobase = lemobase
 			s.lock.Unlock()
 
-			log.Info("Lemoerbase automatically configured", "address", lemoerbase)
-			return lemoerbase, nil
+			log.Info("Lemobase automatically configured", "address", lemobase)
+			return lemobase, nil
 		}
 	}
-	return common.Address{}, fmt.Errorf("lemoerbase must be explicitly specified")
+	return common.Address{}, fmt.Errorf("lemobase must be explicitly specified")
 }
 
 // set in js console via admin interface or wrapper from cli flags
-func (self *Lemochain) SetLemoerbase(lemoerbase common.Address) {
+func (self *Lemochain) SetLemobase(lemobase common.Address) {
 	self.lock.Lock()
-	self.lemoerbase = lemoerbase
+	self.lemobase = lemobase
 	self.lock.Unlock()
 
-	self.miner.SetLemoerbase(lemoerbase)
+	self.miner.SetLemobase(lemobase)
 }
 
 func (s *Lemochain) StartMining(local bool) error {
-	eb, err := s.Lemoerbase()
+	eb, err := s.Lemobase()
 	if err != nil {
-		log.Error("Cannot start mining without lemoerbase", "err", err)
-		return fmt.Errorf("lemoerbase missing: %v", err)
+		log.Error("Cannot start mining without lemobase", "err", err)
+		return fmt.Errorf("lemobase missing: %v", err)
 	}
 	if clique, ok := s.engine.(*clique.Clique); ok {
 		wallet, err := s.accountManager.Find(accounts.Account{Address: eb})
 		if wallet == nil || err != nil {
-			log.Error("Lemoerbase account unavailable locally", "err", err)
+			log.Error("Lemobase account unavailable locally", "err", err)
 			return fmt.Errorf("signer missing: %v", err)
 		}
 		clique.Authorize(eb, wallet.SignHash)

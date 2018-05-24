@@ -65,7 +65,7 @@ type KeyStore struct {
 	wallets     []accounts.Wallet       // Wallet wrappers around the individual key files
 	updateFeed  event.Feed              // Event feed to notify wallet additions/removals
 	updateScope event.SubscriptionScope // Subscription scope tracking current live listeners
-	updating    bool                    // Whlemoer the event notification loop is running
+	updating    bool                    // Whlemo the event notification loop is running
 
 	mu sync.RWMutex
 }

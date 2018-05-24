@@ -464,8 +464,8 @@ web3._extend({
 			call: 'miner_stop'
 		}),
 		new web3._extend.Method({
-			name: 'setLemoerbase',
-			call: 'miner_setLemoerbase',
+			name: 'setLemobase',
+			call: 'miner_setLemobase',
 			params: 1,
 			inputFormatter: [web3._extend.formatters.inputAddressFormatter]
 		}),

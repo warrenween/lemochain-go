@@ -287,7 +287,7 @@ func goToolArch(arch string, cc string, subcmd string, args ...string) *exec.Cmd
 
 func doTest(cmdline []string) {
 	var (
-		coverage = flag.Bool("coverage", false, "Whlemoer to record code coverage")
+		coverage = flag.Bool("coverage", false, "Whlemo to record code coverage")
 	)
 	flag.CommandLine.Parse(cmdline)
 	env := build.Env()
@@ -326,7 +326,7 @@ func doLint(cmdline []string) {
 	build.MustRun(goTool("get", "gopkg.in/alecthomas/gometalinter.v2"))
 	build.MustRunCommand(filepath.Join(GOBIN, "gometalinter.v2"), "--install")
 
-	// Run fast linters batched toglemoer
+	// Run fast linters batched toglemo
 	configs := []string{
 		"--vendor",
 		"--disable-all",

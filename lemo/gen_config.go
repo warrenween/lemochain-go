@@ -25,7 +25,7 @@ func (c Config) MarshalTOML() (interface{}, error) {
 		SkipBcVersionCheck      bool `toml:"-"`
 		DatabaseHandles         int  `toml:"-"`
 		DatabaseCache           int
-		Lemoerbase               common.Address `toml:",omitempty"`
+		Lemobase               common.Address `toml:",omitempty"`
 		MinerThreads            int            `toml:",omitempty"`
 		ExtraData               hexutil.Bytes  `toml:",omitempty"`
 		GasPrice                *big.Int
@@ -44,7 +44,7 @@ func (c Config) MarshalTOML() (interface{}, error) {
 	enc.SkipBcVersionCheck = c.SkipBcVersionCheck
 	enc.DatabaseHandles = c.DatabaseHandles
 	enc.DatabaseCache = c.DatabaseCache
-	enc.Lemoerbase = c.Lemoerbase
+	enc.Lemobase = c.Lemobase
 	enc.MinerThreads = c.MinerThreads
 	enc.ExtraData = c.ExtraData
 	enc.GasPrice = c.GasPrice
@@ -66,7 +66,7 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 		SkipBcVersionCheck      *bool `toml:"-"`
 		DatabaseHandles         *int  `toml:"-"`
 		DatabaseCache           *int
-		Lemoerbase               *common.Address `toml:",omitempty"`
+		Lemobase               *common.Address `toml:",omitempty"`
 		MinerThreads            *int            `toml:",omitempty"`
 		ExtraData               *hexutil.Bytes  `toml:",omitempty"`
 		GasPrice                *big.Int
@@ -104,8 +104,8 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 	if dec.DatabaseCache != nil {
 		c.DatabaseCache = *dec.DatabaseCache
 	}
-	if dec.Lemoerbase != nil {
-		c.Lemoerbase = *dec.Lemoerbase
+	if dec.Lemobase != nil {
+		c.Lemobase = *dec.Lemobase
 	}
 	if dec.MinerThreads != nil {
 		c.MinerThreads = *dec.MinerThreads

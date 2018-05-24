@@ -40,7 +40,7 @@ type tmplContract struct {
 type tmplMethod struct {
 	Original   abi.Method // Original method as parsed by the abi package
 	Normalized abi.Method // Normalized version of the parsed method (capitalized names, non-anonymous args/returns)
-	Structured bool       // Whlemoer the returns should be accumulated into a struct
+	Structured bool       // Whlemo the returns should be accumulated into a struct
 }
 
 // tmplEvent is a wrapper around an a
@@ -296,7 +296,7 @@ package {{.Package}}
 
 			logs chan types.Log        // Log channel receiving the found contract events
 			sub  lemochain.Subscription // Subscription for errors, completion and termination
-			done bool                  // Whlemoer the subscription completed delivering logs
+			done bool                  // Whlemo the subscription completed delivering logs
 			fail error                 // Occurred error to stop iteration
 		}
 		// Next advances the iterator to the subsequent event, returning whether there

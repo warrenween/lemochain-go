@@ -37,7 +37,7 @@ var ErrAlreadyProcessed = errors.New("already processed")
 type request struct {
 	hash common.Hash // Hash of the node data content to retrieve
 	data []byte      // Data content of the node, cached until all subtrees complete
-	raw  bool        // Whlemoer this is a raw entry (code) or a trie node
+	raw  bool        // Whlemo this is a raw entry (code) or a trie node
 
 	parents []*request // Parent state nodes referencing this entry (notify all upon completion)
 	depth   int        // Depth level within the trie the node is located to prioritise DFS
@@ -110,7 +110,7 @@ func (s *TrieSync) AddSubTrie(root common.Hash, depth int, parent common.Hash, c
 		depth:    depth,
 		callback: callback,
 	}
-	// If this sub-trie has a designated parent, link them toglemoer
+	// If this sub-trie has a designated parent, link them toglemo
 	if parent != (common.Hash{}) {
 		ancestor := s.requests[parent]
 		if ancestor == nil {
@@ -143,7 +143,7 @@ func (s *TrieSync) AddRawEntry(hash common.Hash, depth int, parent common.Hash) 
 		raw:   true,
 		depth: depth,
 	}
-	// If this sub-trie has a designated parent, link them toglemoer
+	// If this sub-trie has a designated parent, link them toglemo
 	if parent != (common.Hash{}) {
 		ancestor := s.requests[parent]
 		if ancestor == nil {

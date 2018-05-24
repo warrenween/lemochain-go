@@ -11,7 +11,7 @@ contract chequebook is mortal {
     /// @notice Overdraft event
     event Overdraft(address deadbeat);
 
-    // Allow sending lemoer to the chequebook.
+    // Allow sending lemo to the chequebook.
     function() public payable { }
 
     /// @notice Cash cheque

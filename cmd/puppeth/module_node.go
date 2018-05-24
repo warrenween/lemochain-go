@@ -42,7 +42,7 @@ ADD genesis.json /genesis.json
 RUN \
   echo 'glemo --cache 512 init /genesis.json' > glemo.sh && \{{if .Unlock}}
 	echo 'mkdir -p /root/.lemochain/keystore/ && cp /signer.json /root/.lemochain/keystore/' >> glemo.sh && \{{end}}
-	echo $'glemo --networkid {{.NetworkID}} --cache 512 --port {{.Port}} --maxpeers {{.Peers}} {{.LightFlag}} --lemostats \'{{.Lemostats}}\' {{if .Bootnodes}}--bootnodes {{.Bootnodes}}{{end}} {{if .Lemoerbase}}--lemoerbase {{.Lemoerbase}} --mine --minerthreads 1{{end}} {{if .Unlock}}--unlock 0 --password /signer.pass --mine{{end}} --targetgaslimit {{.GasTarget}} --gasprice {{.GasPrice}}' >> glemo.sh
+	echo $'glemo --networkid {{.NetworkID}} --cache 512 --port {{.Port}} --maxpeers {{.Peers}} {{.LightFlag}} --lemostats \'{{.Lemostats}}\' {{if .Bootnodes}}--bootnodes {{.Bootnodes}}{{end}} {{if .Lemobase}}--lemobase {{.Lemobase}} --mine --minerthreads 1{{end}} {{if .Unlock}}--unlock 0 --password /signer.pass --mine{{end}} --targetgaslimit {{.GasTarget}} --gasprice {{.GasPrice}}' >> glemo.sh
 
 ENTRYPOINT ["/bin/sh", "glemo.sh"]
 `
@@ -66,7 +66,7 @@ services:
       - TOTAL_PEERS={{.TotalPeers}}
       - LIGHT_PEERS={{.LightPeers}}
       - STATS_NAME={{.Lemostats}}
-      - MINER_NAME={{.Lemoerbase}}
+      - MINER_NAME={{.Lemobase}}
       - GAS_TARGET={{.GasTarget}}
       - GAS_PRICE={{.GasPrice}}
     logging:
@@ -82,7 +82,7 @@ services:
 // already exists there, it will be overwritten!
 func deployNode(client *sshClient, network string, bootnodes []string, config *nodeInfos, nocache bool) ([]byte, error) {
 	kind := "sealnode"
-	if config.keyJSON == "" && config.lemoerbase == "" {
+	if config.keyJSON == "" && config.lemobase == "" {
 		kind = "bootnode"
 		bootnodes = make([]string, 0)
 	}
@@ -102,7 +102,7 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 		"LightFlag": lightFlag,
 		"Bootnodes": strings.Join(bootnodes, ","),
 		"Lemostats":  config.lemostats,
-		"Lemoerbase": config.lemoerbase,
+		"Lemobase": config.lemobase,
 		"GasTarget": uint64(1000000 * config.gasTarget),
 		"GasPrice":  uint64(1000000000 * config.gasPrice),
 		"Unlock":    config.keyJSON != "",
@@ -120,7 +120,7 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 		"Light":      config.peersLight > 0,
 		"LightPeers": config.peersLight,
 		"Lemostats":   config.lemostats[:strings.Index(config.lemostats, ":")],
-		"Lemoerbase":  config.lemoerbase,
+		"Lemobase":  config.lemobase,
 		"GasTarget":  config.gasTarget,
 		"GasPrice":   config.gasPrice,
 	})
@@ -156,7 +156,7 @@ type nodeInfos struct {
 	enode      string
 	peersTotal int
 	peersLight int
-	lemoerbase  string
+	lemobase  string
 	keyJSON    string
 	keyPass    string
 	gasTarget  float64
@@ -178,10 +178,10 @@ func (info *nodeInfos) Report() map[string]string {
 		report["Gas limit (baseline target)"] = fmt.Sprintf("%0.3f MGas", info.gasTarget)
 		report["Gas price (minimum accepted)"] = fmt.Sprintf("%0.3f GWei", info.gasPrice)
 
-		if info.lemoerbase != "" {
+		if info.lemobase != "" {
 			// Lemohash proof-of-work miner
 			report["Lemohash directory"] = info.lemohashdir
-			report["Miner account"] = info.lemoerbase
+			report["Miner account"] = info.lemobase
 		}
 		if info.keyJSON != "" {
 			// Clique proof-of-authority signer
@@ -252,7 +252,7 @@ func checkNode(client *sshClient, network string, boot bool) (*nodeInfos, error)
 		peersTotal: totalPeers,
 		peersLight: lightPeers,
 		lemostats:   infos.envvars["STATS_NAME"],
-		lemoerbase:  infos.envvars["MINER_NAME"],
+		lemobase:  infos.envvars["MINER_NAME"],
 		keyJSON:    keyJSON,
 		keyPass:    keyPass,
 		gasTarget:  gasTarget,

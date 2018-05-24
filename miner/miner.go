@@ -112,7 +112,7 @@ out:
 
 func (self *Miner) Start(coinbase common.Address) {
 	atomic.StoreInt32(&self.shouldStart, 1)
-	self.SetLemoerbase(coinbase)
+	self.SetLemobase(coinbase)
 
 	if atomic.LoadInt32(&self.canStart) == 0 {
 		log.Info("Network syncing, will start miner afterwards")
@@ -183,8 +183,8 @@ func (self *Miner) PendingBlock() *types.Block {
 	return self.worker.pendingBlock()
 }
 
-func (self *Miner) SetLemoerbase(addr common.Address) {
+func (self *Miner) SetLemobase(addr common.Address) {
 	self.coinbase = addr
-	self.worker.setLemoerbase(addr)
+	self.worker.setLemobase(addr)
 	self.engine.(*dpovp.Dpovp).SetCoinbase(addr)
 }

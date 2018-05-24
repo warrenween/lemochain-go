@@ -37,7 +37,7 @@ ADD chain.json /chain.json
 
 RUN \
   echo '(cd ../lemo-net-intelligence-api && pm2 start /lemostats.json)' >  explorer.sh && \
-	echo '(cd ../lemoerchain-light && npm start &)'                      >> explorer.sh && \
+	echo '(cd ../lemochain-light && npm start &)'                      >> explorer.sh && \
 	echo '/parity/parity --chain=/chain.json --port={{.NodePort}} --tracing=on --fat-db=on --pruning=archive' >> explorer.sh
 
 ENTRYPOINT ["/bin/sh", "explorer.sh"]

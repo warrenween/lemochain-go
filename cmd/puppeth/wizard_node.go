@@ -104,19 +104,19 @@ func (w *wizard) deployNode(boot bool) {
 	// If the node is a miner/signer, load up needed credentials
 	if !boot {
 		if w.conf.Genesis.Config.Lemohash != nil {
-			// Lemohash based miners only need an lemoerbase to mine against
+			// Lemohash based miners only need an lemobase to mine against
 			fmt.Println()
-			if infos.lemoerbase == "" {
+			if infos.lemobase == "" {
 				fmt.Printf("What address should the miner user?\n")
 				for {
 					if address := w.readAddress(); address != nil {
-						infos.lemoerbase = address.Hex()
+						infos.lemobase = address.Hex()
 						break
 					}
 				}
 			} else {
-				fmt.Printf("What address should the miner user? (default = %s)\n", infos.lemoerbase)
-				infos.lemoerbase = w.readDefaultAddress(common.HexToAddress(infos.lemoerbase)).Hex()
+				fmt.Printf("What address should the miner user? (default = %s)\n", infos.lemobase)
+				infos.lemobase = w.readDefaultAddress(common.HexToAddress(infos.lemobase)).Hex()
 			}
 		} else if w.conf.Genesis.Config.Clique != nil {
 			// If a previous signer was already set, offer to reuse it

@@ -34,7 +34,7 @@ Since JavaScript doesn't provide type safety, [Flow][Flow] is used to check type
 
 To take advantage of static type checking, your IDE needs to be prepared for it. In case of [Atom][Atom] a configuration guide can be found [here][Atom config]: Install the [Nuclide][Nuclide] package for Flow support, making sure it installs all of its support packages by enabling `Install Recommended Packages on Startup`, and set the path of the `flow-bin` which were installed previously by `yarn`.
 
-For more IDE support install the `linter-eslint` package too, which finds the `.eslintrc` file, and provides real-time linting. Atom warns, that these two packages are incompatible, but they seem to work well toglemoer. For third-party library errors and auto-completion [flow-typed][flow-typed] is used.
+For more IDE support install the `linter-eslint` package too, which finds the `.eslintrc` file, and provides real-time linting. Atom warns, that these two packages are incompatible, but they seem to work well toglemo. For third-party library errors and auto-completion [flow-typed][flow-typed] is used.
 
 ### Have fun
 

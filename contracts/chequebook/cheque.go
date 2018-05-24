@@ -17,8 +17,8 @@
 // Package chequebook package wraps the 'chequebook' Lemochain smart contract.
 //
 // The functions in this package allow using chequebook for
-// issuing, receiving, verifying cheques in lemoer; (auto)cashing cheques in lemoer
-// as well as (auto)depositing lemoer to the chequebook contract.
+// issuing, receiving, verifying cheques in lemo; (auto)cashing cheques in lemo
+// as well as (auto)depositing lemo to the chequebook contract.
 package chequebook
 
 //go:generate abigen --sol contract/chequebook.sol --exc contract/mortal.sol:mortal,contract/owned.sol:owned --pkg contract --out contract/chequebook.go
@@ -52,8 +52,8 @@ import (
 // Some functionality requires interacting with the blockchain:
 // * setting current balance on peer's chequebook
 // * sending the transaction to cash the cheque
-// * depositing lemoer to the chequebook
-// * watching incoming lemoer
+// * depositing lemo to the chequebook
+// * watching incoming lemo
 
 var (
 	gasToCash = uint64(2000000) // gas cost of a cash transaction using chequebook

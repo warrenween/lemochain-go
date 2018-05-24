@@ -138,7 +138,7 @@ func rlpHash(x interface{}) (h common.Hash) {
 }
 
 // Body is a simple (mutable, non-safe) data container for storing and moving
-// a block's data contents (transactions and uncles) toglemoer.
+// a block's data contents (transactions and uncles) toglemo.
 type Body struct {
 	Transactions []*Transaction
 	Uncles       []*Header

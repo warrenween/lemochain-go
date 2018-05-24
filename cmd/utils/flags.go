@@ -325,8 +325,8 @@ var (
 		Usage: "Target gas limit sets the artificial target gas floor for the blocks to mine",
 		Value: params.GenesisGasLimit,
 	}
-	LemoerbaseFlag = cli.StringFlag{
-		Name:  "lemoerbase",
+	LemobaseFlag = cli.StringFlag{
+		Name:  "lemobase",
 		Usage: "Public address for block mining rewards (default = first account created)",
 		Value: "0",
 	}
@@ -771,15 +771,15 @@ func MakeAddress(ks *keystore.KeyStore, account string) (accounts.Account, error
 	return accs[index], nil
 }
 
-// setLemoerbase retrieves the lemoerbase either from the directly specified
+// setLemobase retrieves the lemobase either from the directly specified
 // command line flags or from the keystore if CLI indexed.
-func setLemoerbase(ctx *cli.Context, ks *keystore.KeyStore, cfg *lemo.Config) {
-	if ctx.GlobalIsSet(LemoerbaseFlag.Name) {
-		account, err := MakeAddress(ks, ctx.GlobalString(LemoerbaseFlag.Name))
+func setLemobase(ctx *cli.Context, ks *keystore.KeyStore, cfg *lemo.Config) {
+	if ctx.GlobalIsSet(LemobaseFlag.Name) {
+		account, err := MakeAddress(ks, ctx.GlobalString(LemobaseFlag.Name))
 		if err != nil {
-			Fatalf("Option %q: %v", LemoerbaseFlag.Name, err)
+			Fatalf("Option %q: %v", LemobaseFlag.Name, err)
 		}
-		cfg.Lemoerbase = account.Address
+		cfg.Lemobase = account.Address
 	}
 }
 
@@ -1018,7 +1018,7 @@ func SetLemoConfig(ctx *cli.Context, stack *node.Node, cfg *lemo.Config) {
 	checkExclusive(ctx, LightServFlag, SyncModeFlag, "light")
 
 	ks := stack.AccountManager().Backends(keystore.KeyStoreType)[0].(*keystore.KeyStore)
-	setLemoerbase(ctx, ks, cfg)
+	setLemobase(ctx, ks, cfg)
 	setGPO(ctx, &cfg.GPO)
 	setTxPool(ctx, &cfg.TxPool)
 	setLemohash(ctx, cfg)
