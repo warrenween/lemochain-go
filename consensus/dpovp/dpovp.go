@@ -46,8 +46,8 @@ func (d *Dpovp) ModifyTimer() {
 		if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
 			d.isTurn = true
 		} else {
-			need_dur := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
-			d.resetMinerTimer(need_dur)
+			needDur := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
+			d.resetMinerTimer(needDur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
 		timeDur = int64(slot-1)*d.timeoutTime - timeDur
