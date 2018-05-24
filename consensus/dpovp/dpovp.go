@@ -77,8 +77,9 @@ func (d *Dpovp) getSlot() int {
 	lst_addr := d.currentBlock().Header().Coinbase
 	lst_index := dpovp.GetCoreNodeIndex(lst_addr)
 	me_index := dpovp.GetCoreNodeIndex(d.coinbase)
-	tmp:=lst_addr.Hex()
-	if tmp == `0x0000000000000000000000000000000000000000` {
+	var tmp [20]byte	// 空地址
+
+	if bytes.Compare(lst_addr[:], tmp[:]) == 0 {
 		return me_index + 1
 	}
 	nodeCount := dpovp.GetCorNodesCount()
@@ -224,6 +225,8 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		err := errors.New(`unknownblock`)
 		return nil, err
 	}
+	// 设置难度固定为1
+	header.Difficulty=new(big.Int).SetInt64(1)
 	// 对区块进行签名
 	hash := header.Hash()
 	privKey := dpovp.GetPrivKey()
@@ -250,7 +253,7 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 // CalcDifficulty is the difficulty adjustment algorithm. It returns the difficulty
 // that a new block should have.
 func (d *Dpovp) CalcDifficulty(chain consensus.ChainReader, time uint64, parent *types.Header) *big.Int {
-	return new(big.Int)
+	return new(big.Int).SetInt64(1)
 }
 
 // APIs returns the RPC APIs this consensus engine provides.
