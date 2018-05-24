@@ -135,7 +135,7 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 		bloomIndexer:   NewBloomIndexer(chainDb, params.BloomBitsBlocks),
 	}
 	// sman modify
-	lemo.engine = CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb, config.Lemoerbase, func() *types.Block { return lemo.blockchain.CurrentBlock() })
+	lemo.engine = CreateConsensusEngine(ctx, &config.Lemohash, chainConfig, chainDb, config.Lemobase, func() *types.Block { return lemo.blockchain.CurrentBlock() })
 
 	log.Info("Initialising Lemochain protocol", "versions", ProtocolVersions, "network", config.NetworkId)
 
@@ -155,7 +155,7 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 		return nil, err
 	}
 	// sman set coinbase to blockchain
-	lemo.blockchain.SetCoinbase(lemo.lemoerbase)
+	lemo.blockchain.SetCoinbase(lemo.lemobase)
 
 	// Rewind the chain in case of an incompatible config upgrade.
 	if compat, ok := genesisErr.(*params.ConfigCompatError); ok {

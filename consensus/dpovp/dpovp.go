@@ -7,6 +7,9 @@ import (
 	"sync"
 	"time"
 
+	"bytes"
+	"fmt"
+
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
@@ -16,8 +19,6 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
-	"fmt"
-	"bytes"
 )
 
 type Dpovp struct {
@@ -27,8 +28,8 @@ type Dpovp struct {
 	coinbase        common.Address      // Lemochain address of the signing key
 	currentBlock    func() *types.Block // 获取当前block的回调
 	isTurn          bool                // 是否可出块
-	timeoutTime     int64       // 超时时间
-	blockInternal   int64       // 出块间隔
+	timeoutTime     int64               // 超时时间
+	blockInternal   int64               // 出块间隔
 	blockMinerTimer *time.Timer         // 出块timer
 	isTurnMu        sync.Mutex          // isTurn mutex
 }
@@ -38,24 +39,24 @@ func (d *Dpovp) ModifyTimer() {
 	d.isTurnMu.Lock()
 	defer d.isTurnMu.Unlock()
 
-	time_dur := d.getTimespan() // 获取当前时间与最新块的时间差
-	//log.Warn(`time_dur`, `time:`, string(time_dur))
-	slot := d.getSlot()         // 获取新块离本节点索引的距离
-	if slot == 1 {              // 说明下一个区块就该本节点产生了
-		if time_dur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
+	timeDur := d.getTimespan() // 获取当前时间与最新块的时间差
+	//log.Warn(`timeDur`, `time:`, string(timeDur))
+	slot := d.getSlot() // 获取新块离本节点索引的距离
+	if slot == 1 {      // 说明下一个区块就该本节点产生了
+		if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
 			d.isTurn = true
 		} else {
-			need_dur := d.blockInternal - time_dur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
+			need_dur := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
 			d.resetMinerTimer(need_dur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
-		time_dur = int64(slot-1)*d.timeoutTime - time_dur
-		d.resetMinerTimer(time_dur)
+		timeDur = int64(slot-1)*d.timeoutTime - timeDur
+		d.resetMinerTimer(timeDur)
 	}
 }
 
 // 重置出块定时器
-func (d *Dpovp) resetMinerTimer(time_dur int64) {
+func (d *Dpovp) resetMinerTimer(timeDur int64) {
 	d.isTurnMu.Lock()
 	defer d.isTurnMu.Unlock()
 
@@ -64,7 +65,7 @@ func (d *Dpovp) resetMinerTimer(time_dur int64) {
 		d.blockMinerTimer.Stop()
 	}
 	// 重开新的定时器
-	d.blockMinerTimer = time.AfterFunc(time.Duration(time_dur * int64(time.Millisecond)), func() {
+	d.blockMinerTimer = time.AfterFunc(time.Duration(timeDur*int64(time.Millisecond)), func() {
 		//d.isTurnMu.Lock()
 		//defer d.isTurnMu.Unlock()
 		d.isTurn = true
@@ -74,26 +75,26 @@ func (d *Dpovp) resetMinerTimer(time_dur int64) {
 
 // 获取最新块的出块者序号与本节点序号差
 func (d *Dpovp) getSlot() int {
-	lst_addr := d.currentBlock().Header().Coinbase
-	lst_index := dpovp.GetCoreNodeIndex(lst_addr)
-	me_index := dpovp.GetCoreNodeIndex(d.coinbase)
-	var tmp [20]byte	// 空地址
+	lstAddr := d.currentBlock().Header().Coinbase
+	lstIndex := dpovp.GetCoreNodeIndex(lstAddr)
+	meIndex := dpovp.GetCoreNodeIndex(d.coinbase)
+	var tmp [20]byte // 空地址
 
-	if bytes.Compare(lst_addr[:], tmp[:]) == 0 {
-		return me_index + 1
+	if bytes.Compare(lstAddr[:], tmp[:]) == 0 {
+		return meIndex + 1
 	}
 	nodeCount := dpovp.GetCorNodesCount()
-	if nodeCount == 1{
+	if nodeCount == 1 {
 		return 1
 	}
-	return (me_index - lst_index + nodeCount) % nodeCount
+	return (meIndex - lstIndex + nodeCount) % nodeCount
 }
 
 // 获取最新区块的时间戳离当前时间的距离 单位：ms
 func (d *Dpovp) getTimespan() int64 {
-	lst_span := d.currentBlock().Header().Time.Int64()
-	now:=time.Now().Unix()
-	return (now - lst_span) * 1000
+	lstSpan := d.currentBlock().Header().Time.Int64()
+	now := time.Now().Unix()
+	return (now - lstSpan) * 1000
 }
 
 // 新增一个DPOVP共识机
@@ -111,8 +112,9 @@ func New(config *params.DpovpConfig, db lemodb.Database, coinbase common.Address
 		currentBlock:  currentblock,
 	}
 }
+
 // 设置coinbase
-func (d *Dpovp) SetCoinbase(coinbase common.Address){
+func (d *Dpovp) SetCoinbase(coinbase common.Address) {
 	d.coinbase = coinbase
 }
 
@@ -139,8 +141,21 @@ func (d *Dpovp) VerifyHeader(chain consensus.ChainReader, header *types.Header, 
 // a results channel to retrieve the async verifications (the order is that of
 // the input slice).
 func (d *Dpovp) VerifyHeaders(chain consensus.ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
+	abort := make(chan struct{})
+	results := make(chan error, len(headers))
 
-	return nil, nil
+	go func() {
+		for i, header := range headers {
+			err := d.verifyHeader(chain, header, headers[:i])
+
+			select {
+			case <-abort:
+				return
+			case results <- err:
+			}
+		}
+	}()
+	return abort, results
 }
 
 // verifyHeader checks whether a header conforms to the consensus rules.The
@@ -160,6 +175,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	if header.Time.Cmp(big.NewInt(time.Now().Unix())) > 0 {
 		return consensus.ErrFutureBlock
 	}
+
 	// 验证签名与coinbase是否一致
 	pubkey, err := crypto.Ecrecover(header.Hash().Bytes(), header.SignInfo)
 	if err != nil {
@@ -167,32 +183,79 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	}
 	var signer common.Address
 	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
-	if bytes.Compare(header.Coinbase[:], signer[:]) != 0{
+	if bytes.Compare(header.Coinbase[:], signer[:]) != 0 {
 		return fmt.Errorf(`signer != coinbase`)
 	}
+
 	// 是否该该节点出块
+	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
+	nodeCount := dpovp.GetCorNodesCount()
+	// 只有一个出块节点
+	if nodeCount == 1 {
+		if timespan < d.blockInternal { // 块间隔至少blockInternal
+			return fmt.Errorf(`not sleep enough time`)
+		}
+		return nil
+	}
+	// 所有节点全部超时时一轮的超时间隔
+	oneTurnTimespan := int64(nodeCount) * d.timeoutTime
+	// 去掉整轮后的间隔
+	timespan = timespan % oneTurnTimespan
+	// 当前块与父块的最近逻辑间距
+	dist := dpovp.GetCoreNodeIndex(header.Coinbase) - dpovp.GetCoreNodeIndex(parent.Coinbase)
 
-
-	// All basic checks passed, verify cascading fields
+	if dist == 0 {
+		return fmt.Errorf(`one node can't produce block twice'`)
+	}
+	if dist == 1 {
+		if timespan < d.timeoutTime {
+			return fmt.Errorf(`not sleep enough time`)
+		}
+		return nil
+	}
+	if timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime {
+		return fmt.Errorf(`it's not turn`)
+	}
 	return nil
 }
 
 // VerifyUncles verifies that the given block's uncles conform to the consensus
 // rules of a given engine.
 func (d *Dpovp) VerifyUncles(chain consensus.ChainReader, block *types.Block) error {
+	if len(block.Uncles()) > 0 {
+		return errors.New("uncles not allowed")
+	}
 	return nil
 }
 
 // VerifySeal checks whether the crypto seal on a header is valid according to
 // the consensus rules of the given engine.
 func (d *Dpovp) VerifySeal(chain consensus.ChainReader, header *types.Header) error {
+	// 验证签名与coinbase是否一致
+	pubkey, err := crypto.Ecrecover(header.Hash().Bytes(), header.SignInfo)
+	if err != nil {
+		return fmt.Errorf(`wrong signinfo`)
+	}
+	var signer common.Address
+	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
+	if bytes.Compare(header.Coinbase[:], signer[:]) != 0 {
+		return fmt.Errorf(`signer != coinbase`)
+	}
+
 	return nil
 }
 
 // Prepare initializes the consensus fields of a block header according to the
 // rules of a particular engine. The changes are executed inline.
 func (d *Dpovp) Prepare(chain consensus.ChainReader, header *types.Header) error {
-
+	header.Coinbase = common.Address{}
+	// Nonce is reserved for now, set to empty
+	header.Nonce = types.BlockNonce{}
+	// Set the difficulty to 1
+	header.Difficulty = new(big.Int).SetInt64(1)
+	// Mix digest is reserved for now, set to empty
+	header.MixDigest = common.Hash{}
+	header.Time = new(big.Int).SetUint64(uint64(time.Now().Unix()))
 	return nil
 }
 
@@ -225,8 +288,6 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		err := errors.New(`unknownblock`)
 		return nil, err
 	}
-	// 设置难度固定为1
-	header.Difficulty=new(big.Int).SetInt64(1)
 	// 对区块进行签名
 	hash := header.Hash()
 	privKey := dpovp.GetPrivKey()
@@ -236,16 +297,15 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		header.SignInfo = make([]byte, len(signInfo))
 		copy(header.SignInfo, signInfo)
 	}
-
 	// 出块之后需要重置定时器
 	nodeCount := dpovp.GetCorNodesCount()
-	var tim_dur int64
+	var timeDur int64
 	if nodeCount > 1 {
-		tim_dur = int64(nodeCount-1) * d.timeoutTime
+		timeDur = int64(nodeCount-1) * d.timeoutTime
 	} else {
-		tim_dur = d.blockInternal
+		timeDur = d.blockInternal
 	}
-	d.resetMinerTimer(tim_dur)
+	d.resetMinerTimer(timeDur)
 
 	return block.WithSeal(header), nil
 }
