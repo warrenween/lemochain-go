@@ -186,8 +186,8 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 	manager.fetcher = fetcher.New(blockchain.GetBlockByHash, validator, manager.BroadcastBlock, heighter, inserter, manager.removePeer)
 
 	// sman for broadcast consensus info
-	manager.blockchain.BroadcastConFn = func(hash common.Hash, num uint64) {
-		manager.BroadcastConsensusInfo(hash, num)
+	manager.blockchain.BroadcastConFn = func(hash common.Hash, num uint64, hasFlag bool) {
+		manager.BroadcastConsensusInfo(hash, num, hasFlag)
 	}
 
 	return manager, nil
@@ -781,13 +781,22 @@ func (pm *ProtocolManager) BroadcastTx(hash common.Hash, tx *types.Transaction) 
 }
 
 // sman 广播local的确认信息
-func (pm *ProtocolManager) BroadcastConsensusInfo(hash common.Hash, number uint64) {
-	privKey := dpovp.GetPrivKey()                   // 获取私钥
-	signInfo, err := crypto.Sign(hash[:], &privKey) // 获取签名
-	if err != nil {
-		return
+func (pm *ProtocolManager) BroadcastConsensusInfo(hash common.Hash, number uint64, hasFlag bool) {
+	var data= make(newConsensusData, 0, 1)
+	conInfo := blockConsensusData{}
+	conInfo.Hash = hash
+	conInfo.Number = number
+	conInfo.HasConsensus = uint8(0)
+	if hasFlag {
+		privKey := dpovp.GetPrivKey()                   // 获取私钥
+		signInfo, err := crypto.Sign(hash[:], &privKey) // 获取签名
+		if err != nil {
+			return
+		}
+		conInfo.HasConsensus = uint8(1)
+		conInfo.SignInfo = signInfo
 	}
-	data := newConsensusData{blockConsensusData{hash, number, uint8(1), signInfo}}
+	data = append(data, conInfo)
 	for _, peer := range pm.peers.TotalPeers() {
 		peer.SendConsensusInfo(data) // 发送确认信息到远程节点
 	}

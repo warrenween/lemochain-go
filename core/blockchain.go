@@ -131,10 +131,10 @@ type BlockChain struct {
 
 	badBlocks *lru.Cache // Bad block cache
 
-	stableBlock     atomic.Value                       // sman 当前稳定块指针
-	blocksConsensus map[common.Hash]uint64             // sman 区块经过确认的标识 按位计算 最多64个主节点
-	coinbase        common.Address                     // sman coinbase
-	BroadcastConFn  func(hash common.Hash, num uint64) // sman 广播确认标识回调函数
+	stableBlock     atomic.Value                                     // sman 当前稳定块指针
+	blocksConsensus map[common.Hash]uint64                           // sman 区块经过确认的标识 按位计算 最多64个主节点
+	coinbase        common.Address                                   // sman coinbase
+	BroadcastConFn  func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
 }
 
 // sman 设置coinbase
@@ -1227,9 +1227,9 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
 		// sman 高度是否大于当前head的高度 todo
 		if block.Header().Number.Int64() <= bc.CurrentBlock().Header().Number.Int64() {
+			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false)	// 广播不带确认标识
 			err = fmt.Errorf(`height number need to be larger than current block`)
 			return i, events, coalescedLogs, err
-			// TODO
 		}
 
 		// sman 置自己节点对应的确认标识位
@@ -1252,7 +1252,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 			return i, events, coalescedLogs, err
 		}
 		// sman  广播该块的hash，附带上确认标识
-		bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64())
+		bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), true)
 
 		switch status {
 		case CanonStatTy:
