@@ -44,6 +44,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/trie"
 	"github.com/hashicorp/golang-lru"
 	"gopkg.in/karalabe/cookiejar.v2/collections/prque"
+	"bytes"
 )
 
 var (
@@ -111,9 +112,6 @@ type BlockChain struct {
 	currentBlock     atomic.Value // Current head of the block chain
 	currentFastBlock atomic.Value // Current head of the fast-sync chain (may be above the block chain!)
 
-	stableBlock     atomic.Value           // sman 当前稳定块指针
-	blocksConsensus map[common.Hash]uint64 // sman 区块经过确认的标识 按位计算 最多64个主节点
-
 	stateCache   state.Database // State database to reuse between imports (contains state cache)
 	bodyCache    *lru.Cache     // Cache for the most recent block bodies
 	bodyRLPCache *lru.Cache     // Cache for the most recent block bodies in RLP encoded format
@@ -133,10 +131,13 @@ type BlockChain struct {
 
 	badBlocks *lru.Cache // Bad block cache
 
-	coinbase common.Address // sman coinbase
+	stableBlock     atomic.Value                       // sman 当前稳定块指针
+	blocksConsensus map[common.Hash]uint64             // sman 区块经过确认的标识 按位计算 最多64个主节点
+	coinbase        common.Address                     // sman coinbase
+	BroadcastConFn  func(hash common.Hash, num uint64) // sman 广播确认标识回调函数
 }
 
-// 设置coinbase
+// sman 设置coinbase
 func (bc *BlockChain) SetCoinbase(coinbase common.Address) {
 	bc.coinbase = coinbase
 }
@@ -1226,7 +1227,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
 		// sman 高度是否大于当前head的高度 todo
 		if block.Header().Number.Int64() <= bc.CurrentBlock().Header().Number.Int64() {
-			err = errors.New(`height number need to be larger than currentblock`)
+			err = fmt.Errorf(`height number need to be larger than current block`)
 			return i, events, coalescedLogs, err
 			// TODO
 		}
@@ -1243,10 +1244,15 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		}
 		// Write the block to the chain and get the status.
 		status, err := bc.WriteBlockWithState(block, receipts, state)
+		// sman 获取父节点header 并设置父header的children
+		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()+1)
+		parentHeader.Children = append(parentHeader.Children, block.Hash())
+
 		if err != nil {
 			return i, events, coalescedLogs, err
 		}
-		// sman TODO  广播该块的hash，附带上确认标识
+		// sman  广播该块的hash，附带上确认标识
+		bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64())
 
 		switch status {
 		case CanonStatTy:
@@ -1280,7 +1286,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 }
 
 // sman 收到hash广播后的处理 主要处理确认标识 todo
-func (bc *BlockChain) ProcHashesMsg(info struct {
+func (bc *BlockChain) ProcConsensusMsg(info struct {
 	Hash         common.Hash // 区块hash
 	Number       uint64      // 区块高度
 	HasConsensus uint8       // 是否有确认信息
@@ -1299,15 +1305,92 @@ func (bc *BlockChain) ProcHashesMsg(info struct {
 	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
 	bc.SetConsensusFlag(info.Hash, signer)
 	// 是否有该块 没有则返回
-	// todo
+	if !bc.HasBlock(info.Hash, info.Number) {
+		return
+	}
 	// 判断是否有2/3以上的确认
 	if bc.VerifyConsensusOK(info.Hash) {
-		if bc.stableBlock.Load().(*types.Block).Header().Number.Int64() > int64(info.Number) { // Stable_block是否已指向该块或该块的子块
-			//bc.stableBlock.Store(block) // 将stable_block指向该块
+		block := bc.GetBlock(info.Hash, info.Number)
+		if bc.stableBlock.Load().(*types.Block).Header().Number.Int64() < int64(info.Number) { // Stable_block是否已指向该块或该块的子块
+			bc.stableBlock.Store(block) // 将stable_block指向该块
+		}
+		if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
+			newCurBlock := bc.getNewestBlockInStableChain()
+			bc.currentBlock.Store(newCurBlock)
 		}
 		// TODO 广播给普通节点
 		// go
 	}
+}
+
+// sman is current block's Ancestors be stable block
+func (bc *BlockChain) isCurAndStableBlockInSameChain() bool {
+	curBlock, okC := bc.currentBlock.Load().(*types.Block)
+	staBlock, okS := bc.stableBlock.Load().(*types.Block)
+	if !okC || ! okS {
+		return false
+	}
+	parBlock := curBlock
+	if curBlock.Header().Number.Cmp(staBlock.Header().Number) < 0 {
+		return false
+	}
+	for i := 0; i < int(curBlock.Header().Number.Uint64()-staBlock.Header().Number.Uint64()); i++ {
+		parBlock = bc.GetBlock(parBlock.Header().Hash(), parBlock.Header().Number.Uint64())
+	}
+	if staBlock.Header().Hash() == parBlock.Header().Hash() {
+		return true
+	}
+	return false
+}
+
+// sman change currentblock from forked chain to stable chain
+func (bc *BlockChain) getNewestBlockInStableChain() *types.Block {
+	staBlock, okS := bc.stableBlock.Load().(*types.Block)
+	if !okS {
+		return bc.CurrentBlock()
+	}
+	// 获取稳定区块的所有后代叶子节点
+	leafBlocks := bc.getLeavesOfBlock(staBlock)
+	// 获取后代叶子节点中最大的高度 —— 选择最长链
+	lstHight := staBlock.Header().Number.Uint64()
+	for _, b := range leafBlocks {
+		if b.Header().Number.Uint64() > lstHight {
+			lstHight = b.Header().Number.Uint64()
+		}
+	}
+	// 获取高度一致的叶子节点
+	var sameHightBlocks []*types.Block
+	for _, b := range leafBlocks {
+		if b.Header().Number.Uint64() == lstHight {
+			sameHightBlocks = append(sameHightBlocks, b)
+		}
+	}
+	// 获取hash字典顺序的第一个
+	resBlock := sameHightBlocks[0]
+	for _, b := range sameHightBlocks {
+		bHash := b.Header().Hash()
+		resHash := resBlock.Header().Hash()
+		if bytes.Compare(bHash[:], resHash[:]) < 0 {
+			resBlock = b
+		}
+	}
+	return resBlock
+}
+
+// sman get a block's leaf Descendants
+func (bc *BlockChain) getLeavesOfBlock(block *types.Block) (blocks []*types.Block) {
+	if len(block.Header().Children) == 0 {
+		blocks = append(blocks, block)
+	} else {
+		for _, hash := range block.Header().Children {
+			childBlock := bc.GetBlock(hash, block.Header().Number.Uint64()+1)
+			childLeaves := bc.getLeavesOfBlock(childBlock)
+			for _, grandchildren := range childLeaves {
+				blocks = append(blocks, grandchildren)
+			}
+		}
+	}
+	return blocks
 }
 
 // insertStats tracks and reports on block insertion.

@@ -56,6 +56,7 @@ const (
 	GetBlockBodiesMsg  = 0x05
 	BlockBodiesMsg     = 0x06 //区块体集消息
 	NewBlockMsg        = 0x07 // 新的完整的block消息
+	NewConsensusMsg    = 0x08 // sman 区块确认消息
 
 	// Protocol messages belonging to lemo/63
 	GetNodeDataMsg = 0x0d
@@ -120,16 +121,14 @@ type statusData struct {
 	SignInfo []byte         // 签名信息
 }
 
-// for: NewBlockHashesMsg
 // newBlockHashesData is the network packet for the block announcements.
-// type newBlockHashesData []struct {
-// 	Hash   common.Hash // Hash of one particular block being announced
-// 	Number uint64      // Number of one particular block being announced
-// 	// sman add
-// 	HasConsensus uint8  // 是否有确认信息
-// 	SignInfo     []byte // 签名信息
-// }
-type newBlockHashesData []blockConsensusData
+type newBlockHashesData []struct {
+	Hash   common.Hash // Hash of one particular block being announced
+	Number uint64      // Number of one particular block being announced
+}
+
+// sman for: NewConsensusMsg
+type newConsensusData []blockConsensusData
 
 // getBlockHeadersData represents a block header query.
 type getBlockHeadersData struct {

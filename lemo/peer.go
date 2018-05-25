@@ -155,9 +155,9 @@ func (p *peer) SendNewBlockHashes(hashes []common.Hash, numbers []uint64) error 
 	return p2p.Send(p.rw, NewBlockHashesMsg, request)
 }
 
-// sman 发送确认标识 todo
-func (p *peer) SendBlockHashesWithConsensusInfo(data newBlockHashesData) error {
-	return p2p.Send(p.rw, NewBlockHashesMsg, data)
+// sman 发送确认标识
+func (p *peer) SendConsensusInfo(data newConsensusData) error {
+	return p2p.Send(p.rw, NewConsensusMsg, data)
 }
 
 // 发送新的完整的block
@@ -403,6 +403,18 @@ func (ps *peerSet) PeersWithoutTx(hash common.Hash) []*peer {
 		if !p.knownTxs.Has(hash) {
 			list = append(list, p)
 		}
+	}
+	return list
+}
+
+// sman get all peers
+func (ps *peerSet) TotalPeers() []*peer {
+	ps.lock.RLock()
+	defer ps.lock.RUnlock()
+
+	list := make([]*peer, 0, len(ps.peers))
+	for _, p := range ps.peers {
+		list = append(list, p)
 	}
 	return list
 }

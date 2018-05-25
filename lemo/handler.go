@@ -185,6 +185,11 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 	}
 	manager.fetcher = fetcher.New(blockchain.GetBlockByHash, validator, manager.BroadcastBlock, heighter, inserter, manager.removePeer)
 
+	// sman for broadcast consensus info
+	manager.blockchain.BroadcastConFn = func(hash common.Hash, num uint64) {
+		manager.BroadcastConsensusInfo(hash, num)
+	}
+
 	return manager, nil
 }
 
@@ -372,7 +377,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 		return errResp(ErrExtraStatusMsg, "uncontrolled status message")
 
 	// Block header query, collect the requested headers and reply
-	case msg.Code == GetBlockHeadersMsg: // 根据区块号或Hash获取区块头消息
+	case msg.Code == GetBlockHeadersMsg:
 		// Decode the complex header query
 		var query getBlockHeadersData
 		if err := msg.Decode(&query); err != nil {
@@ -450,7 +455,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 		}
 		return p.SendBlockHeaders(headers)
 
-	case msg.Code == BlockHeadersMsg: // 收到block的headers消息
+	case msg.Code == BlockHeadersMsg:
 		// A batch of headers arrived to one of our previous requests
 		var headers []*types.Header
 		if err := msg.Decode(&headers); err != nil {
@@ -656,12 +661,18 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 			if !pm.blockchain.HasBlock(block.Hash, block.Number) {
 				unknown = append(unknown, block)
 			}
-			// sman 判断是否有确认标识
-			pm.blockchain.ProcHashesMsg(block)
 		}
-
 		for _, block := range unknown {
 			pm.fetcher.Notify(p.id, block.Hash, block.Number, time.Now(), p.RequestOneHeader, p.RequestBodies)
+		}
+
+	case msg.Code == NewConsensusMsg:	// sman for consensus message
+		var announces newConsensusData
+		if err := msg.Decode(&announces); err != nil {
+			return errResp(ErrDecode, "%v: %v", msg, err)
+		}
+		for _, msg := range announces {
+			pm.blockchain.ProcConsensusMsg(msg)
 		}
 
 	case msg.Code == NewBlockMsg:
@@ -748,17 +759,10 @@ func (pm *ProtocolManager) BroadcastBlock(block *types.Block, propagate bool) {
 		log.Trace("Propagated block", "hash", hash, "recipients", len(transfer), "duration", common.PrettyDuration(time.Since(block.ReceivedAt)))
 		return
 	}
-	// 仅仅发送块hash到所有节点
 	// Otherwise if the block is indeed in out own chain, announce it
 	if pm.blockchain.HasBlock(hash, block.NumberU64()) {
 		for _, peer := range peers {
-			// sman modify
-			//peer.SendNewBlockHashes([]common.Hash{hash}, []uint64{block.NumberU64()})
-			privKey := dpovp.GetPrivKey()                                    // 获取私钥
-			if signInfo, err := crypto.Sign(hash[:], &privKey); err == nil { // 签名
-				data := newBlockHashesData{blockConsensusData{hash, block.NumberU64(), uint8(1), signInfo}}
-				peer.SendBlockHashesWithConsensusInfo(data) // 发送确认信息到远程节点
-			}
+			peer.SendNewBlockHashes([]common.Hash{hash}, []uint64{block.NumberU64()})
 		}
 		log.Trace("Announced block", "hash", hash, "recipients", len(peers), "duration", common.PrettyDuration(time.Since(block.ReceivedAt)))
 	}
@@ -774,6 +778,19 @@ func (pm *ProtocolManager) BroadcastTx(hash common.Hash, tx *types.Transaction) 
 		peer.SendTransactions(types.Transactions{tx})
 	}
 	log.Trace("Broadcast transaction", "hash", hash, "recipients", len(peers))
+}
+
+// sman 广播local的确认信息
+func (pm *ProtocolManager) BroadcastConsensusInfo(hash common.Hash, number uint64) {
+	privKey := dpovp.GetPrivKey()                   // 获取私钥
+	signInfo, err := crypto.Sign(hash[:], &privKey) // 获取签名
+	if err != nil {
+		return
+	}
+	data := newConsensusData{blockConsensusData{hash, number, uint8(1), signInfo}}
+	for _, peer := range pm.peers.TotalPeers() {
+		peer.SendConsensusInfo(data) // 发送确认信息到远程节点
+	}
 }
 
 // Mined broadcast loop
