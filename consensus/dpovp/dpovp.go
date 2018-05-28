@@ -52,12 +52,12 @@ func (d *Dpovp) ModifyTimer() {
 			d.isTurn = true
 		} else {
 			needDur := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
-			d.resetMinerTimer(needDur)
+			go d.resetMinerTimer(needDur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
 		timeDur = timeDur % (int64(dpovp.GetCorNodesCount()) * d.timeoutTime)
 		timeDur = int64(slot-1)*d.timeoutTime - timeDur
-		d.resetMinerTimer(timeDur)
+		go d.resetMinerTimer(timeDur)
 	}
 }
 
