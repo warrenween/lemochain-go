@@ -29,6 +29,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p/discover"
 	"github.com/LemoFoundationLtd/lemochain-go/rlp"
+	"crypto/ecdsa"
 )
 
 const (
@@ -110,7 +111,7 @@ type Peer struct {
 	// events receives message send / receive events if set
 	events *event.Feed
 
-	Pubkey []byte // sman 远程节点公钥
+	Pubkey *ecdsa.PublicKey // sman 远程节点公钥
 }
 
 // NewPeer returns a peer for testing purposes.
@@ -179,7 +180,10 @@ func newPeer(conn *conn, protocols []Protocol) *Peer {
 		log:      log.New("id", conn.id, "conn", conn.flags),
 		//Pubkey:   conn.id,
 	}
-	copy(p.Pubkey[:], conn.id[:]) // sman pubkey
+	p.Pubkey, _ = conn.id.Pubkey()
+	//p.Pubkey = make([]byte, len(conn.id))
+	//pubKey:= conn.id.Pubkey()
+	//copy(p.Pubkey[:], conn.id[:]) // sman pubkey
 	return p
 }
 

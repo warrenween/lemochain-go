@@ -304,7 +304,7 @@ func (pm *ProtocolManager) handle(p *peer) error {
 		rw.Init(p.version)
 	}
 	// sman 获取地址
-	addr := dpovp.GetAddressByPubkey(p.Pubkey)
+	addr := dpovp.GetAddressByPubkey(p.Peer.Pubkey)
 	// sman 判断是否在主节点列表中
 	if dpovp.GetCoreNodeIndex(addr) == -1 { // 不在主节点中
 		// Register the peer locally

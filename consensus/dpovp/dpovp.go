@@ -55,6 +55,7 @@ func (d *Dpovp) ModifyTimer() {
 			d.resetMinerTimer(needDur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
+		timeDur = timeDur % (int64(dpovp.GetCorNodesCount()) * d.timeoutTime)
 		timeDur = int64(slot-1)*d.timeoutTime - timeDur
 		d.resetMinerTimer(timeDur)
 	}
