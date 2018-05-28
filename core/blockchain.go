@@ -237,6 +237,7 @@ func (bc *BlockChain) loadLastState() error {
 	}
 	// Everything seems to be fine, set as the head block
 	bc.currentBlock.Store(currentBlock)
+	bc.stableBlock.Store(bc.genesisBlock)	// sman set stableblock with genesis block
 
 	// Restore the last known head header
 	currentHeader := currentBlock.Header()
@@ -300,6 +301,7 @@ func (bc *BlockChain) SetHead(head uint64) error {
 		if _, err := state.New(currentBlock.Root(), bc.stateCache); err != nil {
 			// Rewound state missing, rolled back to before pivot, reset to genesis
 			bc.currentBlock.Store(bc.genesisBlock)
+			bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
 		}
 	}
 	// Rewind the fast block in a simpleton way to the target head
@@ -309,9 +311,11 @@ func (bc *BlockChain) SetHead(head uint64) error {
 	// If either blocks reached nil, reset to the genesis state
 	if currentBlock := bc.CurrentBlock(); currentBlock == nil {
 		bc.currentBlock.Store(bc.genesisBlock)
+		bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
 	}
 	if currentFastBlock := bc.CurrentFastBlock(); currentFastBlock == nil {
 		bc.currentFastBlock.Store(bc.genesisBlock)
+		bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
 	}
 	currentBlock := bc.CurrentBlock()
 	currentFastBlock := bc.CurrentFastBlock()
@@ -480,6 +484,7 @@ func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {
 	bc.hc.SetCurrentHeader(bc.genesisBlock.Header())
 	bc.currentFastBlock.Store(bc.genesisBlock)
 
+	bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
 	return nil
 }
 
@@ -934,7 +939,7 @@ func (bc *BlockChain) WriteBlockWithoutState(block *types.Block, td *big.Int) (e
 	return nil
 }
 
-// sman TODO
+// sman need TODO
 // WriteBlockWithState writes the block and all associated state to the database.
 func (bc *BlockChain) WriteBlockWithState(block *types.Block, receipts []*types.Receipt, state *state.StateDB) (status WriteStatus, err error) {
 	bc.wg.Add(1)
@@ -1100,8 +1105,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 	// faster than direct delivery and requires much less mutex
 	// acquiring.
 	var (
-		stats         = insertStats{startTime: mclock.Now()}
-		events        = make([]interface{}, 0, len(chain))
+		stats= insertStats{startTime: mclock.Now()}
+		events= make([]interface{}, 0, len(chain))
 		lastCanon     *types.Block
 		coalescedLogs []*types.Log
 	)
@@ -1221,32 +1226,36 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 			bc.reportBlock(block, receipts, err)
 			return i, events, coalescedLogs, err
 		}
-		proctime := time.Since(bstart)
 
 		// sman 置出块者确认标识
 		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
 		// sman 高度是否大于当前head的高度 todo
 		if block.Header().Number.Int64() <= bc.CurrentBlock().Header().Number.Int64() {
-			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false)	// 广播不带确认标识
+			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false) // 广播不带确认标识
 			err = fmt.Errorf(`height number need to be larger than current block`)
 			return i, events, coalescedLogs, err
 		}
-
 		// sman 置自己节点对应的确认标识位
 		bc.SetConsensusFlag(block.Header().Hash(), bc.coinbase)
 		// sman 判断是否有2/3以上的确认
 		if bc.VerifyConsensusOK(block.Header().Hash()) {
-			if bc.stableBlock.Load().(*types.Block).Header().Number.Int64() > block.Header().Number.Int64() {
-				bc.stableBlock.Store(block)
+			log.Info(`block has consensus. Number:%d`, block.Header().Number.Uint64())
+			if bc.StableBlock().Header().Number.Uint64() < block.Header().Number.Uint64() { // Stable_block是否已指向该块或该块的子块
+				bc.stableBlock.Store(block) // 将stable_block指向该块
+			}
+			if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
+				newCurBlock := bc.getNewestBlockInStableChain()
+				bc.currentBlock.Store(newCurBlock)
 			}
 			// TODO 广播给普通节点
 			// go
 		}
-		// Write the block to the chain and get the status.
-		status, err := bc.WriteBlockWithState(block, receipts, state)
 		// sman 获取父节点header 并设置父header的children
 		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()+1)
 		parentHeader.Children = append(parentHeader.Children, block.Hash())
+
+		// Write the block to the chain and get the status.
+		status, err := bc.WriteBlockWithState(block, receipts, state)
 
 		if err != nil {
 			return i, events, coalescedLogs, err
@@ -1254,6 +1263,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		// sman  广播该块的hash，附带上确认标识
 		bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), true)
 
+		proctime := time.Since(bstart)
 		switch status {
 		case CanonStatTy:
 			log.Debug("Inserted new block", "number", block.Number(), "hash", block.Hash(), "uncles", len(block.Uncles()),
@@ -1285,7 +1295,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 	return 0, events, coalescedLogs, nil
 }
 
-// sman 收到hash广播后的处理 主要处理确认标识 todo
+// sman 收到hash广播后的处理 主要处理确认标识
 func (bc *BlockChain) ProcConsensusMsg(info struct {
 	Hash         common.Hash // 区块hash
 	Number       uint64      // 区块高度

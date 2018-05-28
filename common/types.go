@@ -36,8 +36,7 @@ var (
 	hashT    = reflect.TypeOf(Hash{})
 	addressT = reflect.TypeOf(Address{})
 )
-
-// Hash represents the 32 byte Keccak256 hash of arbitrary data.
+ // Hash represents the 32 byte Keccak256 hash of arbitrary data.
 type Hash [HashLength]byte
 
 func BytesToHash(b []byte) Hash {

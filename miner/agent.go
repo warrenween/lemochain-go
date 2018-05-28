@@ -74,7 +74,7 @@ func (self *CpuAgent) Start() {
 		return // agent already started
 	}
 	go self.update()
-	if _, ok := self.engine.(*dpovp.Dpovp);ok{
+	if _, ok := self.engine.(*dpovp.Dpovp); ok {
 		self.engine.(*dpovp.Dpovp).ModifyTimer()
 	}
 }
