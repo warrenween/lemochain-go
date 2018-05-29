@@ -1,24 +1,15 @@
 package dpovp
 
 import (
+	"crypto/ecdsa"
+
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/crypto"
-	"github.com/LemoFoundationLtd/lemochain-go/log"
-	"crypto/ecdsa"
 )
 
 // 根据publick key 获取地址
 func GetAddressByPubkey(pubKey *ecdsa.PublicKey) common.Address {
-	//switch len(keyBytes[:]) {
-	//case 64:
-	//	// add 'uncompressed key' flag
-	//	keyBytes = append([]byte{0x04}, keyBytes...)
-	//default:
-	//}
-	//pubKey := crypto.ToECDSAPub(keyBytes)
 	addr := crypto.PubkeyToAddress(*pubKey)
-	str := common.ToHex(addr[:])
-	log.Info(`sman address:%s`, str)
 	return addr
 }
 

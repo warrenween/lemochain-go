@@ -78,7 +78,7 @@ type ProtocolManager struct {
 
 	downloader *downloader.Downloader
 	fetcher    *fetcher.Fetcher
-	peers      *peerSet // 主节点网络连接
+	peers      *peerSet // sman 主节点网络连接
 	peersDelay *peerSet // sman 普通节点网络连接
 
 	SubProtocols []p2p.Protocol
@@ -193,7 +193,7 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 	return manager, nil
 }
 
-// 移除网络节点
+// sman 移除网络节点
 func (pm *ProtocolManager) removePeer(id string) {
 	// Short circuit if the peer was already removed
 	peer := pm.peers.Peer(id)
@@ -666,7 +666,7 @@ func (pm *ProtocolManager) handleMsg(p *peer) error {
 			pm.fetcher.Notify(p.id, block.Hash, block.Number, time.Now(), p.RequestOneHeader, p.RequestBodies)
 		}
 
-	case msg.Code == NewConsensusMsg:	// sman for consensus message
+	case msg.Code == NewConsensusMsg: // sman for consensus message
 		var announces newConsensusData
 		if err := msg.Decode(&announces); err != nil {
 			return errResp(ErrDecode, "%v: %v", msg, err)
@@ -743,8 +743,8 @@ func (pm *ProtocolManager) BroadcastBlock(block *types.Block, propagate bool) {
 	if propagate {
 		// Calculate the TD of the block (it's not imported yet, so block.Td is not valid)
 		var td *big.Int
-		parHash :=block.ParentHash()
-		parNum :=block.NumberU64()-1
+		parHash := block.ParentHash()
+		parNum := block.NumberU64() - 1
 		if parent := pm.blockchain.GetBlock(parHash, parNum); parent != nil {
 			td = new(big.Int).Add(block.Difficulty(), pm.blockchain.GetTd(block.ParentHash(), block.NumberU64()-1))
 		} else {
@@ -782,7 +782,7 @@ func (pm *ProtocolManager) BroadcastTx(hash common.Hash, tx *types.Transaction) 
 
 // sman 广播local的确认信息
 func (pm *ProtocolManager) BroadcastConsensusInfo(hash common.Hash, number uint64, hasFlag bool) {
-	var data= make(newConsensusData, 0, 1)
+	var data = make(newConsensusData, 0, 1)
 	conInfo := blockConsensusData{}
 	conInfo.Hash = hash
 	conInfo.Number = number

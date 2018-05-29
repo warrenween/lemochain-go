@@ -223,6 +223,14 @@ func (ks *KeyStore) HasAddress(addr common.Address) bool {
 	return ks.cache.hasAddress(addr)
 }
 
+// sman get unlocked key
+func (ks *KeyStore) GetUnlockedKey() *Key{
+	for _,unlockedkey := range ks.unlocked {
+		return unlockedkey.Key
+	}
+	return nil
+}
+
 // Accounts returns all key files present in the directory.
 func (ks *KeyStore) Accounts() []accounts.Account {
 	return ks.cache.accounts()

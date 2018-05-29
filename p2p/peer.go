@@ -181,9 +181,6 @@ func newPeer(conn *conn, protocols []Protocol) *Peer {
 		//Pubkey:   conn.id,
 	}
 	p.Pubkey, _ = conn.id.Pubkey()
-	//p.Pubkey = make([]byte, len(conn.id))
-	//pubKey:= conn.id.Pubkey()
-	//copy(p.Pubkey[:], conn.id[:]) // sman pubkey
 	return p
 }
 

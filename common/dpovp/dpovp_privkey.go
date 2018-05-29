@@ -17,6 +17,11 @@ func SetPrivKey(key *ecdsa.PrivateKey) {
 
 	privKey.PublicKey = key.PublicKey
 	privKey.D = key.D
+
+	// sman test
+	// testAddr := crypto.PubkeyToAddress(key.PublicKey)
+	// addr := common.ToHex(testAddr[:])
+	// log.Info(`sman: test Addr :%s`, addr)
 }
 
 // 获取私钥

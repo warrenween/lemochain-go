@@ -37,6 +37,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/metrics"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
 	"gopkg.in/urfave/cli.v1"
+	"github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 )
 
 const (
@@ -226,9 +227,6 @@ func glemo(ctx *cli.Context) error {
 // it unlocks any requested accounts, and starts the RPC/IPC interfaces and the
 // miner.
 func startNode(ctx *cli.Context, stack *node.Node) {
-	// Start up the node itself
-	utils.StartNode(stack)
-
 	// Unlock any account specifically requested
 	ks := stack.AccountManager().Backends(keystore.KeyStoreType)[0].(*keystore.KeyStore)
 
@@ -239,6 +237,12 @@ func startNode(ctx *cli.Context, stack *node.Node) {
 			unlockAccount(ctx, ks, trimmed, i, passwords)
 		}
 	}
+	// sman set private key
+	dpovp.SetPrivKey(ks.GetUnlockedKey().PrivateKey)
+
+	// Start up the node itself
+	utils.StartNode(stack)
+
 	// Register wallet event handlers to open and auto-derive wallets
 	events := make(chan accounts.WalletEvent, 16)
 	stack.AccountManager().Subscribe(events)
