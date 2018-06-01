@@ -183,7 +183,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	}
 
 	// 验证签名与coinbase对应的pubkey是否一致
-	pubkey, err := crypto.Ecrecover(header.Hash().Bytes(), header.SignInfo)
+	pubKey, err := crypto.Ecrecover(header.HashNoDpovp().Bytes(), header.SignInfo)
 	if err != nil {
 		return fmt.Errorf(`Wrong signinfo`)
 	}
@@ -191,38 +191,42 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	if blkCbPubkey == nil{
 		return fmt.Errorf("Verify header failed. Cann't get pubkey of %s", common.ToHex(header.Coinbase[:]))
 	}
-	if bytes.Compare(blkCbPubkey, pubkey) != 0 {
+	if bytes.Compare(blkCbPubkey, pubKey[1:]) != 0 {
 		return fmt.Errorf("Cann't verify block's signer")
 	}
 
 	// 是否该该节点出块
-	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
-	nodeCount := commonDpovp.GetCorNodesCount()
-	// 只有一个出块节点
-	if nodeCount == 1 {
-		if timespan < d.blockInternal { // 块间隔至少blockInternal
-			return fmt.Errorf(`Not sleep enough time`)
+	if parent.Time.Uint64() == 0{
+		// 父块为创世块
+	} else {
+		timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
+		nodeCount := commonDpovp.GetCorNodesCount()
+		// 只有一个出块节点
+		if nodeCount == 1 {
+			if timespan < d.blockInternal { // 块间隔至少blockInternal
+				return fmt.Errorf(`Not sleep enough time`)
+			}
+			return nil
 		}
-		return nil
-	}
-	// 所有节点全部超时时一轮的超时间隔
-	oneTurnTimespan := int64(nodeCount) * d.timeoutTime
-	// 去掉整轮后的间隔
-	timespan = timespan % oneTurnTimespan
-	// 当前块与父块的最近逻辑间距
-	dist := commonDpovp.GetCoreNodeIndex(&(header.Coinbase)) - commonDpovp.GetCoreNodeIndex(&(parent.Coinbase))
+		// 所有节点全部超时时一轮的超时间隔
+		oneTurnTimespan := int64(nodeCount) * d.timeoutTime
+		// 去掉整轮后的间隔
+		timespan = timespan % oneTurnTimespan
+		// 当前块与父块的最近逻辑间距
+		dist := commonDpovp.GetCoreNodeIndex(&(header.Coinbase)) - commonDpovp.GetCoreNodeIndex(&(parent.Coinbase))
 
-	if dist == 0 {
-		return fmt.Errorf(`one node can't produce block twice'`)
-	}
-	if dist == 1 {
-		if timespan < d.timeoutTime {
-			return fmt.Errorf(`not sleep enough time`)
+		if dist == 0 {
+			return fmt.Errorf(`one node can't produce block twice'`)
 		}
-		return nil
-	}
-	if timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime {
-		return fmt.Errorf(`it's not turn`)
+		if dist == 1 {
+			if timespan < d.timeoutTime {
+				return fmt.Errorf(`not sleep enough time`)
+			}
+			return nil
+		}
+		if timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime {
+			return fmt.Errorf(`it's not turn`)
+		}
 	}
 	return nil
 }
