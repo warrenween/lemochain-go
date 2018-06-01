@@ -10,7 +10,7 @@ var (
 	privKeyMu sync.Mutex
 )
 
-// 设置私钥
+// 设置私钥 非coinbase私钥
 func SetPrivKey(key *ecdsa.PrivateKey) {
 	privKeyMu.Lock()
 	defer privKeyMu.Unlock()

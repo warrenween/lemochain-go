@@ -28,7 +28,7 @@ import (
 	"time"
 
 	"github.com/LemoFoundationLtd/lemochain-go/common"
-	common_dpovp "github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
+	commonDpovp "github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/common/mclock"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
@@ -133,7 +133,7 @@ type BlockChain struct {
 
 	stableBlock     atomic.Value                                     // sman 当前稳定块指针
 	blocksConsensus map[common.Hash]uint64                           // sman 区块经过确认的标识 按位计算 最多64个主节点
-	coinbase        common.Address                                   // sman coinbase
+	coinbase        common.Address                                   // sman 节点coinbase
 	BroadcastConFn  func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
 }
 
@@ -373,7 +373,7 @@ func (bc *BlockChain) SetStableBlock(block *types.Block) {
 // hash: block hash
 // address: consensus node address
 func (bc *BlockChain) SetConsensusFlag(hash common.Hash, address common.Address) {
-	index := common_dpovp.GetCoreNodeIndex(address)
+	index := commonDpovp.GetCoreNodeIndex(&address)
 	if index < 0 {
 		err := errors.New(`Failed to set consensus flag`)
 		log.Crit("Failed to set consensus flag", "err", err)
@@ -392,7 +392,7 @@ func (bc *BlockChain) VerifyConsensusOK(hash common.Hash) bool {
 	if ok != true {
 		return false
 	}
-	nodeCount := common_dpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCorNodesCount()
 	count := 0
 	for i := 0; i < nodeCount; i++ {
 		tmp := uint64(1 << uint32(i))
@@ -1082,7 +1082,6 @@ func (bc *BlockChain) InsertChain(chain types.Blocks) (int, error) {
 // only reason this method exists as a separate one is to make locking cleaner
 // with deferred statements.
 func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*types.Log, error) {
-	// 检查区块是否连续且继承关系正确
 	// Do a sanity check that the provided chain is actually ordered and linked
 	for i := 1; i < len(chain); i++ {
 		if chain[i].NumberU64() != chain[i-1].NumberU64()+1 || chain[i].ParentHash() != chain[i-1].Hash() {

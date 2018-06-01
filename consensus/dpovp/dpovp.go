@@ -11,7 +11,7 @@ import (
 	"fmt"
 
 	"github.com/LemoFoundationLtd/lemochain-go/common"
-	"github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
+	commonDpovp "github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
@@ -55,7 +55,7 @@ func (d *Dpovp) ModifyTimer() {
 			go d.resetMinerTimer(needDur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
-		timeDur = timeDur % (int64(dpovp.GetCorNodesCount()) * d.timeoutTime)
+		timeDur = timeDur % (int64(commonDpovp.GetCorNodesCount()) * d.timeoutTime)
 		timeDur = int64(slot-1)*d.timeoutTime - timeDur
 		go d.resetMinerTimer(timeDur)
 	}
@@ -82,14 +82,14 @@ func (d *Dpovp) resetMinerTimer(timeDur int64) {
 // 获取最新块的出块者序号与本节点序号差
 func (d *Dpovp) getSlot() int {
 	lstAddr := d.currentBlock().Header().Coinbase
-	lstIndex := dpovp.GetCoreNodeIndex(lstAddr)
-	meIndex := dpovp.GetCoreNodeIndex(d.coinbase)
+	lstIndex := commonDpovp.GetCoreNodeIndex(&lstAddr)
+	meIndex := commonDpovp.GetCoreNodeIndex(&(d.coinbase))
 	var tmp [20]byte // 空地址
 
 	if bytes.Compare(lstAddr[:], tmp[:]) == 0 {
 		return meIndex + 1
 	}
-	nodeCount := dpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCorNodesCount()
 	if nodeCount == 1 {
 		return 1
 	}
@@ -189,13 +189,14 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	}
 	var signer common.Address
 	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
-	if bytes.Compare(header.Coinbase[:], signer[:]) != 0 {
+	blkCbPubkey := commonDpovp.GetPubkeyByAddress(&signer)	// 获取出块者的node公钥
+	if bytes.Compare(blkCbPubkey, signer[:]) != 0 {
 		return fmt.Errorf(`signer != coinbase`)
 	}
 
 	// 是否该该节点出块
 	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
-	nodeCount := dpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCorNodesCount()
 	// 只有一个出块节点
 	if nodeCount == 1 {
 		if timespan < d.blockInternal { // 块间隔至少blockInternal
@@ -208,7 +209,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	// 去掉整轮后的间隔
 	timespan = timespan % oneTurnTimespan
 	// 当前块与父块的最近逻辑间距
-	dist := dpovp.GetCoreNodeIndex(header.Coinbase) - dpovp.GetCoreNodeIndex(parent.Coinbase)
+	dist := commonDpovp.GetCoreNodeIndex(&(header.Coinbase)) - commonDpovp.GetCoreNodeIndex(&(parent.Coinbase))
 
 	if dist == 0 {
 		return fmt.Errorf(`one node can't produce block twice'`)
@@ -297,7 +298,7 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	}
 	// 对区块进行签名
 	hash := header.Hash()
-	privKey := dpovp.GetPrivKey()
+	privKey := commonDpovp.GetPrivKey()
 	if signInfo, err := crypto.Sign(hash[:], &privKey); err != nil {
 		return nil, err
 	} else {
@@ -305,7 +306,7 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		copy(header.SignInfo, signInfo)
 	}
 	// 出块之后需要重置定时器
-	nodeCount := dpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCorNodesCount()
 	var timeDur int64
 	if nodeCount > 1 {
 		timeDur = int64(nodeCount-1) * d.timeoutTime
