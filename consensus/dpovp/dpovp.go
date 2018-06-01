@@ -240,9 +240,9 @@ func (d *Dpovp) VerifyUncles(chain consensus.ChainReader, block *types.Block) er
 // the consensus rules of the given engine.
 func (d *Dpovp) VerifySeal(chain consensus.ChainReader, header *types.Header) error {
 	// 验证签名与coinbase是否一致
-	pubkey, err := crypto.Ecrecover(header.Hash().Bytes(), header.SignInfo)
+	pubkey, err := crypto.Ecrecover(header.HashNoDpovp().Bytes(), header.SignInfo)
 	if err != nil {
-		return fmt.Errorf(`wrong signinfo`)
+		return fmt.Errorf("Failed to verify Seal. hash:%s", header.Hash())
 	}
 	var signer common.Address
 	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
@@ -256,7 +256,6 @@ func (d *Dpovp) VerifySeal(chain consensus.ChainReader, header *types.Header) er
 // Prepare initializes the consensus fields of a block header according to the
 // rules of a particular engine. The changes are executed inline.
 func (d *Dpovp) Prepare(chain consensus.ChainReader, header *types.Header) error {
-	header.Coinbase = common.Address{}
 	// Nonce is reserved for now, set to empty
 	header.Nonce = types.BlockNonce{}
 	// Set the difficulty to 1
@@ -296,11 +295,10 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	// Sealing the genesis block is not supported
 	number := header.Number.Uint64()
 	if number == 0 {
-		err := errors.New(`unknownblock`)
-		return nil, err
+		return nil, fmt.Errorf("unknownblock, number:%d", number)
 	}
 	// 对区块进行签名
-	hash := header.Hash()
+	hash := header.HashNoDpovp()
 	privKey := commonDpovp.GetPrivKey()
 	if signInfo, err := crypto.Sign(hash[:], &privKey); err != nil {
 		return nil, err
