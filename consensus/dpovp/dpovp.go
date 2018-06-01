@@ -288,6 +288,8 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	if !d.isTurn {
 		err := errors.New(`it's not turn to produce block`)
 		return nil, err
+	} else {
+		d.isTurn = false
 	}
 	// 出块
 	header := block.Header()
