@@ -182,16 +182,17 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 		return consensus.ErrFutureBlock
 	}
 
-	// 验证签名与coinbase是否一致
+	// 验证签名与coinbase对应的pubkey是否一致
 	pubkey, err := crypto.Ecrecover(header.Hash().Bytes(), header.SignInfo)
 	if err != nil {
-		return fmt.Errorf(`wrong signinfo`)
+		return fmt.Errorf(`Wrong signinfo`)
 	}
-	var signer common.Address
-	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
-	blkCbPubkey := commonDpovp.GetPubkeyByAddress(&signer)	// 获取出块者的node公钥
-	if bytes.Compare(blkCbPubkey, signer[:]) != 0 {
-		return fmt.Errorf(`signer != coinbase`)
+	blkCbPubkey := commonDpovp.GetPubkeyByAddress(&(header.Coinbase))	// 获取出块者的node公钥
+	if blkCbPubkey == nil{
+		return fmt.Errorf("Verify header failed. Cann't get pubkey of %s", common.ToHex(header.Coinbase[:]))
+	}
+	if bytes.Compare(blkCbPubkey, pubkey) != 0 {
+		return fmt.Errorf("Cann't verify block's signer")
 	}
 
 	// 是否该该节点出块
@@ -200,7 +201,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	// 只有一个出块节点
 	if nodeCount == 1 {
 		if timespan < d.blockInternal { // 块间隔至少blockInternal
-			return fmt.Errorf(`not sleep enough time`)
+			return fmt.Errorf(`Not sleep enough time`)
 		}
 		return nil
 	}

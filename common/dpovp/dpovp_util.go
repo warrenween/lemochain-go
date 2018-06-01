@@ -18,7 +18,6 @@ func GetAddressByPubkey(pubKey *ecdsa.PublicKey) common.Address {
 	return addr
 }
 
-
 // Get all sorted nodes that who can produce blocks
 func GetAllSortedCoreNodes() []AddrNodeIDMapping {
 	// TODO
@@ -52,6 +51,7 @@ func GetCoreNodeIndex(address *common.Address) int {
 	}
 	return -1
 }
+
 // 通过出块者地址获取节点公钥
 func GetPubkeyByAddress(address *common.Address) []byte{
 	nodes := GetAllSortedCoreNodes()
