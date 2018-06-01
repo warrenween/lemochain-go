@@ -304,9 +304,10 @@ func (pm *ProtocolManager) handle(p *peer) error {
 		rw.Init(p.version)
 	}
 	// sman 获取地址
-	addr := dpovp.GetAddressByPubkey(p.Peer.Pubkey)
+	//addr := dpovp.GetAddressByPubkey(p.Peer.Pubkey)
+	pubKey := crypto.FromECDSAPub(p.Peer.Pubkey)
 	// sman 判断是否在主节点列表中
-	if dpovp.GetCoreNodeIndex(&addr) == -1 { // 不在主节点中
+	if dpovp.GetCoreNodeIndexByPubkey(pubKey) == -1 { // 不在主节点中
 		// Register the peer locally
 		if err := pm.peersDelay.Register(p); err != nil {
 			p.Log().Error("Lemochain peer registration failed", "err", err)
