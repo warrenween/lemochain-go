@@ -173,7 +173,18 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 		return consensus.ErrInvalidNumber
 	}
 	number := header.Number.Uint64()
-	parent := chain.GetHeader(header.ParentHash, number-1)
+	var parent *types.Header
+	if parents != nil {
+		for _, b := range parents {
+			if b.Hash() == header.ParentHash && header.Number.Uint64() == number-1 {
+				parent = chain.GetHeader(header.ParentHash, number-1)
+				break
+			}
+		}
+	}
+	if parent == nil {
+		parent = chain.GetHeader(header.ParentHash, number-1)
+	}
 	if parent == nil {
 		return consensus.ErrUnknownAncestor
 	}
@@ -187,8 +198,8 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	if err != nil {
 		return fmt.Errorf(`Wrong signinfo`)
 	}
-	blkCbPubkey := commonDpovp.GetPubkeyByAddress(&(header.Coinbase))	// 获取出块者的node公钥
-	if blkCbPubkey == nil{
+	blkCbPubkey := commonDpovp.GetPubkeyByAddress(&(header.Coinbase)) // 获取出块者的node公钥
+	if blkCbPubkey == nil {
 		return fmt.Errorf("Verify header failed. Cann't get pubkey of %s", common.ToHex(header.Coinbase[:]))
 	}
 	if bytes.Compare(blkCbPubkey, pubKey[1:]) != 0 {
@@ -196,7 +207,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	}
 
 	// 是否该该节点出块
-	if parent.Time.Uint64() == 0{
+	if parent.Time.Uint64() == 0 {
 		// 父块为创世块
 	} else {
 		timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms

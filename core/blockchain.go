@@ -137,6 +137,8 @@ type BlockChain struct {
 	BroadcastConFn  func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
 }
 
+var childrenMap map[common.Hash][]common.Hash	// sman for iteratal of block children block
+
 // sman 设置coinbase
 func (bc *BlockChain) SetCoinbase(coinbase common.Address) {
 	bc.coinbase = coinbase
@@ -1250,8 +1252,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 			// go
 		}
 		// sman 获取父节点header 并设置父header的children
-		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()+1)
-		parentHeader.Children = append(parentHeader.Children, block.Hash())
+		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
+		childrenMap[parentHeader.Hash()] = append(childrenMap[parentHeader.Hash()], block.Hash())
 
 		// Write the block to the chain and get the status.
 		status, err := bc.WriteBlockWithState(block, receipts, state)
@@ -1388,10 +1390,10 @@ func (bc *BlockChain) getNewestBlockInStableChain() *types.Block {
 
 // sman get a block's leaf Descendants
 func (bc *BlockChain) getLeavesOfBlock(block *types.Block) (blocks []*types.Block) {
-	if len(block.Header().Children) == 0 {
+	if len(childrenMap[block.Hash()]) == 0 {
 		blocks = append(blocks, block)
 	} else {
-		for _, hash := range block.Header().Children {
+		for _, hash := range childrenMap[block.Hash()] {
 			childBlock := bc.GetBlock(hash, block.Header().Number.Uint64()+1)
 			childLeaves := bc.getLeavesOfBlock(childBlock)
 			for _, grandchildren := range childLeaves {
