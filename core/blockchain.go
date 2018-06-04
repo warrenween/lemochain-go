@@ -1314,9 +1314,12 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 	if err != nil {
 		return
 	}
-	var signer common.Address
-	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
-	bc.SetConsensusFlag(info.Hash, signer)
+	remoteAddr:= commonDpovp.GetAddressByPubkey(pubkey)
+	epAddr:=common.Address{}
+	if remoteAddr == epAddr {
+		return
+	}
+	bc.SetConsensusFlag(info.Hash, remoteAddr)
 	// 是否有该块 没有则返回
 	if !bc.HasBlock(info.Hash, info.Number) {
 		return
