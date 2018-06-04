@@ -151,8 +151,8 @@ func (d *Dpovp) VerifyHeaders(chain consensus.ChainReader, headers []*types.Head
 	results := make(chan error, len(headers))
 
 	go func() {
-		for i, header := range headers {
-			err := d.verifyHeader(chain, header, headers[:i])
+		for _, header := range headers {
+			err := d.verifyHeader(chain, header, headers)
 
 			select {
 			case <-abort:
@@ -174,12 +174,10 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	}
 	number := header.Number.Uint64()
 	var parent *types.Header
-	if parents != nil {
-		for _, b := range parents {
-			if b.Hash() == header.ParentHash && header.Number.Uint64() == number-1 {
-				parent = chain.GetHeader(header.ParentHash, number-1)
-				break
-			}
+	for _, b := range parents {
+		if b.Hash() == header.ParentHash {
+			parent = b
+			break
 		}
 	}
 	if parent == nil {
@@ -206,38 +204,44 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 		return fmt.Errorf("Cann't verify block's signer")
 	}
 
-	// 是否该该节点出块
-	if parent.Time.Uint64() == 0 {
-		// 父块为创世块
-	} else {
-		timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
-		nodeCount := commonDpovp.GetCorNodesCount()
-		// 只有一个出块节点
-		if nodeCount == 1 {
-			if timespan < d.blockInternal { // 块间隔至少blockInternal
-				return fmt.Errorf(`Not sleep enough time`)
-			}
-			return nil
+	// 以下为确定是否该该节点出块
+	if parent.Time.Uint64() == 0 {	// 父块为创世块
+		return nil
+	}
+	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
+	nodeCount := commonDpovp.GetCorNodesCount()
+	// 只有一个出块节点
+	if nodeCount == 1 {
+		if timespan < d.blockInternal { // 块间隔至少blockInternal
+			return fmt.Errorf(`Not sleep enough time`)
 		}
-		// 所有节点全部超时时一轮的超时间隔
-		oneTurnTimespan := int64(nodeCount) * d.timeoutTime
-		// 去掉整轮后的间隔
-		timespan = timespan % oneTurnTimespan
-		// 当前块与父块的最近逻辑间距
-		dist := commonDpovp.GetCoreNodeIndex(&(header.Coinbase)) - commonDpovp.GetCoreNodeIndex(&(parent.Coinbase))
-
-		if dist == 0 {
-			return fmt.Errorf(`one node can't produce block twice'`)
-		}
-		if dist == 1 {
-			if timespan < d.timeoutTime {
-				return fmt.Errorf(`not sleep enough time`)
-			}
-			return nil
-		}
-		if timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime {
+		return nil
+	}
+	// 所有节点全部超时时一轮的超时间隔
+	oneTurnTimespan := int64(nodeCount) * d.timeoutTime
+	// 当前块与父块的最近逻辑间距
+	dist := commonDpovp.GetCoreNodeIndex(&(header.Coinbase)) - commonDpovp.GetCoreNodeIndex(&(parent.Coinbase))
+	if timespan < oneTurnTimespan { // 间隔小于一轮
+		if dist == 0 && (timespan < oneTurnTimespan-d.timeoutTime){
+			return fmt.Errorf(`it's not turn`)
+		} else if dist == 1 && timespan < d.blockInternal {
+			return fmt.Errorf(`not sleep enough time`)
+		} else if dist > 1 && (timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime) {
 			return fmt.Errorf(`it's not turn`)
 		}
+
+		return nil
+	}
+
+	// 去掉整轮后的间隔
+	timespan = timespan % oneTurnTimespan
+
+	if dist == 0 && timespan < oneTurnTimespan-d.timeoutTime {
+		return fmt.Errorf(`it's not turn`)
+	} else if dist == 1 && timespan < d.blockInternal {
+		return fmt.Errorf(`not sleep enough time`)
+	} else if dist > 1 && (timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime) {
+		return fmt.Errorf(`it's not turn`)
 	}
 	return nil
 }

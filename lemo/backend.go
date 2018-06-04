@@ -154,8 +154,6 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 	if err != nil {
 		return nil, err
 	}
-	// sman set coinbase to blockchain
-	lemo.blockchain.SetCoinbase(lemo.lemobase)
 
 	// Rewind the chain in case of an incompatible config upgrade.
 	if compat, ok := genesisErr.(*params.ConfigCompatError); ok {
@@ -399,6 +397,10 @@ func (s *Lemochain) Protocols() []p2p.Protocol {
 // Start implements node.Service, starting all internal goroutines needed by the
 // Lemochain protocol implementation.
 func (s *Lemochain) Start(srvr *p2p.Server) error {
+	// sman set coinbase to blockchain
+	coinbase, _ := s.Lemobase()
+	s.blockchain.SetCoinbase(coinbase)
+
 	// Start the bloom bits servicing goroutines
 	s.startBloomHandlers()
 

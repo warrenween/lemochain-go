@@ -137,7 +137,7 @@ type BlockChain struct {
 	BroadcastConFn  func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
 }
 
-var childrenMap map[common.Hash][]common.Hash	// sman for iteratal of block children block
+var childrenMap = make(map[common.Hash][]common.Hash)	// sman for iteratal of block children block
 
 // sman 设置coinbase
 func (bc *BlockChain) SetCoinbase(coinbase common.Address) {
@@ -174,6 +174,7 @@ func NewBlockChain(db lemodb.Database, cacheConfig *CacheConfig, chainConfig *pa
 		engine:       engine,
 		vmConfig:     vmConfig,
 		badBlocks:    badBlocks,
+		blocksConsensus: make(map[common.Hash]uint64, 0),
 	}
 	bc.SetValidator(NewBlockValidator(chainConfig, bc, engine))
 	bc.SetProcessor(NewStateProcessor(chainConfig, bc, engine))
@@ -1253,7 +1254,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		}
 		// sman 获取父节点header 并设置父header的children
 		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
-		childrenMap[parentHeader.Hash()] = append(childrenMap[parentHeader.Hash()], block.Hash())
+		parHash:=parentHeader.Hash()
+		childrenMap[parHash] = append(childrenMap[parHash], block.Hash())
 
 		// Write the block to the chain and get the status.
 		status, err := bc.WriteBlockWithState(block, receipts, state)
