@@ -151,8 +151,8 @@ func (d *Dpovp) VerifyHeaders(chain consensus.ChainReader, headers []*types.Head
 	results := make(chan error, len(headers))
 
 	go func() {
-		for _, header := range headers {
-			err := d.verifyHeader(chain, header, headers)
+		for i, header := range headers {
+			err := d.verifyHeader(chain, header, headers[:i])
 
 			select {
 			case <-abort:
@@ -232,12 +232,12 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 
 		return nil
 	}
-
+	// 如果间隔大于一轮 则任何出块都是合法的
 	// 去掉整轮后的间隔
 	timespan = timespan % oneTurnTimespan
 
 	if dist == 0 && timespan < oneTurnTimespan-d.timeoutTime {
-		return fmt.Errorf(`it's not turn`)
+		//return fmt.Errorf(`it's not turn`)
 	} else if dist == 1 && timespan < d.blockInternal {
 		return fmt.Errorf(`not sleep enough time`)
 	} else if dist > 1 && (timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime) {
@@ -275,12 +275,16 @@ func (d *Dpovp) VerifySeal(chain consensus.ChainReader, header *types.Header) er
 // Prepare initializes the consensus fields of a block header according to the
 // rules of a particular engine. The changes are executed inline.
 func (d *Dpovp) Prepare(chain consensus.ChainReader, header *types.Header) error {
+	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
+	if parent == nil {
+		return consensus.ErrUnknownAncestor
+	}
 	// Nonce is reserved for now, set to empty
 	header.Nonce = types.BlockNonce{}
-	// Set the difficulty to 1
-	header.Difficulty = new(big.Int).SetInt64(1)
 	// Mix digest is reserved for now, set to empty
 	header.MixDigest = common.Hash{}
+	// Set the difficulty to 1
+	header.Difficulty = new(big.Int).SetInt64(1)
 	header.Time = new(big.Int).SetUint64(uint64(time.Now().Unix()))
 	return nil
 }

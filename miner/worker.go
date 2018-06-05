@@ -203,7 +203,6 @@ func (self *worker) pendingBlock() *types.Block {
 func (self *worker) start() {
 	self.mu.Lock()
 	defer self.mu.Unlock()
-	log.Info("sman worker.start")
 	atomic.StoreInt32(&self.mining, 1)
 
 	// spin up agents
@@ -289,8 +288,6 @@ func (self *worker) update() {
 
 func (self *worker) wait() {
 	for {
-		//mustCommitNewWork := true
-		// sman self.recv: already sealed block
 		for result := range self.recv {
 			atomic.AddInt32(&self.atWork, -1)
 			if result != nil {
@@ -321,7 +318,7 @@ func (self *worker) wait() {
 				self.mux.Post(core.NewMinedBlockEvent{Block: block})
 				var (
 					events []interface{}
-					logs= work.state.Logs()
+					logs   = work.state.Logs()
 				)
 				events = append(events, core.ChainEvent{Block: block, Hash: block.Hash(), Logs: logs})
 				if stat == core.CanonStatTy {
@@ -331,11 +328,11 @@ func (self *worker) wait() {
 
 				// Insert the block into the set of pending ones to wait for confirmations
 				self.unconfirmed.Insert(block.NumberU64(), block.Hash())
+			} else {
+				time.Sleep(100 * time.Millisecond)
 			}
 			// 提交新work
-			//f mustCommitNewWork {
 			self.commitNewWork()
-			//}
 		}
 	}
 }

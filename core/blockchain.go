@@ -22,7 +22,6 @@ import (
 	"fmt"
 	"io"
 	"math/big"
-	mrand "math/rand"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -958,7 +957,10 @@ func (bc *BlockChain) WriteBlockWithState(block *types.Block, receipts []*types.
 	defer bc.mu.Unlock()
 
 	currentBlock := bc.CurrentBlock()
-	localTd := bc.GetTd(currentBlock.Hash(), currentBlock.NumberU64())
+	//curHash:=currentBlock.Hash()
+	//curNumber:=currentBlock.NumberU64()
+	//localTd := bc.GetTd(curHash, curNumber)
+	localTd := new(big.Int).SetUint64(currentBlock.NumberU64())
 	externTd := new(big.Int).Add(block.Difficulty(), ptd)
 
 	// Irrelevant of the canonical status, write the block itself to the database
@@ -1036,7 +1038,8 @@ func (bc *BlockChain) WriteBlockWithState(block *types.Block, receipts []*types.
 	currentBlock = bc.CurrentBlock()
 	if !reorg && externTd.Cmp(localTd) == 0 {
 		// Split same-difficulty blocks by number, then at random
-		reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() && mrand.Float64() < 0.5)
+		//reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() && mrand.Float64() < 0.5)
+		reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() )
 	}
 	if reorg {
 		// Reorganise the chain if the parent is not the head block
@@ -1241,14 +1244,14 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		bc.SetConsensusFlag(block.Header().Hash(), bc.coinbase)
 		// sman 判断是否有2/3以上的确认
 		if bc.VerifyConsensusOK(block.Header().Hash()) {
-			log.Info(`block has consensus. Number:%d`, block.Header().Number.Uint64())
+			log.Info(fmt.Sprintf("block has consensus. Number:%d", block.Header().Number.Uint64()))
 			if bc.StableBlock().Header().Number.Uint64() < block.Header().Number.Uint64() { // Stable_block是否已指向该块或该块的子块
 				bc.stableBlock.Store(block) // 将stable_block指向该块
 			}
-			if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
-				newCurBlock := bc.getNewestBlockInStableChain()
-				bc.currentBlock.Store(newCurBlock)
-			}
+			//if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
+			//	newCurBlock := bc.getNewestBlockInStableChain()
+			//	bc.currentBlock.Store(newCurBlock)
+			//}
 			// TODO 广播给普通节点
 			// go
 		}
@@ -1342,6 +1345,9 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 // sman is current block's Ancestors be stable block
 func (bc *BlockChain) isCurAndStableBlockInSameChain() bool {
 	curBlock, okC := bc.currentBlock.Load().(*types.Block)
+	if curBlock.NumberU64() == uint64(0){
+		return true
+	}
 	staBlock, okS := bc.stableBlock.Load().(*types.Block)
 	if !okC || ! okS {
 		return false
