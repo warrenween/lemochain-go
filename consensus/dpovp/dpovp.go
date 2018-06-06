@@ -45,35 +45,33 @@ func (d *Dpovp) ModifyTimer() {
 	defer d.isTurnMu.Unlock()
 
 	timeDur := d.getTimespan() // 获取当前时间与最新块的时间差
-	//log.Warn(`timeDur`, `time:`, string(timeDur))
 	slot := d.getSlot() // 获取新块离本节点索引的距离
-	if slot == 1 {      // 说明下一个区块就该本节点产生了
+	if slot == 0 {
+		// 自己出的块 不做处理
+	} else if slot == 1 {      // 说明下一个区块就该本节点产生了
 		if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
 			d.isTurn = true
 		} else {
 			needDur := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
-			go d.resetMinerTimer(needDur)
+			d.resetMinerTimer(needDur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
 		timeDur = timeDur % (int64(commonDpovp.GetCorNodesCount()) * d.timeoutTime)
 		timeDur = int64(slot-1)*d.timeoutTime - timeDur
-		go d.resetMinerTimer(timeDur)
+		d.resetMinerTimer(timeDur)
 	}
 }
 
 // 重置出块定时器
 func (d *Dpovp) resetMinerTimer(timeDur int64) {
-	d.isTurnMu.Lock()
-	defer d.isTurnMu.Unlock()
-
 	// 停掉之前的定时器
 	if d.blockMinerTimer != nil {
 		d.blockMinerTimer.Stop()
 	}
 	// 重开新的定时器
 	d.blockMinerTimer = time.AfterFunc(time.Duration(timeDur*int64(time.Millisecond)), func() {
-		//d.isTurnMu.Lock()
-		//defer d.isTurnMu.Unlock()
+		d.isTurnMu.Lock()
+		defer d.isTurnMu.Unlock()
 		d.isTurn = true
 	})
 	d.isTurn = false
@@ -86,7 +84,7 @@ func (d *Dpovp) getSlot() int {
 	meIndex := commonDpovp.GetCoreNodeIndex(&(d.coinbase))
 	var tmp [20]byte // 空地址
 
-	if bytes.Compare(lstAddr[:], tmp[:]) == 0 {
+	if bytes.Compare(lstAddr[:], tmp[:]) == 0 {	// 与创世块比较
 		return meIndex + 1
 	}
 	nodeCount := commonDpovp.GetCorNodesCount()
@@ -128,8 +126,6 @@ func (d *Dpovp) SetCoinbase(coinbase common.Address) {
 // from the signature in the header's extra-data section.
 // Author implements consensus.Engine, returning the header's coinbase as the
 // proof-of-work verified author of the block.
-// 暂未搞明白到底需要返回谁的地址
-// 貌似是谁挖的矿返回谁的地址
 func (d *Dpovp) Author(header *types.Header) (common.Address, error) {
 
 	return header.Coinbase, nil
@@ -307,6 +303,9 @@ func (d *Dpovp) Finalize(chain consensus.ChainReader, header *types.Header, stat
 // Seal generates a new block for the given input block with the local miner's
 // seal place on top.
 func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-chan struct{}) (*types.Block, error) {
+	d.isTurnMu.Lock()
+	defer d.isTurnMu.Unlock()
+
 	if !d.isTurn {
 		err := errors.New(`it's not turn to produce block`)
 		return nil, err
