@@ -46,9 +46,17 @@ func (d *Dpovp) ModifyTimer() {
 
 	timeDur := d.getTimespan() // 获取当前时间与最新块的时间差
 	slot := d.getSlot() // 获取新块离本节点索引的距离
-	if slot == 0 {
-		// 自己出的块 不做处理
+	if slot == 0 {	// 上一个块为自己出的块
+		nodeCount := commonDpovp.GetCorNodesCount()
+		var timeDur int64
+		if nodeCount > 1 {
+			timeDur = int64(nodeCount-1) * d.timeoutTime
+		} else {
+			timeDur = d.blockInternal
+		}
+		d.resetMinerTimer(timeDur)
 	} else if slot == 1 {      // 说明下一个区块就该本节点产生了
+		timeDur = timeDur % (int64(commonDpovp.GetCorNodesCount()) * d.timeoutTime)
 		if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
 			d.isTurn = true
 		} else {
@@ -329,14 +337,14 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		copy(header.SignInfo, signInfo)
 	}
 	// 出块之后需要重置定时器
-	nodeCount := commonDpovp.GetCorNodesCount()
-	var timeDur int64
-	if nodeCount > 1 {
-		timeDur = int64(nodeCount-1) * d.timeoutTime
-	} else {
-		timeDur = d.blockInternal
-	}
-	d.resetMinerTimer(timeDur)
+	//nodeCount := commonDpovp.GetCorNodesCount()
+	//var timeDur int64
+	//if nodeCount > 1 {
+	//	timeDur = int64(nodeCount-1) * d.timeoutTime
+	//} else {
+	//	timeDur = d.blockInternal
+	//}
+	//d.resetMinerTimer(timeDur)
 
 	return block.WithSeal(header), nil
 }
