@@ -15,7 +15,7 @@ func GetAllSortedCoreNodes() []AddrNodeIDMapping {
 	// TODO
 	result := make([]AddrNodeIDMapping, 0)
 	var addr = common.HexToAddress(`0xb2a6935aedca3c64d1a98787f48ef4bc010b09d7`)
-	var pubKey = common.Hex2Bytes(`8e88095f606e713bb52be8268ab7fe94f9656c0cf7a86d02dcaf141c7d54ed5ae9a3eaf69a2209a2fd645b33819df9ac46f4c251269671a847a7b01adf24b517`)
+	var pubKey = common.Hex2Bytes(`8e88095f606e713bb52be8268ab7fe94f9656c0cf7a86d02dcaf141c7d54ed5ae9a3eafad69a2209a2fd645b33819df9ac46f4c251269671a847a7b01adf24b517`)
 	result = append(result, AddrNodeIDMapping{addr, pubKey})
 
 	addr = common.HexToAddress(`0xc848fe1d6b93c0ec640b3b2469c40378c8adbb5a`)
@@ -34,7 +34,7 @@ func GetAllSortedCoreNodes() []AddrNodeIDMapping {
 }
 
 // 获取主节点数量
-func GetCorNodesCount() int {
+func GetCoreNodesCount() int {
 	nodes := GetAllSortedCoreNodes()
 	return len(nodes)
 }

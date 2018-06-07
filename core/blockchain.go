@@ -394,7 +394,7 @@ func (bc *BlockChain) VerifyConsensusOK(hash common.Hash) bool {
 	if ok != true {
 		return false
 	}
-	nodeCount := commonDpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCoreNodesCount()
 	count := 0
 	for i := 0; i < nodeCount; i++ {
 		tmp := uint64(1 << uint32(i))

@@ -47,7 +47,7 @@ func (d *Dpovp) ModifyTimer() {
 	timeDur := d.getTimespan() // 获取当前时间与最新块的时间差
 	slot := d.getSlot() // 获取新块离本节点索引的距离
 	if slot == 0 {	// 上一个块为自己出的块
-		nodeCount := commonDpovp.GetCorNodesCount()
+		nodeCount := commonDpovp.GetCoreNodesCount()
 		var timeDur int64
 		if nodeCount > 1 {
 			timeDur = int64(nodeCount-1) * d.timeoutTime
@@ -56,7 +56,7 @@ func (d *Dpovp) ModifyTimer() {
 		}
 		d.resetMinerTimer(timeDur)
 	} else if slot == 1 {      // 说明下一个区块就该本节点产生了
-		timeDur = timeDur % (int64(commonDpovp.GetCorNodesCount()) * d.timeoutTime)
+		timeDur = timeDur % (int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime)
 		if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
 			d.isTurn = true
 		} else {
@@ -64,7 +64,7 @@ func (d *Dpovp) ModifyTimer() {
 			d.resetMinerTimer(needDur)
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
-		timeDur = timeDur % (int64(commonDpovp.GetCorNodesCount()) * d.timeoutTime)
+		timeDur = timeDur % (int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime)
 		timeDur = int64(slot-1)*d.timeoutTime - timeDur
 		d.resetMinerTimer(timeDur)
 	}
@@ -95,7 +95,7 @@ func (d *Dpovp) getSlot() int {
 	if bytes.Compare(lstAddr[:], tmp[:]) == 0 {	// 与创世块比较
 		return meIndex + 1
 	}
-	nodeCount := commonDpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCoreNodesCount()
 	if nodeCount == 1 {
 		return 1
 	}
@@ -213,7 +213,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 		return nil
 	}
 	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
-	nodeCount := commonDpovp.GetCorNodesCount()
+	nodeCount := commonDpovp.GetCoreNodesCount()
 	// 只有一个出块节点
 	if nodeCount == 1 {
 		if timespan < d.blockInternal { // 块间隔至少blockInternal
@@ -337,7 +337,7 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		copy(header.SignInfo, signInfo)
 	}
 	// 出块之后需要重置定时器
-	//nodeCount := commonDpovp.GetCorNodesCount()
+	//nodeCount := commonDpovp.GetCoreNodesCount()
 	//var timeDur int64
 	//if nodeCount > 1 {
 	//	timeDur = int64(nodeCount-1) * d.timeoutTime
