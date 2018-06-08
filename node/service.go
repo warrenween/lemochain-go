@@ -20,8 +20,8 @@ import (
 	"reflect"
 
 	"github.com/LemoFoundationLtd/lemochain-go/accounts"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 )

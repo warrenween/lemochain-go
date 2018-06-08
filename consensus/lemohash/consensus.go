@@ -457,7 +457,7 @@ func calcDifficultyFrontier(time uint64, parent *types.Header) *big.Int {
 	}
 	return diff
 }
- 
+
 // VerifySeal implements consensus.Engine, checking whether the given block satisfies
 // the PoW difficulty requirements.
 func (lemohash *Lemohash) VerifySeal(chain consensus.ChainReader, header *types.Header) error {

@@ -24,6 +24,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/accounts"
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
+	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
@@ -32,7 +33,6 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
-	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 )
 
 // sman 封装挖矿用的所有方法

@@ -101,8 +101,8 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 		"Peers":     config.peersTotal,
 		"LightFlag": lightFlag,
 		"Bootnodes": strings.Join(bootnodes, ","),
-		"Lemostats":  config.lemostats,
-		"Lemobase": config.lemobase,
+		"Lemostats": config.lemostats,
+		"Lemobase":  config.lemobase,
 		"GasTarget": uint64(1000000 * config.gasTarget),
 		"GasPrice":  uint64(1000000000 * config.gasPrice),
 		"Unlock":    config.keyJSON != "",
@@ -111,18 +111,18 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 
 	composefile := new(bytes.Buffer)
 	template.Must(template.New("").Parse(nodeComposefile)).Execute(composefile, map[string]interface{}{
-		"Type":       kind,
-		"Datadir":    config.datadir,
-		"Lemohashdir":  config.lemohashdir,
-		"Network":    network,
-		"Port":       config.port,
-		"TotalPeers": config.peersTotal,
-		"Light":      config.peersLight > 0,
-		"LightPeers": config.peersLight,
+		"Type":        kind,
+		"Datadir":     config.datadir,
+		"Lemohashdir": config.lemohashdir,
+		"Network":     network,
+		"Port":        config.port,
+		"TotalPeers":  config.peersTotal,
+		"Light":       config.peersLight > 0,
+		"LightPeers":  config.peersLight,
 		"Lemostats":   config.lemostats[:strings.Index(config.lemostats, ":")],
-		"Lemobase":  config.lemobase,
-		"GasTarget":  config.gasTarget,
-		"GasPrice":   config.gasPrice,
+		"Lemobase":    config.lemobase,
+		"GasTarget":   config.gasTarget,
+		"GasPrice":    config.gasPrice,
 	})
 	files[filepath.Join(workdir, "docker-compose.yaml")] = composefile.Bytes()
 
@@ -147,20 +147,20 @@ func deployNode(client *sshClient, network string, bootnodes []string, config *n
 // nodeInfos is returned from a boot or seal node status check to allow reporting
 // various configuration parameters.
 type nodeInfos struct {
-	genesis    []byte
-	network    int64
-	datadir    string
-	lemohashdir  string
+	genesis     []byte
+	network     int64
+	datadir     string
+	lemohashdir string
 	lemostats   string
-	port       int
-	enode      string
-	peersTotal int
-	peersLight int
-	lemobase  string
-	keyJSON    string
-	keyPass    string
-	gasTarget  float64
-	gasPrice   float64
+	port        int
+	enode       string
+	peersTotal  int
+	peersLight  int
+	lemobase    string
+	keyJSON     string
+	keyPass     string
+	gasTarget   float64
+	gasPrice    float64
 }
 
 // Report converts the typed struct into a plain string->string map, containing
@@ -171,7 +171,7 @@ func (info *nodeInfos) Report() map[string]string {
 		"Listener port":            strconv.Itoa(info.port),
 		"Peer count (all total)":   strconv.Itoa(info.peersTotal),
 		"Peer count (light nodes)": strconv.Itoa(info.peersLight),
-		"Lemostats username":        info.lemostats,
+		"Lemostats username":       info.lemostats,
 	}
 	if info.gasTarget > 0 {
 		// Miner or signer node
@@ -245,18 +245,18 @@ func checkNode(client *sshClient, network string, boot bool) (*nodeInfos, error)
 	}
 	// Assemble and return the useful infos
 	stats := &nodeInfos{
-		genesis:    genesis,
-		datadir:    infos.volumes["/root/.lemochain"],
-		lemohashdir:  infos.volumes["/root/.lemohash"],
-		port:       port,
-		peersTotal: totalPeers,
-		peersLight: lightPeers,
+		genesis:     genesis,
+		datadir:     infos.volumes["/root/.lemochain"],
+		lemohashdir: infos.volumes["/root/.lemohash"],
+		port:        port,
+		peersTotal:  totalPeers,
+		peersLight:  lightPeers,
 		lemostats:   infos.envvars["STATS_NAME"],
-		lemobase:  infos.envvars["MINER_NAME"],
-		keyJSON:    keyJSON,
-		keyPass:    keyPass,
-		gasTarget:  gasTarget,
-		gasPrice:   gasPrice,
+		lemobase:    infos.envvars["MINER_NAME"],
+		keyJSON:     keyJSON,
+		keyPass:     keyPass,
+		gasTarget:   gasTarget,
+		gasPrice:    gasPrice,
 	}
 	stats.enode = fmt.Sprintf("enode://%s@%s:%d", id, client.address, stats.port)
 

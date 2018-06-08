@@ -24,12 +24,12 @@ import (
 	"sync"
 	"time"
 
+	"crypto/ecdsa"
 	"github.com/LemoFoundationLtd/lemochain-go/common/mclock"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p/discover"
 	"github.com/LemoFoundationLtd/lemochain-go/rlp"
-	"crypto/ecdsa"
 )
 
 const (

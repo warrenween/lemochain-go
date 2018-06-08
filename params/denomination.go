@@ -28,7 +28,7 @@ const (
 	Shannon  = 1e9
 	Szabo    = 1e12
 	Finney   = 1e15
-	Lemo    = 1e18
+	Lemo     = 1e18
 	Einstein = 1e21
 	Douglas  = 1e42
 )

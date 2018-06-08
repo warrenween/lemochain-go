@@ -27,6 +27,7 @@ import (
 	"sync"
 
 	"github.com/LemoFoundationLtd/lemochain-go/accounts"
+	"github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/internal/debug"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
@@ -34,7 +35,6 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 	"github.com/prometheus/prometheus/util/flock"
-	"github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 )
 
 // Node is a container on which services can be registered.
@@ -164,7 +164,7 @@ func (n *Node) Start() error {
 		n.serverConfig.NodeDatabase = n.config.NodeDB()
 	}
 	running := &p2p.Server{Config: n.serverConfig}
-	dpovp.SetPrivKey(n.serverConfig.PrivateKey)	// sman for dpovp
+	dpovp.SetPrivKey(n.serverConfig.PrivateKey) // sman for dpovp
 	n.log.Info("Starting peer-to-peer node", "instance", n.serverConfig.Name)
 
 	// Otherwise copy and specialize the P2P configuration

@@ -21,8 +21,8 @@ import (
 	"fmt"
 
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 )
 
 // Implement our LemoTest Manager

@@ -28,10 +28,10 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/core/vm"
+	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/downloader"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/gasprice"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
-	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/light"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
@@ -39,7 +39,7 @@ import (
 
 type LesApiBackend struct {
 	lemo *LightLemochain
-	gpo *gasprice.Oracle
+	gpo  *gasprice.Oracle
 }
 
 func (b *LesApiBackend) ChainConfig() *params.ChainConfig {

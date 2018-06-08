@@ -68,7 +68,7 @@ type queue struct {
 	mode SyncMode // Synchronisation mode to decide on the block parts to schedule for fetching
 
 	// Headers are "special", they download in batches, supported by a skeleton chain
-	headerHead      common.Hash                    // [lemo/62] Hash of the last queued header to verify order 
+	headerHead      common.Hash                    // [lemo/62] Hash of the last queued header to verify order
 	headerTaskPool  map[uint64]*types.Header       // [lemo/62] Pending header retrieval tasks, mapping starting indexes to skeleton headers
 	headerTaskQueue *prque.Prque                   // [lemo/62] Priority queue of the skeleton indexes to fetch the filling headers for
 	headerPeerMiss  map[string]map[uint64]struct{} // [lemo/62] Set of per-peer header batches known to be unavailable
@@ -76,7 +76,7 @@ type queue struct {
 	headerResults   []*types.Header                // [lemo/62] Result cache accumulating the completed headers
 	headerProced    int                            // [lemo/62] Number of headers already processed from the results
 	headerOffset    uint64                         // [lemo/62] Number of the first header in the result cache
-	headerContCh    chan bool                       // [lemo/62] Channel to notify when header download finishes
+	headerContCh    chan bool                      // [lemo/62] Channel to notify when header download finishes
 
 	// All data retrievals below are based on an already assembles header chain
 	blockTaskPool  map[common.Hash]*types.Header // [lemo/62] Pending block (body) retrieval tasks, mapping hashes to headers

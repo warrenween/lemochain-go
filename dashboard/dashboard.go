@@ -32,12 +32,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/elastic/gosigar"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/metrics"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
+	"github.com/elastic/gosigar"
 	"golang.org/x/net/websocket"
 )
 

@@ -25,11 +25,11 @@ func (c Config) MarshalTOML() (interface{}, error) {
 		SkipBcVersionCheck      bool `toml:"-"`
 		DatabaseHandles         int  `toml:"-"`
 		DatabaseCache           int
-		Lemobase               common.Address `toml:",omitempty"`
+		Lemobase                common.Address `toml:",omitempty"`
 		MinerThreads            int            `toml:",omitempty"`
 		ExtraData               hexutil.Bytes  `toml:",omitempty"`
 		GasPrice                *big.Int
-		Lemohash                  lemohash.Config
+		Lemohash                lemohash.Config
 		TxPool                  core.TxPoolConfig
 		GPO                     gasprice.Config
 		EnablePreimageRecording bool
@@ -66,11 +66,11 @@ func (c *Config) UnmarshalTOML(unmarshal func(interface{}) error) error {
 		SkipBcVersionCheck      *bool `toml:"-"`
 		DatabaseHandles         *int  `toml:"-"`
 		DatabaseCache           *int
-		Lemobase               *common.Address `toml:",omitempty"`
+		Lemobase                *common.Address `toml:",omitempty"`
 		MinerThreads            *int            `toml:",omitempty"`
 		ExtraData               *hexutil.Bytes  `toml:",omitempty"`
 		GasPrice                *big.Int
-		Lemohash                  *lemohash.Config
+		Lemohash                *lemohash.Config
 		TxPool                  *core.TxPoolConfig
 		GPO                     *gasprice.Config
 		EnablePreimageRecording *bool

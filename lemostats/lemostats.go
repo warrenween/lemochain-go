@@ -35,8 +35,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
-	"github.com/LemoFoundationLtd/lemochain-go/lemo"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemo"
 	"github.com/LemoFoundationLtd/lemochain-go/les"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
@@ -69,10 +69,10 @@ type blockChain interface {
 // Service implements an Lemochain netstats reporting daemon that pushes local
 // chain statistics up to a monitoring server.
 type Service struct {
-	server *p2p.Server        // Peer-to-peer server to retrieve networking infos
-	lemo    *lemo.Lemochain      // Full Lemochain service if monitoring a full node
+	server *p2p.Server         // Peer-to-peer server to retrieve networking infos
+	lemo   *lemo.Lemochain     // Full Lemochain service if monitoring a full node
 	les    *les.LightLemochain // Light Lemochain service if monitoring a light node
-	engine consensus.Engine   // Consensus engine to retrieve variadic block fields
+	engine consensus.Engine    // Consensus engine to retrieve variadic block fields
 
 	node string // Name of the node to display on the monitoring page
 	pass string // Password to authorize access to the monitoring page
@@ -98,7 +98,7 @@ func New(url string, lemoServ *lemo.Lemochain, lesServ *les.LightLemochain) (*Se
 		engine = lesServ.Engine()
 	}
 	return &Service{
-		lemo:    lemoServ,
+		lemo:   lemoServ,
 		les:    lesServ,
 		engine: engine,
 		node:   parts[1],

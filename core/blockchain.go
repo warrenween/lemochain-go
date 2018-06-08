@@ -26,6 +26,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"bytes"
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	commonDpovp "github.com/LemoFoundationLtd/lemochain-go/common/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/common/mclock"
@@ -43,7 +44,6 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/trie"
 	"github.com/hashicorp/golang-lru"
 	"gopkg.in/karalabe/cookiejar.v2/collections/prque"
-	"bytes"
 )
 
 var (
@@ -136,7 +136,7 @@ type BlockChain struct {
 	BroadcastConFn  func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
 }
 
-var childrenMap = make(map[common.Hash][]common.Hash)	// sman for iteratal of block children block
+var childrenMap = make(map[common.Hash][]common.Hash) // sman for iteratal of block children block
 
 // sman 设置coinbase
 func (bc *BlockChain) SetCoinbase(coinbase common.Address) {
@@ -160,19 +160,19 @@ func NewBlockChain(db lemodb.Database, cacheConfig *CacheConfig, chainConfig *pa
 	badBlocks, _ := lru.New(badBlockLimit)
 
 	bc := &BlockChain{
-		chainConfig:  chainConfig,
-		cacheConfig:  cacheConfig,
-		db:           db,
-		triegc:       prque.New(),
-		stateCache:   state.NewDatabase(db),
-		quit:         make(chan struct{}),
-		bodyCache:    bodyCache,
-		bodyRLPCache: bodyRLPCache,
-		blockCache:   blockCache,
-		futureBlocks: futureBlocks,
-		engine:       engine,
-		vmConfig:     vmConfig,
-		badBlocks:    badBlocks,
+		chainConfig:     chainConfig,
+		cacheConfig:     cacheConfig,
+		db:              db,
+		triegc:          prque.New(),
+		stateCache:      state.NewDatabase(db),
+		quit:            make(chan struct{}),
+		bodyCache:       bodyCache,
+		bodyRLPCache:    bodyRLPCache,
+		blockCache:      blockCache,
+		futureBlocks:    futureBlocks,
+		engine:          engine,
+		vmConfig:        vmConfig,
+		badBlocks:       badBlocks,
 		blocksConsensus: make(map[common.Hash]uint64, 0),
 	}
 	bc.SetValidator(NewBlockValidator(chainConfig, bc, engine))
@@ -239,7 +239,7 @@ func (bc *BlockChain) loadLastState() error {
 	}
 	// Everything seems to be fine, set as the head block
 	bc.currentBlock.Store(currentBlock)
-	bc.stableBlock.Store(bc.genesisBlock)	// sman set stableblock with genesis block
+	bc.stableBlock.Store(bc.genesisBlock) // sman set stableblock with genesis block
 
 	// Restore the last known head header
 	currentHeader := currentBlock.Header()
@@ -303,7 +303,7 @@ func (bc *BlockChain) SetHead(head uint64) error {
 		if _, err := state.New(currentBlock.Root(), bc.stateCache); err != nil {
 			// Rewound state missing, rolled back to before pivot, reset to genesis
 			bc.currentBlock.Store(bc.genesisBlock)
-			bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
+			bc.stableBlock.Store(bc.genesisBlock) // sman set stableBlock with genesisBlock
 		}
 	}
 	// Rewind the fast block in a simpleton way to the target head
@@ -313,11 +313,11 @@ func (bc *BlockChain) SetHead(head uint64) error {
 	// If either blocks reached nil, reset to the genesis state
 	if currentBlock := bc.CurrentBlock(); currentBlock == nil {
 		bc.currentBlock.Store(bc.genesisBlock)
-		bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
+		bc.stableBlock.Store(bc.genesisBlock) // sman set stableBlock with genesisBlock
 	}
 	if currentFastBlock := bc.CurrentFastBlock(); currentFastBlock == nil {
 		bc.currentFastBlock.Store(bc.genesisBlock)
-		bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
+		bc.stableBlock.Store(bc.genesisBlock) // sman set stableBlock with genesisBlock
 	}
 	currentBlock := bc.CurrentBlock()
 	currentFastBlock := bc.CurrentFastBlock()
@@ -486,7 +486,7 @@ func (bc *BlockChain) ResetWithGenesisBlock(genesis *types.Block) error {
 	bc.hc.SetCurrentHeader(bc.genesisBlock.Header())
 	bc.currentFastBlock.Store(bc.genesisBlock)
 
-	bc.stableBlock.Store(bc.genesisBlock)	// sman set stableBlock with genesisBlock
+	bc.stableBlock.Store(bc.genesisBlock) // sman set stableBlock with genesisBlock
 	return nil
 }
 
@@ -1039,7 +1039,7 @@ func (bc *BlockChain) WriteBlockWithState(block *types.Block, receipts []*types.
 	if !reorg && externTd.Cmp(localTd) == 0 {
 		// Split same-difficulty blocks by number, then at random
 		//reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() && mrand.Float64() < 0.5)
-		reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64() )
+		reorg = block.NumberU64() < currentBlock.NumberU64() || (block.NumberU64() == currentBlock.NumberU64())
 	}
 	if reorg {
 		// Reorganise the chain if the parent is not the head block
@@ -1110,8 +1110,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 	// faster than direct delivery and requires much less mutex
 	// acquiring.
 	var (
-		stats= insertStats{startTime: mclock.Now()}
-		events= make([]interface{}, 0, len(chain))
+		stats         = insertStats{startTime: mclock.Now()}
+		events        = make([]interface{}, 0, len(chain))
 		lastCanon     *types.Block
 		coalescedLogs []*types.Log
 	)
@@ -1257,7 +1257,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		}
 		// sman 获取父节点header 并设置父header的children
 		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
-		parHash:=parentHeader.Hash()
+		parHash := parentHeader.Hash()
 		childrenMap[parHash] = append(childrenMap[parHash], block.Hash())
 
 		// Write the block to the chain and get the status.
@@ -1317,8 +1317,8 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 	if err != nil {
 		return
 	}
-	remoteAddr:= commonDpovp.GetAddressByPubkey(pubkey)
-	epAddr:=common.Address{}
+	remoteAddr := commonDpovp.GetAddressByPubkey(pubkey)
+	epAddr := common.Address{}
 	if remoteAddr == epAddr {
 		return
 	}
@@ -1345,11 +1345,11 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 // sman is current block's Ancestors be stable block
 func (bc *BlockChain) isCurAndStableBlockInSameChain() bool {
 	curBlock, okC := bc.currentBlock.Load().(*types.Block)
-	if curBlock.NumberU64() == uint64(0){
+	if curBlock.NumberU64() == uint64(0) {
 		return true
 	}
 	staBlock, okS := bc.stableBlock.Load().(*types.Block)
-	if !okC || ! okS {
+	if !okC || !okS {
 		return false
 	}
 	parBlock := curBlock

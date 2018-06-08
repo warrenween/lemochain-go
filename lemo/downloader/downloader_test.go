@@ -30,8 +30,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/crypto"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/trie"
 )
@@ -52,7 +52,7 @@ func init() {
 type downloadTester struct {
 	downloader *Downloader
 
-	genesis *types.Block   // Genesis blocks used by the tester and peers
+	genesis *types.Block    // Genesis blocks used by the tester and peers
 	stateDb lemodb.Database // Database used by the tester for syncing from peers
 	peerDb  lemodb.Database // Database of the peers containing all data
 

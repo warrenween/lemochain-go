@@ -29,8 +29,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/lemohash"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
-	"github.com/LemoFoundationLtd/lemochain-go/lemo"
 	"github.com/LemoFoundationLtd/lemochain-go/internal/jsre"
+	"github.com/LemoFoundationLtd/lemochain-go/lemo"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
 )
 
@@ -75,7 +75,7 @@ func (p *hookedPrompter) SetWordCompleter(completer WordCompleter) {}
 type tester struct {
 	workspace string
 	stack     *node.Node
-	lemochain  *lemo.Lemochain
+	lemochain *lemo.Lemochain
 	console   *Console
 	input     *hookedPrompter
 	output    *bytes.Buffer
@@ -96,7 +96,7 @@ func newTester(t *testing.T, confOverride func(*lemo.Config)) *tester {
 		t.Fatalf("failed to create node: %v", err)
 	}
 	lemoConf := &lemo.Config{
-		Genesis:   core.DeveloperGenesisBlock(15, common.Address{}),
+		Genesis:  core.DeveloperGenesisBlock(15, common.Address{}),
 		Lemobase: common.HexToAddress(testAddress),
 		Lemohash: lemohash.Config{
 			PowMode: lemohash.ModeTest,
@@ -137,7 +137,7 @@ func newTester(t *testing.T, confOverride func(*lemo.Config)) *tester {
 	return &tester{
 		workspace: workspace,
 		stack:     stack,
-		lemochain:  lemochain,
+		lemochain: lemochain,
 		console:   console,
 		input:     prompter,
 		output:    printer,

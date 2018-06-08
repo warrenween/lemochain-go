@@ -29,8 +29,8 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/common/hexutil"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 )
 

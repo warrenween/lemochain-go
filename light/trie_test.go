@@ -22,7 +22,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/lemohash"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
@@ -30,6 +29,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/trie"
+	"github.com/davecgh/go-spew/spew"
 )
 
 func TestNodeIterator(t *testing.T) {

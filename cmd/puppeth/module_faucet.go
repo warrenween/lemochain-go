@@ -92,8 +92,8 @@ func deployFaucet(client *sshClient, network string, bootnodes []string, config 
 	template.Must(template.New("").Parse(faucetDockerfile)).Execute(dockerfile, map[string]interface{}{
 		"NetworkID":     config.node.network,
 		"Bootnodes":     strings.Join(bootnodes, ","),
-		"Lemostats":      config.node.lemostats,
-		"LemoPort":       config.node.port,
+		"Lemostats":     config.node.lemostats,
+		"LemoPort":      config.node.port,
 		"CaptchaToken":  config.captchaToken,
 		"CaptchaSecret": config.captchaSecret,
 		"FaucetName":    strings.Title(network),
@@ -110,8 +110,8 @@ func deployFaucet(client *sshClient, network string, bootnodes []string, config 
 		"Datadir":       config.node.datadir,
 		"VHost":         config.host,
 		"ApiPort":       config.port,
-		"LemoPort":       config.node.port,
-		"LemoName":       config.node.lemostats[:strings.Index(config.node.lemostats, ":")],
+		"LemoPort":      config.node.port,
+		"LemoName":      config.node.lemostats[:strings.Index(config.node.lemostats, ":")],
 		"CaptchaToken":  config.captchaToken,
 		"CaptchaSecret": config.captchaSecret,
 		"FaucetAmount":  config.amount,
@@ -158,12 +158,12 @@ func (info *faucetInfos) Report() map[string]string {
 	report := map[string]string{
 		"Website address":              info.host,
 		"Website listener port":        strconv.Itoa(info.port),
-		"Lemochain listener port":       strconv.Itoa(info.node.port),
+		"Lemochain listener port":      strconv.Itoa(info.node.port),
 		"Funding amount (base tier)":   fmt.Sprintf("%d Lemos", info.amount),
 		"Funding cooldown (base tier)": fmt.Sprintf("%d mins", info.minutes),
 		"Funding tiers":                strconv.Itoa(info.tiers),
 		"Captha protection":            fmt.Sprintf("%v", info.captchaToken != ""),
-		"Lemostats username":            info.node.lemostats,
+		"Lemostats username":           info.node.lemostats,
 	}
 	if info.noauth {
 		report["Debug mode (no auth)"] = "enabled"
@@ -227,11 +227,11 @@ func checkFaucet(client *sshClient, network string) (*faucetInfos, error) {
 	// Container available, assemble and return the useful infos
 	return &faucetInfos{
 		node: &nodeInfos{
-			datadir:  infos.volumes["/root/.faucet"],
-			port:     infos.portmap[infos.envvars["ETH_PORT"]+"/tcp"],
+			datadir:   infos.volumes["/root/.faucet"],
+			port:      infos.portmap[infos.envvars["ETH_PORT"]+"/tcp"],
 			lemostats: infos.envvars["ETH_NAME"],
-			keyJSON:  keyJSON,
-			keyPass:  keyPass,
+			keyJSON:   keyJSON,
+			keyPass:   keyPass,
 		},
 		host:          host,
 		port:          port,

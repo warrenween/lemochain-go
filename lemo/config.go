@@ -95,7 +95,7 @@ type Config struct {
 	TrieTimeout        time.Duration
 
 	// Mining-related options
-	Lemobase    common.Address `toml:",omitempty"`
+	Lemobase     common.Address `toml:",omitempty"`
 	MinerThreads int            `toml:",omitempty"`
 	ExtraData    []byte         `toml:",omitempty"`
 	GasPrice     *big.Int

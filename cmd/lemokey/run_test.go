@@ -21,8 +21,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/docker/docker/pkg/reexec"
 	"github.com/LemoFoundationLtd/lemochain-go/internal/cmdtest"
+	"github.com/docker/docker/pkg/reexec"
 )
 
 type testLemokey struct {

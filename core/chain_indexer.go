@@ -25,8 +25,8 @@ import (
 
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
-	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/event"
+	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 )
 
@@ -65,8 +65,8 @@ type ChainIndexerChain interface {
 // after an entire section has been finished or in case of rollbacks that might
 // affect already finished sections.
 type ChainIndexer struct {
-	chainDb  lemodb.Database      // Chain database to index the data from
-	indexDb  lemodb.Database      // Prefixed table-view of the db to write index metadata into
+	chainDb  lemodb.Database     // Chain database to index the data from
+	indexDb  lemodb.Database     // Prefixed table-view of the db to write index metadata into
 	backend  ChainIndexerBackend // Background processor generating the index data content
 	children []*ChainIndexer     // Child indexers to cascade chain updates to
 

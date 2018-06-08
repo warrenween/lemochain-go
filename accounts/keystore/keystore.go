@@ -224,8 +224,8 @@ func (ks *KeyStore) HasAddress(addr common.Address) bool {
 }
 
 // sman get unlocked key
-func (ks *KeyStore) GetUnlockedKey() *Key{
-	for _,unlockedkey := range ks.unlocked {
+func (ks *KeyStore) GetUnlockedKey() *Key {
+	for _, unlockedkey := range ks.unlocked {
 		return unlockedkey.Key
 	}
 	return nil

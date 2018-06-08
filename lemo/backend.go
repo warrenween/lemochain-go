@@ -85,8 +85,8 @@ type Lemochain struct {
 
 	ApiBackend *LemoApiBackend
 
-	miner      *miner.Miner
-	gasPrice   *big.Int
+	miner    *miner.Miner
+	gasPrice *big.Int
 	lemobase common.Address
 
 	networkId     uint64

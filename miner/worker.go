@@ -26,6 +26,7 @@ import (
 
 	"github.com/LemoFoundationLtd/lemochain-go/common"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
+	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/misc"
 	"github.com/LemoFoundationLtd/lemochain-go/core"
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
@@ -36,7 +37,6 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"gopkg.in/fatih/set.v0"
-	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
 )
 
 const (

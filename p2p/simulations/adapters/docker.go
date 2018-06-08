@@ -27,10 +27,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/docker/docker/pkg/reexec"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p/discover"
+	"github.com/docker/docker/pkg/reexec"
 )
 
 // DockerAdapter is a NodeAdapter which runs simulation nodes inside Docker

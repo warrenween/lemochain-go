@@ -26,7 +26,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/docker/docker/pkg/reexec"
 	"github.com/LemoFoundationLtd/lemochain-go/accounts"
 	"github.com/LemoFoundationLtd/lemochain-go/accounts/keystore"
 	"github.com/LemoFoundationLtd/lemochain-go/internal/cmdtest"
@@ -34,6 +33,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 	"github.com/LemoFoundationLtd/lemochain-go/swarm"
+	"github.com/docker/docker/pkg/reexec"
 )
 
 func init() {

@@ -24,12 +24,12 @@ import (
 	"net"
 	"os"
 
-	"github.com/docker/docker/pkg/reexec"
 	"github.com/LemoFoundationLtd/lemochain-go/crypto"
 	"github.com/LemoFoundationLtd/lemochain-go/node"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/p2p/discover"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
+	"github.com/docker/docker/pkg/reexec"
 )
 
 // Node represents a node in a simulation network which is created by a

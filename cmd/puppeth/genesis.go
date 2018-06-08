@@ -68,15 +68,15 @@ type cppLemochainGenesisSpec struct {
 // cppLemochainGenesisSpecAccount is the prefunded genesis account and/or precompiled
 // contract definition.
 type cppLemochainGenesisSpecAccount struct {
-	Balance     *hexutil.Big                   `json:"balance"`
-	Nonce       uint64                         `json:"nonce,omitempty"`
+	Balance     *hexutil.Big                    `json:"balance"`
+	Nonce       uint64                          `json:"nonce,omitempty"`
 	Precompiled *cppLemochainGenesisSpecBuiltin `json:"precompiled,omitempty"`
 }
 
 // cppLemochainGenesisSpecBuiltin is the precompiled contract definition.
 type cppLemochainGenesisSpecBuiltin struct {
-	Name          string                               `json:"name,omitempty"`
-	StartingBlock hexutil.Uint64                       `json:"startingBlock,omitempty"`
+	Name          string                                `json:"name,omitempty"`
+	StartingBlock hexutil.Uint64                        `json:"startingBlock,omitempty"`
 	Linear        *cppLemochainGenesisSpecLinearPricing `json:"linear,omitempty"`
 }
 

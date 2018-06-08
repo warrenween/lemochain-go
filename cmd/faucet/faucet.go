@@ -62,12 +62,12 @@ import (
 )
 
 var (
-	genesisFlag = flag.String("genesis", "", "Genesis json file to seed the chain with")
-	apiPortFlag = flag.Int("apiport", 8080, "Listener port for the HTTP API connection")
+	genesisFlag  = flag.String("genesis", "", "Genesis json file to seed the chain with")
+	apiPortFlag  = flag.Int("apiport", 8080, "Listener port for the HTTP API connection")
 	lemoPortFlag = flag.Int("lemoport", 30303, "Listener port for the devp2p connection")
-	bootFlag    = flag.String("bootnodes", "", "Comma separated bootnode enode URLs to seed with")
-	netFlag     = flag.Uint64("network", 0, "Network ID to use for the Lemochain protocol")
-	statsFlag   = flag.String("lemostats", "", "Lemostats network monitoring auth string")
+	bootFlag     = flag.String("bootnodes", "", "Comma separated bootnode enode URLs to seed with")
+	netFlag      = flag.Uint64("network", 0, "Network ID to use for the Lemochain protocol")
+	statsFlag    = flag.String("lemostats", "", "Lemostats network monitoring auth string")
 
 	netnameFlag = flag.String("faucet.name", "", "Network name to assign to the faucet")
 	payoutFlag  = flag.Int("faucet.amount", 1, "Number of Lemos to pay out per user request")
@@ -196,7 +196,7 @@ type request struct {
 type faucet struct {
 	config *params.ChainConfig // Chain configurations for signing
 	stack  *node.Node          // Lemochain protocol stack
-	client *lemoclient.Client   // Client connection to the Lemochain chain
+	client *lemoclient.Client  // Client connection to the Lemochain chain
 	index  []byte              // Index page to serve up on the web
 
 	keystore *keystore.KeyStore // Keystore containing the single signer

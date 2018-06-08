@@ -75,10 +75,10 @@ type lemostatsConfig struct {
 }
 
 type glemoConfig struct {
-	Lemo       lemo.Config
+	Lemo      lemo.Config
 	Shh       whisper.Config
 	Node      node.Config
-	Lemostats  lemostatsConfig
+	Lemostats lemostatsConfig
 	Dashboard dashboard.Config
 }
 
@@ -110,7 +110,7 @@ func defaultNodeConfig() node.Config {
 func makeConfigNode(ctx *cli.Context) (*node.Node, glemoConfig) {
 	// Load defaults.
 	cfg := glemoConfig{
-		Lemo:       lemo.DefaultConfig,
+		Lemo:      lemo.DefaultConfig,
 		Shh:       whisper.DefaultConfig,
 		Node:      defaultNodeConfig(),
 		Dashboard: dashboard.DefaultConfig,

@@ -34,9 +34,9 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core/state"
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/core/vm"
+	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/lemo/filters"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
-	"github.com/LemoFoundationLtd/lemochain-go/event"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 )
@@ -50,7 +50,7 @@ var errGasEstimationFailed = errors.New("gas required exceeds allowance or alway
 // SimulatedBackend implements bind.ContractBackend, simulating a blockchain in
 // the background. Its main purpose is to allow easily testing contract bindings.
 type SimulatedBackend struct {
-	database   lemodb.Database   // In memory database to store our testing data
+	database   lemodb.Database  // In memory database to store our testing data
 	blockchain *core.BlockChain // Lemochain blockchain to handle the consensus
 
 	mu           sync.Mutex
@@ -419,7 +419,7 @@ type filterBackend struct {
 	bc *core.BlockChain
 }
 
-func (fb *filterBackend) ChainDb() lemodb.Database  { return fb.db }
+func (fb *filterBackend) ChainDb() lemodb.Database { return fb.db }
 func (fb *filterBackend) EventMux() *event.TypeMux { panic("not supported") }
 
 func (fb *filterBackend) HeaderByNumber(ctx context.Context, block rpc.BlockNumber) (*types.Header, error) {

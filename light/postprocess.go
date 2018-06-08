@@ -187,7 +187,7 @@ func (c *ChtIndexerBackend) Commit() error {
 }
 
 const (
-	BloomTrieFrequency        = 32768
+	BloomTrieFrequency         = 32768
 	lemoBloomBitsSection       = 4096
 	lemoBloomBitsConfirmations = 256
 )

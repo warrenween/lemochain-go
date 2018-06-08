@@ -17,14 +17,14 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/core/types"
 	"github.com/LemoFoundationLtd/lemochain-go/crypto"
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
+	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
-	"github.com/LemoFoundationLtd/lemochain-go/log"
 )
 
 // Ethash proof-of-work protocol constants.
 var (
-	FrontierBlockReward    *big.Int = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
+	FrontierBlockReward *big.Int = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
 )
 
 type Dpovp struct {
@@ -52,8 +52,8 @@ func (d *Dpovp) ModifyTimer() {
 		d.resetMinerTimer(waitTime)
 		return
 	}
-	timeDur := d.getTimespan() // 获取当前时间与最新块的时间差
-	slot := d.getSlot(&(d.currentBlock().Header().Coinbase), &(d.coinbase))        // 获取新块离本节点索引的距离
+	timeDur := d.getTimespan()                                              // 获取当前时间与最新块的时间差
+	slot := d.getSlot(&(d.currentBlock().Header().Coinbase), &(d.coinbase)) // 获取新块离本节点索引的距离
 	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime
 	if slot == 0 { // 上一个块为自己出的块
 		//waitTime := int64(nodeCount-1) * d.timeoutTime - timeDur
@@ -61,7 +61,7 @@ func (d *Dpovp) ModifyTimer() {
 	} else if slot == 1 { // 说明下一个区块就该本节点产生了
 		if timeDur > oneLoopTime { // 间隔大于一轮
 			timeDur = timeDur % oneLoopTime // 求余
-			if timeDur < d.timeoutTime { //
+			if timeDur < d.timeoutTime {    //
 				log.Info(fmt.Sprintf("isTurn=true 1: %d", time.Now().Unix()))
 				d.isTurn = true
 			} else {
@@ -124,7 +124,7 @@ func (d *Dpovp) getSlot(firstAddress, nextAddress *common.Address) int {
 // 获取最新区块的时间戳离当前时间的距离 单位：ms
 func (d *Dpovp) getTimespan() int64 {
 	lstSpan := d.currentBlock().Header().Time.Int64()
-	if lstSpan == int64(0){
+	if lstSpan == int64(0) {
 		return int64(d.blockInternal)
 	}
 	now := time.Now().Unix()
@@ -272,7 +272,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 		}
 	} else {
 		timespan = timespan % oneLoopTime
-		if timespan/d.timeoutTime == int64(slot - 1) {
+		if timespan/d.timeoutTime == int64(slot-1) {
 			// 正常情况
 		} else {
 			return fmt.Errorf("Not turn to produce block -5")

@@ -22,8 +22,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/docker/docker/pkg/reexec"
 	"github.com/LemoFoundationLtd/lemochain-go/internal/cmdtest"
+	"github.com/docker/docker/pkg/reexec"
 )
 
 func tmpdir(t *testing.T) string {
@@ -38,7 +38,7 @@ type testglemo struct {
 	*cmdtest.TestCmd
 
 	// template variables for expect
-	Datadir   string
+	Datadir  string
 	Lemobase string
 }
 

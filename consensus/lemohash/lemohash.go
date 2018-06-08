@@ -32,11 +32,11 @@ import (
 	"time"
 	"unsafe"
 
-	mmap "github.com/edsrzf/mmap-go"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/log"
 	"github.com/LemoFoundationLtd/lemochain-go/metrics"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
+	mmap "github.com/edsrzf/mmap-go"
 	"github.com/hashicorp/golang-lru/simplelru"
 )
 
@@ -404,7 +404,7 @@ type Lemohash struct {
 	hashrate metrics.Meter // Meter tracking the average hashrate
 
 	// The fields below are hooks for testing
-	shared    *Lemohash       // Shared PoW verifier to avoid cache regeneration
+	shared    *Lemohash     // Shared PoW verifier to avoid cache regeneration
 	fakeFail  uint64        // Block number which fails PoW check even in fake mode
 	fakeDelay time.Duration // Time delay to sleep for before returning from verify
 
