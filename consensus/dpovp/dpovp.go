@@ -19,6 +19,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/lemodb"
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
+	"github.com/LemoFoundationLtd/lemochain-go/log"
 )
 
 // Ethash proof-of-work protocol constants.
@@ -44,29 +45,45 @@ func (d *Dpovp) ModifyTimer() {
 	d.isTurnMu.Lock()
 	defer d.isTurnMu.Unlock()
 
+	nodeCount := commonDpovp.GetCoreNodesCount()
+	// 只有一个主节点
+	if nodeCount == 1 {
+		waitTime := d.blockInternal
+		d.resetMinerTimer(waitTime)
+		return
+	}
 	timeDur := d.getTimespan() // 获取当前时间与最新块的时间差
-	slot := d.getSlot() // 获取新块离本节点索引的距离
-	if slot == 0 {	// 上一个块为自己出的块
-		nodeCount := commonDpovp.GetCoreNodesCount()
-		var timeDur int64
-		if nodeCount > 1 {
-			timeDur = int64(nodeCount-1) * d.timeoutTime
-		} else {
-			timeDur = d.blockInternal
-		}
-		d.resetMinerTimer(timeDur)
-	} else if slot == 1 {      // 说明下一个区块就该本节点产生了
-		timeDur = timeDur % (int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime)
-		if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
-			d.isTurn = true
-		} else {
-			needDur := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
-			d.resetMinerTimer(needDur)
+	slot := d.getSlot(&(d.currentBlock().Header().Coinbase), &(d.coinbase))        // 获取新块离本节点索引的距离
+	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime
+	if slot == 0 { // 上一个块为自己出的块
+		//waitTime := int64(nodeCount-1) * d.timeoutTime - timeDur
+		//d.resetMinerTimer(waitTime)
+	} else if slot == 1 { // 说明下一个区块就该本节点产生了
+		if timeDur > oneLoopTime { // 间隔大于一轮
+			timeDur = timeDur % oneLoopTime // 求余
+			if timeDur < d.timeoutTime { //
+				log.Info(fmt.Sprintf("isTurn=true 1: %d", time.Now().Unix()))
+				d.isTurn = true
+			} else {
+				waitTime := oneLoopTime - timeDur
+				d.resetMinerTimer(waitTime)
+			}
+		} else { // 间隔不到一轮
+			if timeDur > d.timeoutTime { // 过了本节点该出块的时机
+				waitTime := oneLoopTime - timeDur
+				d.resetMinerTimer(waitTime)
+			} else if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
+				log.Info(fmt.Sprintf("isTurn=true 2: %d", time.Now().Unix()))
+				d.isTurn = true
+			} else {
+				waitTime := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
+				d.resetMinerTimer(waitTime)
+			}
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
-		timeDur = timeDur % (int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime)
-		timeDur = int64(slot-1)*d.timeoutTime - timeDur
-		d.resetMinerTimer(timeDur)
+		timeDur = timeDur % oneLoopTime
+		waitTime := int64(slot-1)*d.timeoutTime - timeDur
+		d.resetMinerTimer(waitTime)
 	}
 }
 
@@ -78,33 +95,38 @@ func (d *Dpovp) resetMinerTimer(timeDur int64) {
 	}
 	// 重开新的定时器
 	d.blockMinerTimer = time.AfterFunc(time.Duration(timeDur*int64(time.Millisecond)), func() {
-		d.isTurnMu.Lock()
-		defer d.isTurnMu.Unlock()
+		log.Info(fmt.Sprintf("isTurn=true 3: %d", time.Now().Unix()))
+		//d.isTurnMu.Lock()
+		//defer d.isTurnMu.Unlock()
+		//log.Info(fmt.Sprintf("isTurn=true 4: %d", time.Now().Unix()))
 		d.isTurn = true
 	})
 	d.isTurn = false
 }
 
 // 获取最新块的出块者序号与本节点序号差
-func (d *Dpovp) getSlot() int {
-	lstAddr := d.currentBlock().Header().Coinbase
-	lstIndex := commonDpovp.GetCoreNodeIndex(&lstAddr)
-	meIndex := commonDpovp.GetCoreNodeIndex(&(d.coinbase))
-	var tmp [20]byte // 空地址
-
-	if bytes.Compare(lstAddr[:], tmp[:]) == 0 {	// 与创世块比较
-		return meIndex + 1
+func (d *Dpovp) getSlot(firstAddress, nextAddress *common.Address) int {
+	firstIndex := commonDpovp.GetCoreNodeIndex(firstAddress)
+	nextIndex := commonDpovp.GetCoreNodeIndex(nextAddress)
+	// 与创世块比较
+	var emptyAddr [20]byte
+	if bytes.Compare((*firstAddress)[:], emptyAddr[:]) == 0 {
+		return nextIndex + 1
 	}
 	nodeCount := commonDpovp.GetCoreNodesCount()
+	// 只有一个主节点
 	if nodeCount == 1 {
 		return 1
 	}
-	return (meIndex - lstIndex + nodeCount) % nodeCount
+	return (nextIndex - firstIndex + nodeCount) % nodeCount
 }
 
 // 获取最新区块的时间戳离当前时间的距离 单位：ms
 func (d *Dpovp) getTimespan() int64 {
 	lstSpan := d.currentBlock().Header().Time.Int64()
+	if lstSpan == int64(0){
+		return int64(d.blockInternal)
+	}
 	now := time.Now().Unix()
 	return (now - lstSpan) * 1000
 }
@@ -209,43 +231,52 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	}
 
 	// 以下为确定是否该该节点出块
-	if parent.Time.Uint64() == 0 {	// 父块为创世块
+	if d.currentBlock().Number().Uint64() == uint64(0) && parent.Number.Uint64() == uint64(0) { // 父块为创世块
 		return nil
 	}
-	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 单位：ms
-	nodeCount := commonDpovp.GetCoreNodesCount()
+
+	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 当前块与父块时间间隔 单位：ms
+	nodeCount := commonDpovp.GetCoreNodesCount()                        // 总节点数
+	slot := d.getSlot(&(parent.Coinbase), &(header.Coinbase))
+	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime // 一轮全部超时时的时间
 	// 只有一个出块节点
 	if nodeCount == 1 {
 		if timespan < d.blockInternal { // 块间隔至少blockInternal
-			return fmt.Errorf(`Not sleep enough time`)
+			return fmt.Errorf("Only one node, but not sleep enough time -1")
 		}
 		return nil
 	}
-	// 所有节点全部超时时一轮的超时间隔
-	oneTurnTimespan := int64(nodeCount) * d.timeoutTime
-	// 当前块与父块的最近逻辑间距
-	dist := commonDpovp.GetCoreNodeIndex(&(header.Coinbase)) - commonDpovp.GetCoreNodeIndex(&(parent.Coinbase))
-	if timespan < oneTurnTimespan { // 间隔小于一轮
-		if dist == 0 && (timespan < oneTurnTimespan-d.timeoutTime){
-			return fmt.Errorf(`it's not turn`)
-		} else if dist == 1 && timespan < d.blockInternal {
-			return fmt.Errorf(`not sleep enough time`)
-		} else if dist > 1 && (timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime) {
-			return fmt.Errorf(`it's not turn`)
+
+	if slot == 0 { // 上一个块为自己出的块
+		timespan = timespan % oneLoopTime
+		if timespan >= oneLoopTime-d.timeoutTime {
+			// 正常情况
+		} else {
+			return fmt.Errorf("Not turn to produce block -2")
 		}
-
 		return nil
-	}
-	// 如果间隔大于一轮 则任何出块都是合法的
-	// 去掉整轮后的间隔
-	timespan = timespan % oneTurnTimespan
-
-	if dist == 0 && timespan < oneTurnTimespan-d.timeoutTime {
-		//return fmt.Errorf(`it's not turn`)
-	} else if dist == 1 && timespan < d.blockInternal {
-		return fmt.Errorf(`not sleep enough time`)
-	} else if dist > 1 && (timespan < int64(dist)*d.timeoutTime || timespan >= int64(dist+1)*d.timeoutTime) {
-		return fmt.Errorf(`it's not turn`)
+	} else if slot == 1 {
+		if timespan < oneLoopTime { // 间隔不到一个循环
+			if timespan >= d.blockInternal && timespan < d.timeoutTime {
+				// 正常情况
+			} else {
+				return fmt.Errorf("Not turn to produce block -3")
+			}
+		} else { // 间隔超过一个循环
+			timespan = timespan % oneLoopTime
+			if timespan < d.timeoutTime {
+				// 正常情况
+			} else {
+				return fmt.Errorf("Not turn to produce block -4")
+			}
+		}
+	} else {
+		timespan = timespan % oneLoopTime
+		if timespan/d.timeoutTime == int64(slot - 1) {
+			// 正常情况
+		} else {
+			return fmt.Errorf("Not turn to produce block -5")
+		}
 	}
 	return nil
 }
@@ -337,14 +368,14 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		copy(header.SignInfo, signInfo)
 	}
 	// 出块之后需要重置定时器
-	//nodeCount := commonDpovp.GetCoreNodesCount()
-	//var timeDur int64
-	//if nodeCount > 1 {
-	//	timeDur = int64(nodeCount-1) * d.timeoutTime
-	//} else {
-	//	timeDur = d.blockInternal
-	//}
-	//d.resetMinerTimer(timeDur)
+	nodeCount := commonDpovp.GetCoreNodesCount()
+	var timeDur int64
+	if nodeCount > 1 {
+		timeDur = int64(nodeCount-1) * d.timeoutTime
+	} else {
+		timeDur = d.blockInternal
+	}
+	d.resetMinerTimer(timeDur)
 
 	return block.WithSeal(header), nil
 }
