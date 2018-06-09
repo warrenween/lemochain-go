@@ -344,6 +344,11 @@ func (d *Dpovp) Finalize(chain consensus.ChainReader, header *types.Header, stat
 func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-chan struct{}) (*types.Block, error) {
 	d.isTurnMu.Lock()
 	defer d.isTurnMu.Unlock()
+	// 判断本节点是否在主节点列表中
+	coinbaseIndex := commonDpovp.GetCoreNodeIndex(&(d.coinbase))
+	if coinbaseIndex == -1 {
+		return nil, fmt.Errorf("this is not a star node.")
+	}
 
 	if !d.isTurn {
 		err := errors.New(`it's not turn to produce block`)
@@ -351,6 +356,17 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	} else {
 		d.isTurn = false
 	}
+
+	// 出块之后需要重置定时器
+	nodeCount := commonDpovp.GetCoreNodesCount()
+	var timeDur int64
+	if nodeCount > 1 {
+		timeDur = int64(nodeCount-1) * d.timeoutTime
+	} else {
+		timeDur = d.blockInternal
+	}
+	d.resetMinerTimer(timeDur)
+
 	// 出块
 	header := block.Header()
 	// Sealing the genesis block is not supported
@@ -367,15 +383,6 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 		header.SignInfo = make([]byte, len(signInfo))
 		copy(header.SignInfo, signInfo)
 	}
-	// 出块之后需要重置定时器
-	nodeCount := commonDpovp.GetCoreNodesCount()
-	var timeDur int64
-	if nodeCount > 1 {
-		timeDur = int64(nodeCount-1) * d.timeoutTime
-	} else {
-		timeDur = d.blockInternal
-	}
-	d.resetMinerTimer(timeDur)
 
 	return block.WithSeal(header), nil
 }

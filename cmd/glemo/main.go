@@ -122,6 +122,7 @@ var (
 		utils.GpoPercentileFlag,
 		utils.ExtraDataFlag,
 		configFileFlag,
+		utils.NodeModeFlag, // sman for node mode
 	}
 
 	rpcFlags = []cli.Flag{

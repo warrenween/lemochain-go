@@ -171,8 +171,11 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 	if lemo.protocolManager, err = NewProtocolManager(lemo.chainConfig, config.SyncMode, config.NetworkId, lemo.eventMux, lemo.txPool, lemo.engine, lemo.blockchain, chainDb); err != nil {
 		return nil, err
 	}
-	lemo.miner = miner.New(lemo, lemo.chainConfig, lemo.EventMux(), lemo.engine)
-	lemo.miner.SetExtra(makeExtraData(config.ExtraData))
+	// sman modify for node mode
+	if config.NodeMode == NodeModeStar {
+		lemo.miner = miner.New(lemo, lemo.chainConfig, lemo.EventMux(), lemo.engine)
+		lemo.miner.SetExtra(makeExtraData(config.ExtraData))
+	}
 
 	lemo.ApiBackend = &LemoApiBackend{lemo, nil}
 	gpoParams := config.GPO
@@ -259,9 +262,7 @@ func (s *Lemochain) APIs() []rpc.API {
 
 	// Append any APIs exposed explicitly by the consensus engine
 	apis = append(apis, s.engine.APIs(s.BlockChain())...)
-
-	// Append all the local APIs and return
-	return append(apis, []rpc.API{
+	apis = append(apis, []rpc.API{
 		{
 			Namespace: "lemo",
 			Version:   "1.0",
@@ -270,18 +271,8 @@ func (s *Lemochain) APIs() []rpc.API {
 		}, {
 			Namespace: "lemo",
 			Version:   "1.0",
-			Service:   NewPublicMinerAPI(s),
-			Public:    true,
-		}, {
-			Namespace: "lemo",
-			Version:   "1.0",
 			Service:   downloader.NewPublicDownloaderAPI(s.protocolManager.downloader, s.eventMux),
 			Public:    true,
-		}, {
-			Namespace: "miner",
-			Version:   "1.0",
-			Service:   NewPrivateMinerAPI(s),
-			Public:    false,
 		}, {
 			Namespace: "lemo",
 			Version:   "1.0",
@@ -307,6 +298,24 @@ func (s *Lemochain) APIs() []rpc.API {
 			Public:    true,
 		},
 	}...)
+	// sman modify for node mode
+	if s.config.NodeMode == NodeModeStar {
+		apis = append(apis, []rpc.API{
+			{
+				Namespace: "lemo",
+				Version:   "1.0",
+				Service:   NewPublicMinerAPI(s),
+				Public:    true,
+			}, {
+				Namespace: "miner",
+				Version:   "1.0",
+				Service:   NewPrivateMinerAPI(s),
+				Public:    false,
+			},
+		}...)
+	}
+	// Append all the local APIs and return
+	return apis
 }
 
 func (s *Lemochain) ResetWithGenesisBlock(gb *types.Block) {

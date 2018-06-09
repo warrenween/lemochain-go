@@ -189,6 +189,13 @@ var (
 		Name:  "lightkdf",
 		Usage: "Reduce key-derivation RAM & CPU usage at some expense of KDF strength",
 	}
+	// sman 节点工作模式
+	NodeModeFlag = cli.StringFlag{
+		Name:  "nodemode",
+		Usage: `Blockchain node mode ("star" or "satellite")`,
+		Value: "satellite",
+	}
+
 	// Dashboard settings
 	DashboardEnabledFlag = cli.BoolFlag{
 		Name:  "dashboard",
@@ -1070,7 +1077,16 @@ func SetLemoConfig(ctx *cli.Context, stack *node.Node, cfg *lemo.Config) {
 		// TODO(fjl): force-enable this in --dev mode
 		cfg.EnablePreimageRecording = ctx.GlobalBool(VMEnableDebugFlag.Name)
 	}
-
+	// sman for node mode
+	if ctx.GlobalIsSet(NodeModeFlag.Name) {
+		if strings.ToLower(ctx.GlobalString(NodeModeFlag.Name)) == "star" {
+			cfg.NodeMode = lemo.NodeModeStar
+		} else {
+			cfg.NodeMode = lemo.NodeModeSatellite
+		}
+	} else {
+		cfg.NodeMode = lemo.NodeModeSatellite
+	}
 	// Override any default configs for hard coded networks.
 	switch {
 	case ctx.GlobalBool(TestnetFlag.Name):
@@ -1287,7 +1303,8 @@ func MakeConsolePreloads(ctx *cli.Context) []string {
 // configuration functionality must be changed that is uses local flags
 func MigrateFlags(action func(ctx *cli.Context) error) func(*cli.Context) error {
 	return func(ctx *cli.Context) error {
-		for _, name := range ctx.FlagNames() {
+		names := ctx.FlagNames()
+		for _, name := range names {
 			if ctx.IsSet(name) {
 				ctx.GlobalSet(name, ctx.String(name))
 			}

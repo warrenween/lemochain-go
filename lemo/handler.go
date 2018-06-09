@@ -189,7 +189,12 @@ func NewProtocolManager(config *params.ChainConfig, mode downloader.SyncMode, ne
 	manager.blockchain.BroadcastConFn = func(hash common.Hash, num uint64, hasFlag bool) {
 		manager.BroadcastConsensusInfo(hash, num, hasFlag)
 	}
-
+	// sman broadcast new block hash to satellite node
+	manager.blockchain.BroadcastBlock2Satellite = func(hash common.Hash, number uint64) {
+		for _, peer := range manager.peersDelay.TotalPeers() {
+			peer.SendNewBlockHashes([]common.Hash{hash}, []uint64{number})
+		}
+	}
 	return manager, nil
 }
 

@@ -130,10 +130,11 @@ type BlockChain struct {
 
 	badBlocks *lru.Cache // Bad block cache
 
-	stableBlock     atomic.Value                                     // sman 当前稳定块指针
-	blocksConsensus map[common.Hash]uint64                           // sman 区块经过确认的标识 按位计算 最多64个主节点
-	coinbase        common.Address                                   // sman 节点coinbase
-	BroadcastConFn  func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
+	stableBlock              atomic.Value                                     // sman 当前稳定块指针
+	blocksConsensus          map[common.Hash]uint64                           // sman 区块经过确认的标识 按位计算 最多64个主节点
+	coinbase                 common.Address                                   // sman 节点coinbase
+	BroadcastConFn           func(hash common.Hash, num uint64, hasFlag bool) // sman 广播确认标识回调函数
+	BroadcastBlock2Satellite func(hash common.Hash, number uint64)            // sman 广播区块到普通节点
 }
 
 var childrenMap = make(map[common.Hash][]common.Hash) // sman for iteratal of block children block
@@ -1231,13 +1232,18 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 			bc.reportBlock(block, receipts, err)
 			return i, events, coalescedLogs, err
 		}
-
 		// sman 置出块者确认标识
 		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
 		// sman 高度是否大于当前head的高度 todo
 		if block.Header().Number.Int64() <= bc.CurrentBlock().Header().Number.Int64() {
 			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false) // 广播不带确认标识
-			err = fmt.Errorf(`height number need to be larger than current block`)
+			//err = fmt.Errorf(`height number need to be larger than current block`)
+			log.Info("recv bad block which number is smaller than current")
+			return i, events, coalescedLogs, nil // todo 是否需要返回错误？ 错误将导致断开连接
+		}
+		// Write the block to the chain and get the status.
+		status, err := bc.WriteBlockWithState(block, receipts, state)
+		if err != nil {
 			return i, events, coalescedLogs, err
 		}
 		// sman 置自己节点对应的确认标识位
@@ -1248,24 +1254,18 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 			if bc.StableBlock().Header().Number.Uint64() < block.Header().Number.Uint64() { // Stable_block是否已指向该块或该块的子块
 				bc.stableBlock.Store(block) // 将stable_block指向该块
 			}
-			//if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
-			//	newCurBlock := bc.getNewestBlockInStableChain()
-			//	bc.currentBlock.Store(newCurBlock)
-			//}
-			// TODO 广播给普通节点
-			// go
+			if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
+				newCurBlock := bc.getNewestBlockInStableChain()
+				bc.currentBlock.Store(newCurBlock)
+			}
+			// 广播给普通节点
+			bc.BroadcastBlock2Satellite(block.Hash(), block.Number().Uint64())
 		}
 		// sman 获取父节点header 并设置父header的children
 		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
 		parHash := parentHeader.Hash()
 		childrenMap[parHash] = append(childrenMap[parHash], block.Hash())
 
-		// Write the block to the chain and get the status.
-		status, err := bc.WriteBlockWithState(block, receipts, state)
-
-		if err != nil {
-			return i, events, coalescedLogs, err
-		}
 		// sman  广播该块的hash，附带上确认标识
 		bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), true)
 
@@ -1337,8 +1337,8 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 			newCurBlock := bc.getNewestBlockInStableChain()
 			bc.currentBlock.Store(newCurBlock)
 		}
-		// TODO 广播给普通节点
-		// go
+		// 广播给普通节点
+		bc.BroadcastBlock2Satellite(block.Hash(), block.Number().Uint64())
 	}
 }
 

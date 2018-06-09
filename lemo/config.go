@@ -33,6 +33,14 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/params"
 )
 
+// sman
+type NodeMode int
+
+const (
+	NodeModeStar NodeMode = iota
+	NodeModeSatellite
+)
+
 // DefaultConfig contains default settings for use on the Lemochain main net.
 var DefaultConfig = Config{
 	SyncMode: downloader.FastSync,
@@ -114,6 +122,9 @@ type Config struct {
 
 	// Miscellaneous options
 	DocRoot string `toml:"-"`
+
+	// sman
+	NodeMode NodeMode
 }
 
 type configMarshaling struct {
