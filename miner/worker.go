@@ -250,9 +250,10 @@ func (self *worker) update() {
 		select {
 		// Handle ChainHeadEvent
 		case <-self.chainHeadCh:
-			//self.commitNewWork()
 			// 收到新块广播 修改定时器
-			self.engine.(*dpovp.Dpovp).ModifyTimer()
+			if atomic.LoadInt32(&self.mining) == 1 {
+				self.engine.(*dpovp.Dpovp).ModifyTimer()
+			}
 
 		// Handle ChainSideEvent
 		case ev := <-self.chainSideCh:
