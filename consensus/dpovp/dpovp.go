@@ -56,8 +56,11 @@ func (d *Dpovp) ModifyTimer() {
 	slot := d.getSlot(&(d.currentBlock().Header().Coinbase), &(d.coinbase)) // 获取新块离本节点索引的距离
 	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime
 	if slot == 0 { // 上一个块为自己出的块
-		//waitTime := int64(nodeCount-1) * d.timeoutTime - timeDur
-		//d.resetMinerTimer(waitTime)
+		if timeDur > oneLoopTime { // 间隔大于一轮
+			timeDur = timeDur % oneLoopTime // 求余
+			waitTime := int64(nodeCount-1)*d.timeoutTime - timeDur
+			d.resetMinerTimer(waitTime)
+		}
 	} else if slot == 1 { // 说明下一个区块就该本节点产生了
 		if timeDur > oneLoopTime { // 间隔大于一轮
 			timeDur = timeDur % oneLoopTime // 求余
@@ -351,8 +354,8 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	}
 
 	if !d.isTurn {
-		err := errors.New(`it's not turn to produce block`)
-		return nil, err
+		//err := errors.New(`it's not turn to produce block`)
+		return nil, nil
 	} else {
 		d.isTurn = false
 	}

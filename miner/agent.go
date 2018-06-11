@@ -23,6 +23,8 @@ import (
 
 	"github.com/LemoFoundationLtd/lemochain-go/consensus"
 	"github.com/LemoFoundationLtd/lemochain-go/consensus/dpovp"
+	"github.com/LemoFoundationLtd/lemochain-go/log"
+	"time"
 )
 
 type CpuAgent struct {
@@ -108,7 +110,8 @@ func (self *CpuAgent) mine(work *Work, stop <-chan struct{}) {
 		self.returnCh <- &Result{work, result}
 	} else {
 		if err != nil {
-			//	log.Warn("Block sealing failed", "err", err)
+			log.Warn("Block sealing failed", "err", err)
+			time.Sleep(3 * time.Second)
 		}
 		self.returnCh <- nil
 	}

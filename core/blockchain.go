@@ -1235,7 +1235,8 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		// sman 置出块者确认标识
 		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
 		// sman 高度是否大于当前head的高度 todo
-		if block.Header().Number.Int64() <= bc.CurrentBlock().Header().Number.Int64() {
+		curHeader := bc.CurrentBlock().Header()
+		if block.Header().Number.Int64() <= curHeader.Number.Int64() {
 			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false) // 广播不带确认标识
 			//err = fmt.Errorf(`height number need to be larger than current block`)
 			log.Info("recv bad block which number is smaller than current")
