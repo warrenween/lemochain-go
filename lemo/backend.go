@@ -176,6 +176,8 @@ func New(ctx *node.ServiceContext, config *Config) (*Lemochain, error) {
 		lemo.miner = miner.New(lemo, lemo.chainConfig, lemo.EventMux(), lemo.engine)
 		lemo.miner.SetExtra(makeExtraData(config.ExtraData))
 	}
+	// sman
+	lemo.blockchain.SetIsStarNode(config.NodeMode == NodeModeStar)
 
 	lemo.ApiBackend = &LemoApiBackend{lemo, nil}
 	gpoParams := config.GPO

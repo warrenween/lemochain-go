@@ -130,6 +130,7 @@ type BlockChain struct {
 
 	badBlocks *lru.Cache // Bad block cache
 
+	isStarNode               bool                                             // sman 是否为主节点
 	stableBlock              atomic.Value                                     // sman 当前稳定块指针
 	blocksConsensus          map[common.Hash]uint64                           // sman 区块经过确认的标识 按位计算 最多64个主节点
 	coinbase                 common.Address                                   // sman 节点coinbase
@@ -370,6 +371,11 @@ func (bc *BlockChain) StableBlock() *types.Block {
 // sman 设置当前稳定区块指针
 func (bc *BlockChain) SetStableBlock(block *types.Block) {
 	bc.stableBlock.Store(block)
+}
+
+// 设置是否为主节点标记
+func (bc *BlockChain) SetIsStarNode(flag bool) {
+	bc.isStarNode = flag
 }
 
 // sman 设置确认标识
@@ -1232,44 +1238,49 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 			bc.reportBlock(block, receipts, err)
 			return i, events, coalescedLogs, err
 		}
-		// sman 置出块者确认标识
-		bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
-		// sman 高度是否大于当前head的高度 todo
-		curHeader := bc.CurrentBlock().Header()
-		if block.Header().Number.Int64() <= curHeader.Number.Int64() {
-			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false) // 广播不带确认标识
-			//err = fmt.Errorf(`height number need to be larger than current block`)
-			log.Info("recv bad block which number is smaller than current")
-			return i, events, coalescedLogs, nil // todo 是否需要返回错误？ 错误将导致断开连接
+		// sman
+		if bc.isStarNode {
+			// sman 置出块者确认标识
+			bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
+			// sman 高度是否大于当前head的高度
+			curHeader := bc.CurrentBlock().Header()
+			if block.Header().Number.Int64() <= curHeader.Number.Int64() {
+				bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false) // 广播不带确认标识
+				//err = fmt.Errorf(`height number need to be larger than current block`)
+				log.Info("recv bad block which number is smaller than current")
+				return i, events, coalescedLogs, nil // todo 是否需要返回错误？ 错误将导致断开连接
+			}
 		}
 		// Write the block to the chain and get the status.
 		status, err := bc.WriteBlockWithState(block, receipts, state)
 		if err != nil {
 			return i, events, coalescedLogs, err
 		}
-		// sman 置自己节点对应的确认标识位
-		bc.SetConsensusFlag(block.Header().Hash(), bc.coinbase)
-		// sman 判断是否有2/3以上的确认
-		if bc.VerifyConsensusOK(block.Header().Hash()) {
-			log.Info(fmt.Sprintf("block has consensus. Number:%d", block.Header().Number.Uint64()))
-			if bc.StableBlock().Header().Number.Uint64() < block.Header().Number.Uint64() { // Stable_block是否已指向该块或该块的子块
-				bc.stableBlock.Store(block) // 将stable_block指向该块
+		// sman
+		if bc.isStarNode {
+			// sman 置自己节点对应的确认标识位
+			bc.SetConsensusFlag(block.Header().Hash(), bc.coinbase)
+			// sman 判断是否有2/3以上的确认
+			if bc.VerifyConsensusOK(block.Header().Hash()) {
+				log.Info(fmt.Sprintf("block has consensus. Number:%d", block.Header().Number.Uint64()))
+				if bc.StableBlock().Header().Number.Uint64() < block.Header().Number.Uint64() { // Stable_block是否已指向该块或该块的子块
+					bc.stableBlock.Store(block) // 将stable_block指向该块
+				}
+				if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
+					newCurBlock := bc.getNewestBlockInStableChain()
+					bc.currentBlock.Store(newCurBlock)
+				}
+				// 广播给普通节点
+				bc.BroadcastBlock2Satellite(block.Hash(), block.Number().Uint64())
 			}
-			if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
-				newCurBlock := bc.getNewestBlockInStableChain()
-				bc.currentBlock.Store(newCurBlock)
-			}
-			// 广播给普通节点
-			bc.BroadcastBlock2Satellite(block.Hash(), block.Number().Uint64())
+			// sman 获取父节点header 并设置父header的children
+			parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
+			parHash := parentHeader.Hash()
+			childrenMap[parHash] = append(childrenMap[parHash], block.Hash())
+
+			// sman  广播该块的hash，附带上确认标识
+			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), true)
 		}
-		// sman 获取父节点header 并设置父header的children
-		parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
-		parHash := parentHeader.Hash()
-		childrenMap[parHash] = append(childrenMap[parHash], block.Hash())
-
-		// sman  广播该块的hash，附带上确认标识
-		bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), true)
-
 		proctime := time.Since(bstart)
 		switch status {
 		case CanonStatTy:
@@ -1309,6 +1320,10 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 	HasConsensus uint8       // 是否有确认信息
 	SignInfo     []byte      // 签名信息
 }) {
+	if bc.isStarNode == false {
+		log.Warn("It's not a star node, but recv a consensus message")
+		return
+	}
 	if info.HasConsensus != uint8(1) {
 		return
 	}
