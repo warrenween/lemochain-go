@@ -326,7 +326,7 @@ func doLint(cmdline []string) {
 	build.MustRun(goTool("get", "gopkg.in/alecthomas/gometalinter.v2"))
 	build.MustRunCommand(filepath.Join(GOBIN, "gometalinter.v2"), "--install")
 
-	// Run fast linters batched toglemo
+	// Run fast linters batched together
 	configs := []string{
 		"--vendor",
 		"--disable-all",
@@ -368,7 +368,7 @@ func doArchive(cmdline []string) {
 	var (
 		env      = build.Env()
 		base     = archiveBasename(*arch, env)
-		glemo     = "glemo-" + base + ext
+		glemo    = "glemo-" + base + ext
 		alltools = "glemo-alltools-" + base + ext
 	)
 	maybeSkipArchive(env)
@@ -652,8 +652,8 @@ func doWindowsInstaller(cmdline []string) {
 
 	// Aggregate binaries that are included in the installer
 	var (
-		devTools []string
-		allTools []string
+		devTools  []string
+		allTools  []string
 		glemoTool string
 	)
 	for _, file := range allToolsArchiveFiles {
@@ -672,7 +672,7 @@ func doWindowsInstaller(cmdline []string) {
 	// first section contains the glemo binary, second section holds the dev tools.
 	templateData := map[string]interface{}{
 		"License":  "COPYING",
-		"Glemo":     glemoTool,
+		"Glemo":    glemoTool,
 		"DevTools": devTools,
 	}
 	build.Render("build/nsis.glemo.nsi", filepath.Join(*workdir, "glemo.nsi"), 0644, nil)

@@ -31,7 +31,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/trie"
 )
 
-// stateReq represents a batch of state fetch requests groupped toglemo into
+// stateReq represents a batch of state fetch requests groupped together into
 // a single data retrieval network packet.
 type stateReq struct {
 	items    []common.Hash              // Hashes of the state items to download

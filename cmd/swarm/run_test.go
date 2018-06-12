@@ -26,7 +26,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/docker/docker/pkg/reexec"
 	"github.com/LemoFoundationLtd/lemochain-go/accounts"
 	"github.com/LemoFoundationLtd/lemochain-go/accounts/keystore"
 	"github.com/LemoFoundationLtd/lemochain-go/internal/cmdtest"
@@ -34,6 +33,7 @@ import (
 	"github.com/LemoFoundationLtd/lemochain-go/p2p"
 	"github.com/LemoFoundationLtd/lemochain-go/rpc"
 	"github.com/LemoFoundationLtd/lemochain-go/swarm"
+	"github.com/docker/docker/pkg/reexec"
 )
 
 func init() {
@@ -79,7 +79,7 @@ type testCluster struct {
 // ports (assigned by first listening on 127.0.0.1:0 and then passing the ports
 // as flags).
 //
-// When starting more than one node, they are connected toglemo using the
+// When starting more than one node, they are connected together using the
 // admin SetPeer RPC method.
 func newTestCluster(t *testing.T, size int) *testCluster {
 	cluster := &testCluster{}
@@ -113,7 +113,7 @@ func newTestCluster(t *testing.T, size int) *testCluster {
 		return cluster
 	}
 
-	// connect the nodes toglemo
+	// connect the nodes together
 	for _, node := range cluster.Nodes {
 		if err := node.Client.Call(nil, "admin_addPeer", cluster.Nodes[0].Enode); err != nil {
 			t.Fatal(err)
