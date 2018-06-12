@@ -225,57 +225,56 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 	if err != nil {
 		return fmt.Errorf(`Wrong signinfo`)
 	}
-	blkCbPubkey := commonDpovp.GetPubkeyByAddress(&(header.Coinbase)) // 获取出块者的node公钥
-	if blkCbPubkey == nil {
+	blkNodePubkey := commonDpovp.GetPubkeyByAddress(&(header.Coinbase)) // 获取出块者的node公钥
+	if blkNodePubkey == nil {
 		return fmt.Errorf("Verify header failed. Cann't get pubkey of %s", common.ToHex(header.Coinbase[:]))
 	}
-	if bytes.Compare(blkCbPubkey, pubKey[1:]) != 0 {
+	if bytes.Compare(blkNodePubkey, pubKey[1:]) != 0 {
 		return fmt.Errorf("Cann't verify block's signer")
 	}
 
 	// 以下为确定是否该该节点出块
-	if d.currentBlock().Number().Uint64() == uint64(0) && parent.Number.Uint64() == uint64(0) { // 父块为创世块
+	if parent.Number.Uint64() == uint64(0) { // 父块为创世块
 		return nil
 	}
-
-	timespan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 当前块与父块时间间隔 单位：ms
+	timeSpan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 当前块与父块时间间隔 单位：ms
 	nodeCount := commonDpovp.GetCoreNodesCount()                        // 总节点数
 	slot := d.getSlot(&(parent.Coinbase), &(header.Coinbase))
 	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime // 一轮全部超时时的时间
 	// 只有一个出块节点
 	if nodeCount == 1 {
-		if timespan < d.blockInternal { // 块间隔至少blockInternal
+		if timeSpan < d.blockInternal { // 块间隔至少blockInternal
 			return fmt.Errorf("Only one node, but not sleep enough time -1")
 		}
 		return nil
 	}
 
 	if slot == 0 { // 上一个块为自己出的块
-		timespan = timespan % oneLoopTime
-		if timespan >= oneLoopTime-d.timeoutTime {
+		timeSpan = timeSpan % oneLoopTime
+		if timeSpan >= oneLoopTime-d.timeoutTime {
 			// 正常情况
 		} else {
 			return fmt.Errorf("Not turn to produce block -2")
 		}
 		return nil
 	} else if slot == 1 {
-		if timespan < oneLoopTime { // 间隔不到一个循环
-			if timespan >= d.blockInternal && timespan < d.timeoutTime {
+		if timeSpan < oneLoopTime { // 间隔不到一个循环
+			if timeSpan >= d.blockInternal && timeSpan < d.timeoutTime {
 				// 正常情况
 			} else {
 				return fmt.Errorf("Not turn to produce block -3")
 			}
 		} else { // 间隔超过一个循环
-			timespan = timespan % oneLoopTime
-			if timespan < d.timeoutTime {
+			timeSpan = timeSpan % oneLoopTime
+			if timeSpan < d.timeoutTime {
 				// 正常情况
 			} else {
 				return fmt.Errorf("Not turn to produce block -4")
 			}
 		}
 	} else {
-		timespan = timespan % oneLoopTime
-		if timespan/d.timeoutTime == int64(slot-1) {
+		timeSpan = timeSpan % oneLoopTime
+		if timeSpan/d.timeoutTime == int64(slot-1) {
 			// 正常情况
 		} else {
 			return fmt.Errorf("Not turn to produce block -5")
