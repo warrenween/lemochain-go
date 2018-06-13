@@ -31,7 +31,7 @@ func (h Header) MarshalJSON() ([]byte, error) {
 		Extra       hexutil.Bytes  `json:"extraData"        gencodec:"required"`
 		MixDigest   common.Hash    `json:"mixHash"          gencodec:"required"`
 		Nonce       BlockNonce     `json:"nonce"            gencodec:"required"`
-		SignInfo    []byte         `json:"signature"        gencodec:"required"`
+		SignInfo    []byte         `json:"signInfo"         gencodec:"required"`
 		Hash        common.Hash    `json:"hash"`
 	}
 	var enc Header
