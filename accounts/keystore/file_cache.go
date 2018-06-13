@@ -38,7 +38,7 @@ type fileCache struct {
 // scan performs a new scan on the given directory, compares against the already
 // cached filenames, and returns file sets: creates, deletes, updates.
 func (fc *fileCache) scan(keyDir string) (set.Interface, set.Interface, set.Interface, error) {
-	t0 := time.Now()
+	// t0 := time.Now()
 
 	// List all the failes from the keystore folder
 	files, err := ioutil.ReadDir(keyDir)
