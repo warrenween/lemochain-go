@@ -393,6 +393,7 @@ func (bc *BlockChain) SetConsensusFlag(hash common.Hash, address common.Address)
 		v = flag | v
 	}
 	bc.blocksConsensus[hash] = v
+	log.Debug(fmt.Sprintf("SetConsensusFlag: hash:%s, addr:%s", common.ToHex(hash[:]), common.ToHex(address[:])))
 }
 
 // sman 验证区块是否得到超多2/3的确认
@@ -1242,12 +1243,13 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		if bc.isStarNode {
 			// sman 置出块者确认标识
 			bc.SetConsensusFlag(block.Header().Hash(), block.Coinbase())
+			log.Debug("insertChain: SetConsensusFlag:coinbase")
 			// sman 高度是否大于当前head的高度
 			curHeader := bc.CurrentBlock().Header()
 			if block.Header().Number.Int64() <= curHeader.Number.Int64() {
 				bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), false) // 广播不带确认标识
 				//err = fmt.Errorf(`height number need to be larger than current block`)
-				log.Info("recv bad block which number is smaller than current")
+				log.Debug("insertChain: recv bad block which number is smaller than current BroadcastConFn:false")
 				return i, events, coalescedLogs, nil // todo 是否需要返回错误？ 错误将导致断开连接
 			}
 		}
@@ -1260,18 +1262,25 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 		if bc.isStarNode {
 			// sman 置自己节点对应的确认标识位
 			bc.SetConsensusFlag(block.Header().Hash(), bc.coinbase)
+			log.Debug("insertChain: SetConsensusFlag: local node")
 			// sman 判断是否有2/3以上的确认
 			if bc.VerifyConsensusOK(block.Header().Hash()) {
 				log.Info(fmt.Sprintf("block has consensus. Number:%d", block.Header().Number.Uint64()))
 				if bc.StableBlock().Header().Number.Uint64() < block.Header().Number.Uint64() { // Stable_block是否已指向该块或该块的子块
 					bc.stableBlock.Store(block) // 将stable_block指向该块
+					hashTmp := block.Hash()
+					log.Debug(fmt.Sprintf("insertChain: stableBlock refer to:%s", common.ToHex(hashTmp[:])))
 				}
 				if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
 					newCurBlock := bc.getNewestBlockInStableChain()
 					bc.currentBlock.Store(newCurBlock)
+					hashTmp := newCurBlock.Hash()
+					log.Debug(fmt.Sprintf("insertChain: currentBlock refer to:%s", common.ToHex(hashTmp[:])))
 				}
 				// 广播给普通节点
 				bc.BroadcastBlock2Satellite(block.Hash(), block.Number().Uint64())
+				hashTmp := block.Hash()
+				log.Debug(fmt.Sprintf("insertChain: BroadcastBlock2Satellite hash:%s num:%d", common.ToHex(hashTmp[:]), block.Number().Uint64()))
 			}
 			// sman 获取父节点header 并设置父header的children
 			parentHeader := bc.GetHeader(block.ParentHash(), block.Number().Uint64()-1)
@@ -1280,6 +1289,7 @@ func (bc *BlockChain) insertChain(chain types.Blocks) (int, []interface{}, []*ty
 
 			// sman  广播该块的hash，附带上确认标识
 			bc.BroadcastConFn(block.Header().Hash(), block.Header().Number.Uint64(), true)
+			log.Debug("insertChain: BroadcastConFn")
 		}
 		proctime := time.Since(bstart)
 		switch status {
@@ -1325,36 +1335,45 @@ func (bc *BlockChain) ProcConsensusMsg(info struct {
 		return
 	}
 	if info.HasConsensus != uint8(1) {
+		log.Debug("ProcConsensusMsg: recv not have consuensus flag's block")
 		return
 	}
 	// 置签名者对应的确认标识位
 	// Recover the public key and the Lemochain address
 	pubkey, err := crypto.Ecrecover(info.Hash.Bytes(), info.SignInfo)
 	if err != nil {
+		log.Debug("ProcConsensusMsg: cann't recover pubkey")
 		return
 	}
 	remoteAddr := commonDpovp.GetAddressByPubkey(pubkey)
 	epAddr := common.Address{}
 	if remoteAddr == epAddr {
+		log.Debug("ProcConsensusMsg: cann't get remote address from core nodes list")
 		return
 	}
 	bc.SetConsensusFlag(info.Hash, remoteAddr)
+	hashTmp := info.Hash
 	// 是否有该块 没有则返回
 	if !bc.HasBlock(info.Hash, info.Number) {
+		log.Debug(fmt.Sprintf("ProcConsensusMsg: chain doesn't have block. hash:%s num:%d", common.ToHex(hashTmp[:]), info.Number))
 		return
 	}
 	// 判断是否有2/3以上的确认
 	if bc.VerifyConsensusOK(info.Hash) {
+		log.Info("block has consensus. hash:%s", common.ToHex(hashTmp[:]))
 		block := bc.GetBlock(info.Hash, info.Number)
 		if bc.stableBlock.Load().(*types.Block).Header().Number.Int64() < int64(info.Number) { // Stable_block是否已指向该块或该块的子块
 			bc.stableBlock.Store(block) // 将stable_block指向该块
+			log.Debug(fmt.Sprintf("ProcConsensusMsg: stableBlock refer to  hash:%s", common.ToHex(hashTmp[:])))
 		}
 		if !bc.isCurAndStableBlockInSameChain() { // current block与stable block不在一条链上
 			newCurBlock := bc.getNewestBlockInStableChain()
 			bc.currentBlock.Store(newCurBlock)
+			log.Debug(fmt.Sprintf("ProcConsensusMsg: currentBlock refer to  hash:%s", common.ToHex(hashTmp[:])))
 		}
 		// 广播给普通节点
 		bc.BroadcastBlock2Satellite(block.Hash(), block.Number().Uint64())
+		log.Debug(fmt.Sprintf("ProcConsensusMsg: BroadcastBlock2Satellite hash:%s num:%d", common.ToHex(hashTmp[:]), block.Number().Uint64()))
 	}
 }
 
@@ -1385,6 +1404,7 @@ func (bc *BlockChain) isCurAndStableBlockInSameChain() bool {
 func (bc *BlockChain) getNewestBlockInStableChain() *types.Block {
 	staBlock, okS := bc.stableBlock.Load().(*types.Block)
 	if !okS {
+		log.Debug("getNewestBlockInStableChain: stableblock = currentblock")
 		return bc.CurrentBlock()
 	}
 	// 获取稳定区块的所有后代叶子节点
@@ -1412,6 +1432,8 @@ func (bc *BlockChain) getNewestBlockInStableChain() *types.Block {
 			resBlock = b
 		}
 	}
+	hashTmp := resBlock.Hash()
+	log.Debug(fmt.Sprintf("getNewestBlockInStableChain: result block hash:%s, num:%d", common.ToHex(hashTmp[:]), resBlock.Number().Uint64()))
 	return resBlock
 }
 

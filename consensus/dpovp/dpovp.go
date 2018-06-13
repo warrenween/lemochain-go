@@ -55,38 +55,45 @@ func (d *Dpovp) ModifyTimer() {
 	timeDur := d.getTimespan()                                              // 获取当前时间与最新块的时间差
 	slot := d.getSlot(&(d.currentBlock().Header().Coinbase), &(d.coinbase)) // 获取新块离本节点索引的距离
 	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime
+	log.Debug(fmt.Sprintf("ModifyTimer: timeDur:%d slot:%d oneLoopTime:%d", timeDur, slot, oneLoopTime))
 	if slot == 0 { // 上一个块为自己出的块
 		if timeDur > oneLoopTime { // 间隔大于一轮
 			timeDur = timeDur % oneLoopTime // 求余
 			waitTime := int64(nodeCount-1)*d.timeoutTime - timeDur
 			d.resetMinerTimer(waitTime)
+			log.Debug(fmt.Sprintf("ModifyTimer: slot:0 resetMinerTimer(waitTime:%d)", waitTime))
 		}
 	} else if slot == 1 { // 说明下一个区块就该本节点产生了
 		if timeDur > oneLoopTime { // 间隔大于一轮
 			timeDur = timeDur % oneLoopTime // 求余
-			if timeDur < d.timeoutTime {    //
-				log.Info(fmt.Sprintf("isTurn=true 1: %d", time.Now().Unix()))
+			log.Debug(fmt.Sprintf("ModifyTimer: slot:1 timeDur:%d>oneLoopTime:%d ", timeDur, oneLoopTime))
+			if timeDur < d.timeoutTime { //
+				log.Debug("ModifyTimer: isTurn=true")
 				d.isTurn = true
 			} else {
 				waitTime := oneLoopTime - timeDur
 				d.resetMinerTimer(waitTime)
+				log.Debug(fmt.Sprintf("ModifyTimer: slot:1 timeDur:%d>=d.timeoutTime:%d resetMinerTimer(waitTime:%d)", timeDur, d.timeoutTime, waitTime))
 			}
 		} else { // 间隔不到一轮
 			if timeDur > d.timeoutTime { // 过了本节点该出块的时机
 				waitTime := oneLoopTime - timeDur
 				d.resetMinerTimer(waitTime)
+				log.Debug(fmt.Sprintf("ModifyTimer: slot:1 timeDur<oneLoopTime, timeDur>d.timeoutTime, resetMinerTimer(waitTime:%d)", waitTime))
 			} else if timeDur >= d.blockInternal { // 如果上一个区块的时间与当前时间差大或等于3s（区块间的最小间隔为3s），则直接出块无需休眠
-				log.Info(fmt.Sprintf("isTurn=true 2: %d", time.Now().Unix()))
+				log.Debug(fmt.Sprintf("ModifyTimer: slot:1 timeDur<oneLoopTime, timeDur>=d.blockInternal isTurn=true"))
 				d.isTurn = true
 			} else {
 				waitTime := d.blockInternal - timeDur // 如果上一个块时间与当前时间非常近（小于3s），则设置休眠
 				d.resetMinerTimer(waitTime)
+				log.Debug(fmt.Sprintf("ModifyTimer: slot:1, else, resetMinerTimer(waitTime:%d)", waitTime))
 			}
 		}
 	} else { // 说明还不该自己出块，但是需要修改超时时间了
 		timeDur = timeDur % oneLoopTime
 		waitTime := int64(slot-1)*d.timeoutTime - timeDur
 		d.resetMinerTimer(waitTime)
+		log.Debug(fmt.Sprintf("ModifyTimer: slot:>1, timeDur:%d, resetMinerTimer(waitTime:%d)", timeDur, waitTime))
 	}
 }
 
@@ -98,7 +105,7 @@ func (d *Dpovp) resetMinerTimer(timeDur int64) {
 	}
 	// 重开新的定时器
 	d.blockMinerTimer = time.AfterFunc(time.Duration(timeDur*int64(time.Millisecond)), func() {
-		log.Info(fmt.Sprintf("isTurn=true 3: %d", time.Now().Unix()))
+		log.Debug("resetMinerTimer: isTurn=true")
 		//d.isTurnMu.Lock()
 		//defer d.isTurnMu.Unlock()
 		//log.Info(fmt.Sprintf("isTurn=true 4: %d", time.Now().Unix()))
@@ -114,11 +121,13 @@ func (d *Dpovp) getSlot(firstAddress, nextAddress *common.Address) int {
 	// 与创世块比较
 	var emptyAddr [20]byte
 	if bytes.Compare((*firstAddress)[:], emptyAddr[:]) == 0 {
+		log.Debug("getSlot: firstAddress is empty")
 		return nextIndex + 1
 	}
 	nodeCount := commonDpovp.GetCoreNodesCount()
 	// 只有一个主节点
 	if nodeCount == 1 {
+		log.Debug("getSlot: only one star node")
 		return 1
 	}
 	return (nextIndex - firstIndex + nodeCount) % nodeCount
@@ -128,6 +137,7 @@ func (d *Dpovp) getSlot(firstAddress, nextAddress *common.Address) int {
 func (d *Dpovp) getTimespan() int64 {
 	lstSpan := d.currentBlock().Header().Time.Int64()
 	if lstSpan == int64(0) {
+		log.Debug("current block's time is 0")
 		return int64(d.blockInternal)
 	}
 	now := time.Now().Unix()
@@ -178,7 +188,7 @@ func (d *Dpovp) VerifyHeader(chain consensus.ChainReader, header *types.Header, 
 func (d *Dpovp) VerifyHeaders(chain consensus.ChainReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error) {
 	abort := make(chan struct{})
 	results := make(chan error, len(headers))
-
+	log.Debug("start VerifyHeaders")
 	go func() {
 		for i, header := range headers {
 			err := d.verifyHeader(chain, header, headers[:i])
@@ -199,9 +209,12 @@ func (d *Dpovp) VerifyHeaders(chain consensus.ChainReader, headers []*types.Head
 // a batch of new headers.
 func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, parents []*types.Header) error {
 	if header.Number == nil {
+		log.Debug("verifyHeader: header.Number == nil")
 		return consensus.ErrInvalidNumber
 	}
 	number := header.Number.Uint64()
+	hashTmp := header.Hash()
+	log.Debug(fmt.Sprintf("start verifyHeader: hash:%s num:%d", common.ToHex(hashTmp[:]), number))
 	var parent *types.Header
 	for _, b := range parents {
 		if b.Hash() == header.ParentHash {
@@ -213,47 +226,54 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 		parent = chain.GetHeader(header.ParentHash, number-1)
 	}
 	if parent == nil {
+		log.Debug("verifyHeader: parent == nil")
 		return consensus.ErrUnknownAncestor
 	}
 	// Don't waste time checking blocks from the future
 	if header.Time.Cmp(big.NewInt(time.Now().Unix())) > 0 {
+		log.Debug("verifyHeader: header.Time > time.Now()")
 		return consensus.ErrFutureBlock
 	}
 
 	// 验证签名与coinbase对应的pubkey是否一致
 	pubKey, err := crypto.Ecrecover(header.HashNoDpovp().Bytes(), header.SignInfo)
 	if err != nil {
-		return fmt.Errorf(`Wrong signinfo`)
+		return fmt.Errorf(`verifyHeader: Wrong signinfo`)
 	}
 	blkNodePubkey := commonDpovp.GetPubkeyByAddress(&(header.Coinbase)) // 获取出块者的node公钥
 	if blkNodePubkey == nil {
-		return fmt.Errorf("Verify header failed. Cann't get pubkey of %s", common.ToHex(header.Coinbase[:]))
+		return fmt.Errorf("verifyHeader: Verify header failed. Cann't get pubkey of %s", common.ToHex(header.Coinbase[:]))
 	}
 	if bytes.Compare(blkNodePubkey, pubKey[1:]) != 0 {
-		return fmt.Errorf("Cann't verify block's signer")
+		return fmt.Errorf("verifyHeader: Cann't verify block's signer")
 	}
 
 	// 以下为确定是否该该节点出块
 	if parent.Number.Uint64() == uint64(0) { // 父块为创世块
+		log.Debug("verifyHeader: parent is genesis block")
 		return nil
 	}
 	timeSpan := int64(header.Time.Uint64()-parent.Time.Uint64()) * 1000 // 当前块与父块时间间隔 单位：ms
 	nodeCount := commonDpovp.GetCoreNodesCount()                        // 总节点数
 	slot := d.getSlot(&(parent.Coinbase), &(header.Coinbase))
 	oneLoopTime := int64(commonDpovp.GetCoreNodesCount()) * d.timeoutTime // 一轮全部超时时的时间
+	log.Debug(fmt.Sprintf("verifyHeader: timeSpan:%d nodeCount:%d slot:%d oneLoopTime:%d", timeSpan, nodeCount, slot, oneLoopTime))
 	// 只有一个出块节点
 	if nodeCount == 1 {
 		if timeSpan < d.blockInternal { // 块间隔至少blockInternal
-			return fmt.Errorf("Only one node, but not sleep enough time -1")
+			return fmt.Errorf("verifyHeader: Only one node, but not sleep enough time -1")
 		}
+		log.Debug("verifyHeader: nodeCount == 1")
 		return nil
 	}
 
 	if slot == 0 { // 上一个块为自己出的块
 		timeSpan = timeSpan % oneLoopTime
+		log.Debug(fmt.Sprintf("verifyHeader: slot:0 timeSpan:%d", timeSpan))
 		if timeSpan >= oneLoopTime-d.timeoutTime {
 			// 正常情况
 		} else {
+			log.Debug(fmt.Sprintf("verifyHeader: slot:0 verify failed"))
 			return fmt.Errorf("Not turn to produce block -2")
 		}
 		return nil
@@ -262,6 +282,7 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 			if timeSpan >= d.blockInternal && timeSpan < d.timeoutTime {
 				// 正常情况
 			} else {
+				log.Debug(fmt.Sprintf("verifyHeader: slot:1, timeSpan<oneLoopTime, verify failed"))
 				return fmt.Errorf("Not turn to produce block -3")
 			}
 		} else { // 间隔超过一个循环
@@ -269,14 +290,17 @@ func (d *Dpovp) verifyHeader(chain consensus.ChainReader, header *types.Header, 
 			if timeSpan < d.timeoutTime {
 				// 正常情况
 			} else {
+				log.Debug(fmt.Sprintf("verifyHeader: slot:1,timeSpan>=oneLoopTime, verify failed"))
 				return fmt.Errorf("Not turn to produce block -4")
 			}
 		}
 	} else {
 		timeSpan = timeSpan % oneLoopTime
+		log.Debug(fmt.Sprintf("verifyHeader: slot:%d timeSpan:%d", slot, timeSpan))
 		if timeSpan/d.timeoutTime == int64(slot-1) {
 			// 正常情况
 		} else {
+			log.Debug(fmt.Sprintf("verifyHeader: slot>1, verify failed"))
 			return fmt.Errorf("Not turn to produce block -5")
 		}
 	}
@@ -295,23 +319,26 @@ func (d *Dpovp) VerifyUncles(chain consensus.ChainReader, block *types.Block) er
 // VerifySeal checks whether the crypto seal on a header is valid according to
 // the consensus rules of the given engine.
 func (d *Dpovp) VerifySeal(chain consensus.ChainReader, header *types.Header) error {
+	log.Debug("start VerifySeal")
 	// 验证签名与coinbase是否一致
 	pubkey, err := crypto.Ecrecover(header.HashNoDpovp().Bytes(), header.SignInfo)
 	if err != nil {
-		return fmt.Errorf("Failed to verify Seal. hash:%s", header.Hash())
+		hashTmp := header.Hash()
+		return fmt.Errorf("Failed to verify Seal. hash:%s", common.ToHex(hashTmp[:]))
 	}
 	var signer common.Address
 	copy(signer[:], crypto.Keccak256(pubkey[1:])[12:])
 	if bytes.Compare(header.Coinbase[:], signer[:]) != 0 {
 		return fmt.Errorf(`signer != coinbase`)
 	}
-
+	log.Debug("end VerifySeal")
 	return nil
 }
 
 // Prepare initializes the consensus fields of a block header according to the
 // rules of a particular engine. The changes are executed inline.
 func (d *Dpovp) Prepare(chain consensus.ChainReader, header *types.Header) error {
+	//log.Debug("start Prepare")
 	parent := chain.GetHeader(header.ParentHash, header.Number.Uint64()-1)
 	if parent == nil {
 		return consensus.ErrUnknownAncestor
@@ -323,6 +350,7 @@ func (d *Dpovp) Prepare(chain consensus.ChainReader, header *types.Header) error
 	// Set the difficulty to 1
 	header.Difficulty = new(big.Int).SetInt64(1)
 	header.Time = new(big.Int).SetUint64(uint64(time.Now().Unix()))
+	//log.Debug("end Prepare")
 	return nil
 }
 
@@ -332,6 +360,7 @@ func (d *Dpovp) Prepare(chain consensus.ChainReader, header *types.Header) error
 // consensus rules that happen at finalization (e.g. block rewards).
 func (d *Dpovp) Finalize(chain consensus.ChainReader, header *types.Header, state *state.StateDB, txs []*types.Transaction,
 	uncles []*types.Header, receipts []*types.Receipt) (*types.Block, error) {
+	//log.Debug("start Finalize")
 	// No block rewards in PoA, so the state remains as is and uncles are dropped
 	accumulateRewards(state, header)
 	header.Root = state.IntermediateRoot(chain.Config().IsEIP158(header.Number))
@@ -349,16 +378,16 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	// 判断本节点是否在主节点列表中
 	coinbaseIndex := commonDpovp.GetCoreNodeIndex(&(d.coinbase))
 	if coinbaseIndex == -1 {
+		log.Debug("Finalize: coinbaseIndex==-1 coinbase:%s", common.ToHex(d.coinbase[:]))
 		return nil, fmt.Errorf("this is not a star node.")
 	}
 
 	if !d.isTurn {
-		//err := errors.New(`it's not turn to produce block`)
 		return nil, nil
 	} else {
 		d.isTurn = false
 	}
-
+	log.Debug("start Seal")
 	// 出块之后需要重置定时器
 	nodeCount := commonDpovp.GetCoreNodesCount()
 	var timeDur int64
@@ -367,6 +396,7 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	} else {
 		timeDur = d.blockInternal
 	}
+	log.Debug(fmt.Sprintf("Seal: timeDur:%d", timeDur))
 	d.resetMinerTimer(timeDur)
 
 	// 出块
@@ -374,19 +404,21 @@ func (d *Dpovp) Seal(chain consensus.ChainReader, block *types.Block, stop <-cha
 	// Sealing the genesis block is not supported
 	number := header.Number.Uint64()
 	if number == 0 {
-		return nil, fmt.Errorf("unknownblock, number:%d", number)
+		return nil, fmt.Errorf("Seal: unknownblock, number:%d", number)
 	}
 	// 对区块进行签名
 	hash := header.HashNoDpovp()
 	privKey := commonDpovp.GetPrivKey()
 	if signInfo, err := crypto.Sign(hash[:], &privKey); err != nil {
+		log.Debug("Seal: sign failed")
 		return nil, err
 	} else {
 		header.SignInfo = make([]byte, len(signInfo))
 		copy(header.SignInfo, signInfo)
 	}
-
-	return block.WithSeal(header), nil
+	result := block.WithSeal(header)
+	log.Debug("end Seal")
+	return result, nil
 }
 
 // CalcDifficulty is the difficulty adjustment algorithm. It returns the difficulty
