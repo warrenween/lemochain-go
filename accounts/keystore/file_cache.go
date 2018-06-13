@@ -45,7 +45,7 @@ func (fc *fileCache) scan(keyDir string) (set.Interface, set.Interface, set.Inte
 	if err != nil {
 		return nil, nil, nil, err
 	}
-	t1 := time.Now()
+	//t1 := time.Now()
 
 	fc.mu.Lock()
 	defer fc.mu.Unlock()
@@ -73,7 +73,7 @@ func (fc *fileCache) scan(keyDir string) (set.Interface, set.Interface, set.Inte
 			newLastMod = modified
 		}
 	}
-	t2 := time.Now()
+	//t2 := time.Now()
 
 	// Update the tracked files and return the three sets
 	deletes := set.Difference(fc.all, all)   // Deletes = previous - current
@@ -81,10 +81,10 @@ func (fc *fileCache) scan(keyDir string) (set.Interface, set.Interface, set.Inte
 	updates := set.Difference(mods, creates) // Updates = modified - creates
 
 	fc.all, fc.lastMod = all, newLastMod
-	t3 := time.Now()
+	//t3 := time.Now()
 
 	// Report on the scanning stats and return
-	log.Debug("FS scan times", "list", t1.Sub(t0), "set", t2.Sub(t1), "diff", t3.Sub(t2))
+	// log.Debug("FS scan times", "list", t1.Sub(t0), "set", t2.Sub(t1), "diff", t3.Sub(t2))
 	return creates, deletes, updates, nil
 }
 
